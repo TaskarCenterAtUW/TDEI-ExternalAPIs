@@ -2,6 +2,7 @@
 
 ## Security / Authentication:
 - All applications will be required to obtain an API key to use the TDEI consumer API
+- Authentication to be used is OAuth 2.0
 - The requirements for getting an API key are to provide a contact name, a valid email address and sign / acknowledge a data use agreement. 
 
 ## General API Calls:
@@ -18,7 +19,9 @@
 
 ### Specifications
 - There will be one API path that will take agency_id, and an optional minimum confidence level
-- A url/uri to zip file and a confidence level of the data will be returned
+- A url/uri to zip file will be returned
+- Confidence level of the data will be returned
+- valid_from and valid_to dates are returned, if valid_to is null, indicates this is the latest data
 - The file returned is a GTFS static file which includes GTFS-pathways data 
 
 ## Flex Consumer API - v1.0:
@@ -30,7 +33,9 @@
 
 ### Specifications
 - There will be one API path that will take agency_id, and an optional minimum confidence level
-- A url/uri to zip file and confidencel level of the data will be returned
+- A url/uri to zip file will be returned
+- Confidence level of the data will be returned
+- valid_from and valid_to dates are returned, if valid_to is null, indicates this is the latest data
 - The file returned is a GTFS static file which includes GTFS-Flex v2 data
 
 ## OSW Consumer API - v1.0:
@@ -42,5 +47,6 @@
 
 ### Specifications
 - There will be one API path that will take a bounding box, and an optional minimum confidence level
-- A uri/url to gzip json file will be returned and the confidence level of data will be returned
-
+- A url/uri to gzip json file will be returned
+- Confidence level of the data will be returned
+- valid_from and valid_to dates are returned, if valid_to is null, indicates this is the latest data
