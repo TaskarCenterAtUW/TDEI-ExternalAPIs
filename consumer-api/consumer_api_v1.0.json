@@ -115,11 +115,19 @@
                         },
                         "in": "query",
                         "required": true
+                    },
+                    {
+                        "name": "confidence_level",
+                        "description": "Minimum confidence level required. Data returned will be at this confidence level or higher.",
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "in": "query"
                     }
                 ],
                 "responses": {
                     "200": {
-                        "$ref": "#/components/responses/GTFSResponseUrl"
+                        "$ref": "#/components/responses/GTFSResponseData"
                     },
                     "401": {
                         "$ref": "#/components/responses/Unauthorized"
@@ -154,11 +162,20 @@
                         },
                         "in": "query",
                         "required": true
+                    },
+                    {
+                        "name": "confidence_level",
+                        "description": "Minimum confidence level required. Data returned will be at this confidence level or higher.",
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "in": "query",
+                        "required": false
                     }
                 ],
                 "responses": {
                     "200": {
-                        "$ref": "#/components/responses/GTFSResponseUrl"
+                        "$ref": "#/components/responses/GTFSResponseData"
                     },
                     "401": {
                         "$ref": "#/components/responses/Unauthorized"
@@ -200,11 +217,19 @@
                         },
                         "in": "query",
                         "required": true
+                    },
+                    {
+                        "name": "confidence_level",
+                        "description": "Minimum confidence level required. Data returned will be at this confidence level or higher.",
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "in": "query"
                     }
                 ],
                 "responses": {
                     "200": {
-                        "$ref": "#/components/responses/OSWUrl"
+                        "$ref": "#/components/responses/OSWResponseData"
                     },
                     "401": {
                         "$ref": "#/components/responses/Unauthorized"
@@ -284,32 +309,31 @@
             "IdNotFound": {
                 "description": "The requested id was not found. That is the agency_id provided does not exist in the TDEI system. Use the /agencies path to find valid agency_ids."
             },
-            "OSWUrl": {
-                "content": {
-                    "application/json": {
-                        "examples": {
-                            "OSWUrlExample": {
-                                "value": {
-                                    "osw_url": {
-                                        "bounding_box": "123.1, 123.4, 123.6, 123.7",
-                                        "url": "url1"
-                                    }
-                                }
-                            }
-                        }
-                    }
-                },
-                "description": "A url to a gzip'd geojson OSW file."
+            "BBoxNotFound": {
+                "description": "There was no data found in the specified bounding box. Data is expected to be available for King and Snohomish counties in Washington, Multnomah and Columbia counties in Oregon, and Baltimore and Harford counties in Maryland."
             },
-            "GTFSResponseUrl": {
+            "GTFSResponseData": {
                 "content": {
                     "application/json": {
                         "examples": {
-                            "PathwaysURL": {
+                            "GTFS Return Object with valid range": {
                                 "value": {
                                     "agency_name": "King County Metro",
                                     "agency_id": 1,
-                                    "url": "url with link to pathways data for this agency"
+                                    "confidence_level": 5,
+                                    "valid_from": "05-19-2022",
+                                    "valid_to": "05-20-2022",
+                                    "url": "url with link to the data file"
+                                }
+                            },
+                            "GTFS return object - latest data": {
+                                "value": {
+                                    "agency_name": "King County Metro",
+                                    "agency_id": 1,
+                                    "confidence_level": 5,
+                                    "valid_from": "05-19-2022",
+                                    "valid_to": "05-20-2022",
+                                    "url": "url with link to the data file"
                                 }
                             }
                         }
@@ -317,8 +341,31 @@
                 },
                 "description": "A list of urls with gtfs data. urls are identified by station_id."
             },
-            "BBoxNotFound": {
-                "description": "There was no data found in the specified bounding box. Data is expected to be available for King and Snohomish counties in Washington, Multnomah and Columbia counties in Oregon, and Baltimore and Harford counties in Maryland."
+            "OSWResponseData": {
+                "content": {
+                    "application/json": {
+                        "examples": {
+                            "OSW Return Object - Latest data": {
+                                "value": {
+                                    "bounding_box": "123.1, 123.4, 123.6, 123.7",
+                                    "confidence_level": 5,
+                                    "valid_from": "05-19-2022",
+                                    "url": "url with link to data file"
+                                }
+                            },
+                            "OSW Return object with valid range": {
+                                "value": {
+                                    "bounding_box": "123.1, 123.4, 123.6, 123.7",
+                                    "confidence_level": 5,
+                                    "valid_from": "05-19-2022",
+                                    "valid_to": "05-20-2022",
+                                    "url": "url with link to data file"
+                                }
+                            }
+                        }
+                    }
+                },
+                "description": "A url to a gzip'd geojson OSW file."
             }
         },
         "securitySchemes": {
