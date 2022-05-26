@@ -34,14 +34,16 @@
 
 ### Specifications
 - There will be one API path that will take station_id, and an optional minimum confidence level and an optional
-  (list of?) schema versions that are acceptable and an optional date (or is this date range?) 
+  schema versions that the application wants and an optional valid_from / start date identifying the file the application
+  wants (schema_version, station_id, valid_from is a key)
 - A url/uri to zip file will be returned
 - Confidence level of the data will be returned
 - schema version will be returned
 - valid_from and valid_to dates are returned, if valid_to is null, indicates this is the latest data
 - The file returned is a GTFS static file which includes GTFS-pathways data and any GTFS static files which are needed
 to interpret the pathways data. File will not be a full GTFS static release.
-- If multiple versions are satisfied, the latest will be returned
+- If input is list of versions and multiple versions are satisfied, the latest schema version will be returned
+- For the mvp the endpoint will return at most one file
 
 ## Flex Consumer API - v1.0:
 ### Use Cases
@@ -55,12 +57,15 @@ to interpret the pathways data. File will not be a full GTFS static release.
 
 ### Specifications
 - There will be one API path that will take agency_id, and an optional minimum confidence level and an optional
-  (list of?) schema versions that are acceptable and an optional date (or is this date range?) 
+  schema versions that the application wants and an optional valid_from / start date identifying the file the application
+  wants (schema_version, agency_, valid_from is a key) 
 - A url/uri to zip file will be returned
 - Confidence level of the data will be returned
+- schema version will be returned
 - valid_from and valid_to dates are returned, if valid_to is null, indicates this is the latest data
 - The file returned is a GTFS static file which includes GTFS-Flex v2 data and any GTFS static files which are needed
 to interpret the flex data. File will not be a full GTFS static release.
+- If input is list of versions and multiple versions are satisfied, the latest schema version will be returned
 
 ## OSW Consumer API - v1.0:
 ### Use Cases
