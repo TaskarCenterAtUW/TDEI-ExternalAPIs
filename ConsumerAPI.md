@@ -26,11 +26,11 @@
   files necessary to interpret the pathways files will be returned
   - request will be identified by station
   - application will be able to specify a minimum confidence level
-  - application will be able to specify a version of the pathways standard that they can accept (should this be a list?)
+  - application will be able to specify a version of the pathways standard that they can accept 
 - As an application, I wish to retrieve a specific pathways file for a station
   - GTFS-static files including the pathways.txt, stops.txt and levels.txt files and any GTFS static
   files necessary to interpret the pathways files will be returned
-  - application will provide station, date, and schema_version
+  - application will provide file_id, file_id to be retrieved by using the list of pathways data files available call
 
 ### Specifications
 - There will be one API path that will take station_id, and an optional minimum confidence level and an optional
@@ -42,18 +42,19 @@
 - valid_from and valid_to dates are returned, if valid_to is null, indicates this is the latest data
 - The file returned is a GTFS static file which includes GTFS-pathways data and any GTFS static files which are needed
 to interpret the pathways data. File will not be a full GTFS static release.
-- If input is list of versions and multiple versions are satisfied, the latest schema version will be returned
+- For the mvp, the endpoint will accept a single version in the request 
 - For the mvp the endpoint will return at most one file
 
 ## Flex Consumer API - v1.0:
 ### Use Cases
 - As an application, I want to retrieve the most current GTFS-Flex data for an agency
   - A zip file with GTFS-Flex v2 data including FlexibleTrips files (location_groups.txt, locations.geojson, stop_times.txt) and GTFS-Booking Rules files will be returned
+  - request will be identified by agency
   - application will be able to specify a minimum confidence level
-  - application will be able to specify a version of the flex standard that they can accept (should this be a list?) 
+  - application will be able to specify a version of the flex standard that they can accept  
 - As an application, I wish to retrieve a specific flex file for a station
   - A zip file with GTFS-Flex v2 data including FlexibleTrips files (location_groups.txt, locations.geojson, stop_times.txt) and GTFS-Booking Rules files will be returned
-  - application will provide agency, date, and schema_version
+  - application will provide file_id, file_id to be retrieved by using the list of flex data files available call
 
 ### Specifications
 - There will be one API path that will take agency_id, and an optional minimum confidence level and an optional
@@ -65,15 +66,16 @@ to interpret the pathways data. File will not be a full GTFS static release.
 - valid_from and valid_to dates are returned, if valid_to is null, indicates this is the latest data
 - The file returned is a GTFS static file which includes GTFS-Flex v2 data and any GTFS static files which are needed
 to interpret the flex data. File will not be a full GTFS static release.
-- If input is list of versions and multiple versions are satisfied, the latest schema version will be returned
+- For the mvp, the endpoint will accept a single version in the request 
+- For the mvp the endpoint will return at most one file
 
 ## OSW Consumer API - v1.0:
 ### Use Cases
 - As an application, I want to retrieve the most current OSW data by bounding box
-  - OSW data within the bounding box will be returned
-  - data will be returned as a g-zip'd geojson file
+  - OSW data within the bounding box will be returned 
+  - data will be returned as a gzip'd geojson file (multiple geojson files may be included in the gzip'd file)
   - user will be able to specify a minimum confidence level
-  - application will be able to specify a version of the flex standard that they can accept (should this be a list?) 
+  - application will be able to specify a version of the OSW standard that they can accept 
 
 ### Specifications
 - There will be one API path that will take a bounding box, and an optional minimum confidence level
