@@ -62,17 +62,24 @@ to interpret the pathways data. File will not be a full GTFS static release.
   - application will provide file_id, file_id to be retrieved by using the list of flex data files available call
 
 ### Specifications
-- There will be one API path that will take agency_id, and an optional minimum confidence level and an optional
-  schema versions that the application wants and an optional valid_from / start date identifying the file the application
-  wants (schema_version, agency_, valid_from is a key) 
-- A url/uri to zip file will be returned
-- Confidence level of the data will be returned
-- schema version will be returned
-- valid_from and valid_to dates are returned, if valid_to is null, indicates this is the latest data
-- The file returned is a GTFS static file which includes GTFS-Flex v2 data and any GTFS static files which are needed
+- There will be and endpoint that will take a gtfs_flexId (data_record_id) and will return a uri to that file with metadata
+  - A url/uri to zip file will be returned
+  - Confidence level of the data will be returned
+  - schema version will be returned
+  - valid_from and valid_to dates are returned, if valid_to is null, indicates this is the latest data
+  - The file returned is a GTFS static file which includes GTFS-Flex data and any GTFS static files which are needed
 to interpret the flex data. File will not be a full GTFS static release.
-- For the mvp, the endpoint will accept a single version in the request 
-- For the mvp the endpoint will return at most one file
+  - For the mvp the endpoint will return at most one file
+- There will be an endpoint that will take agency_id, and an optional minimum confidence level and an optional
+  schema versions that the application requests  ???
+  - A url/uri to zip file will be returned
+  - Confidence level of the data will be returned
+  - schema version will be returned
+  - valid_from and valid_to dates are returned, if valid_to is null, indicates this is the latest data
+  - The file returned is a GTFS static file which includes GTFS-pathways data and any GTFS static files which are needed
+to interpret the pathways data. File will not be a full GTFS static release.
+  - For the mvp the endpoint will return at most one file
+  - For the mvp, the endpoint will accept a single version in the request ??
 
 ## OSW Consumer API - v1.0:
 ### Use Cases
