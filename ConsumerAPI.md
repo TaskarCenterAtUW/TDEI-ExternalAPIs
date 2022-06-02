@@ -10,17 +10,12 @@
 - As an application, I wish to retrieve a list of TDEI Consumer API versions (/tdei_consumer)
 - As an application, I wish to retrieve a list of agencies for which the TDEI has data (/tdei_consumer/v1.0/agencies)
 - As an application, I wish to retrieve a list of stations for which the TDEI has pathways data (/tdei_consumer/v1.0/stations)
-- As an application, I wish to retrieve a list of versions of the pathways standard in which data is available
-  (to include link to documentation) (/tdei_consumer/v1.0/gtfs_pathways/versions)
-- As an application, I wish to retrieve a list of versions of the flex standard in which data is available
-  (to include link to documentation) (/tdei_consumer/v1.0/gtfs_flex/versions)
-- As an application, I wish to retrieve a list of versions of the osw standard in which data is available
-  (to include link to documentation) (/tdei_consumer/v1.0/osw/versions)
-- As an application, I wish to retrieve a list of flex data files available (/tdei_consumer/v1.0/gtfs_flex)
-- As an application, I wish to retrieve a list of pathways data files available (/tedi_consumer/v1.0/gtfs_pathways)
 
 ## Pathways Consumer API - v1.0:
 ### Use Cases
+- As an application, I wish to retrieve a list of versions of the pathways standard in which data is available
+  (to include link to documentation) (/tdei_consumer/v1.0/gtfs_pathways/versions)
+- As an application, I wish to retrieve a list of pathways data files available (/tedi_consumer/v1.0/gtfs_pathways)
 - As an application, I wish to retrieve a specific pathways file for a station  (/tdei_consumer/v1.0/gtfs_pathways/{gtfs_pathwaysId})
   - GTFS-static files including the pathways.txt, stops.txt and levels.txt files and any GTFS static
   files necessary to interpret the pathways files will be returned
@@ -54,6 +49,9 @@ to interpret the pathways data. File will not be a full GTFS static release.
 
 ## Flex Consumer API - v1.0:
 ### Use Cases
+- As an application, I wish to retrieve a list of flex data files available (/tdei_consumer/v1.0/gtfs_flex)
+- As an application, I wish to retrieve a list of versions of the flex standard in which data is available
+  (to include link to documentation) (/tdei_consumer/v1.0/gtfs_flex/versions)
 - As an application, I want to retrieve the most current GTFS-Flex data for an agency (/tdei_consumer/gtfs_flex/latest)
   - A zip file with GTFS-Flex v2 data including FlexibleTrips files (location_groups.txt, locations.geojson, stop_times.txt) and GTFS-Booking Rules files will be returned
   - request will be identified by agency
@@ -78,6 +76,8 @@ to interpret the flex data. File will not be a full GTFS static release.
 
 ## OSW Consumer API - v1.0:
 ### Use Cases
+- As an application, I wish to retrieve a list of versions of the osw standard in which data is available
+  (to include link to documentation) (/tdei_consumer/v1.0/osw/versions)
 - As an application, I want to retrieve the most current OSW data by bounding box
   - OSW data within the bounding box will be returned 
   - data will be returned as a gzip'd geojson file (multiple geojson files may be included in the gzip'd file)
