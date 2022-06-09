@@ -786,35 +786,54 @@
             "gtfs_flex": {
                 "title": "Root Type for flexDataFile",
                 "description": "Information about a flex data file and it's metadata.",
+                "required": [
+                    "valid_from",
+                    "data_record_id",
+                    "confidence_level",
+                    "agency_name",
+                    "agency_id",
+                    "flex_schema_version"
+                ],
                 "type": "object",
                 "properties": {
                     "data_record_id": {
                         "format": "int32",
+                        "description": "TDEI-assigned data_record.",
                         "type": "integer"
                     },
                     "agency_name": {
+                        "description": "agency name",
                         "type": "string"
                     },
                     "agency_id": {
                         "format": "int32",
+                        "description": "TDEI agency_id. ",
                         "type": "integer"
                     },
                     "confidence_level": {
                         "format": "int32",
+                        "description": "TDEI-assigned confidence level.",
                         "type": "integer"
                     },
                     "valid_from": {
+                        "description": "date this file is valid from",
                         "type": "string"
                     },
                     "valid_to": {
+                        "description": "date this file is valid to, if empty or not included, means file is valid as of the date downloaded.",
+                        "type": "string"
+                    },
+                    "flex_schema_version": {
+                        "description": "version of the flex schema to which this file conforms",
                         "type": "string"
                     }
                 },
                 "example": {
-                    "data_record_id": 23,
-                    "agency_name": "King County Metro",
                     "agency_id": 1,
+                    "agency_name": "King County Metro",
                     "confidence_level": 5,
+                    "data_record_id": 23,
+                    "url": "url where the data file can be downloaded from",
                     "valid_from": "05-19-2022",
                     "valid_to": "05-20-2022"
                 }
@@ -822,33 +841,50 @@
             "gtfs_pathways": {
                 "title": "Root Type for gtfs_pathways",
                 "description": "Describes a gtfs pathways file meta data.",
+                "required": [
+                    "agency_id",
+                    "agency_name",
+                    "confidence_level",
+                    "station_id",
+                    "station_name",
+                    "valid_from",
+                    "pathways_schema_version"
+                ],
                 "type": "object",
                 "properties": {
                     "agency_name": {
+                        "description": "agency name",
                         "type": "string"
                     },
                     "agency_id": {
                         "format": "int32",
+                        "description": "TDEI Agency id",
                         "type": "integer"
                     },
                     "station_name": {
+                        "description": "transit station name",
                         "type": "string"
                     },
                     "station_id": {
                         "format": "int32",
+                        "description": "TDEI transit station id.",
                         "type": "integer"
                     },
                     "confidence_level": {
                         "format": "int32",
+                        "description": "TDEI assigned confidence level.",
                         "type": "integer"
                     },
                     "valid_from": {
+                        "description": "date from which this file is valid",
                         "type": "string"
                     },
                     "valid_to": {
+                        "description": "date through which this file is valid, empty indicates the file is valid as of the date downloaded",
                         "type": "string"
                     },
-                    "url": {
+                    "pathways_schema_version": {
+                        "description": "version of the pathways schema to which this file conforms",
                         "type": "string"
                     }
                 },
@@ -880,6 +916,7 @@
                                     "agency_name": "King County Metro",
                                     "agency_id": 1,
                                     "confidence_level": 5,
+                                    "flex_schema_version": "2.0",
                                     "valid_from": "05-19-2022",
                                     "valid_to": "05-20-2022",
                                     "url": "url with link to the data file"
@@ -901,6 +938,7 @@
                                     "station_name": "Northgate",
                                     "station_id": 4,
                                     "confidence_level": 5,
+                                    "pathways_schema_version": "1.0",
                                     "valid_from": "05-19-2022",
                                     "valid_to": "05-20-2022",
                                     "url": "url with link to the data file"
@@ -919,6 +957,7 @@
                                 "value": {
                                     "bounding_box": "123.1, 123.4, 123.6, 123.7",
                                     "confidence_level": 5,
+                                    "osw_schema_version": "1.0",
                                     "valid_from": "05-19-2022",
                                     "valid_to": "05-20-2022",
                                     "url": "url with link to data file"
