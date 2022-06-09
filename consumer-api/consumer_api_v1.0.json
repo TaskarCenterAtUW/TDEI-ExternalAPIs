@@ -334,8 +334,8 @@
             }
         },
         "/tdei_consumer/v1.0/stations": {
-            "summary": "Path used to retrieve the list of agencies with data in the TDEI system.",
-            "description": "Returns a list of agency names and agency ids for all agencies with data in the TDEI system. This path contains `GET` operation to retrive the list of agencies. ",
+            "summary": "Path used to retrieve the list of stations with data in the TDEI system.",
+            "description": "Returns a list of station names and station ids for all stations with data in the TDEI system. This path contains `GET` operation to retrive the list of stations. ",
             "get": {
                 "responses": {
                     "200": {
