@@ -14,9 +14,9 @@ acknowledge a data use agreement.
 
 ## Pathways Producer API - v1.0:
 ### Use Cases
-- As an agency or data contributor, I wish to upload the latest GTFS-static release for an agency
+- As an agency or data contributor, I wish to upload a GTFS-pathways set of files for a station 
   - Provide a url to the zip file
-    - Zip file will be a GTFS-static data file that contains the pathways files (pathways.txt, stop.txt, levels.txt) 
+    - Zip file will be a GTFS data file that contains the pathways files (pathways.txt, stop.txt, levels.txt) 
     and any other GTFS static files that are required to interpret the pathways files
    - Provide meta-data to fill in the data record and pathways meta-data tables
      - Data Record table
@@ -40,6 +40,7 @@ acknowledge a data use agreement.
   - transit_agency_id
   - valid_from
   - valid_to (need to figure out how to handle 'indefinite', I'm not a fan of leaving empty as that can be error prone)
+  - NEED CALL TO SET END DATE...
 
 ## Flex Producer API - v1.0:
 ### Use Cases
