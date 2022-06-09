@@ -925,7 +925,7 @@
                         }
                     }
                 },
-                "description": "Response object for returning flex data. Includes metadata about flex file and uri to flex file."
+                "description": "Response object for returning flex data. Includes metadata about flex file and uri to flex file. same schema as gtfs_flex, but adds url"
             },
             "PathwaysResponse": {
                 "content": {
@@ -947,7 +947,7 @@
                         }
                     }
                 },
-                "description": "A list of urls with gtfs data. urls are identified by station_id."
+                "description": "A list of urls with gtfs data. urls are identified by station_id, same schema as gtfs_pathways, but adds url."
             },
             "OSWResponse": {
                 "content": {
