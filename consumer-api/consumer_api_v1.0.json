@@ -17,7 +17,7 @@
         }
     ],
     "paths": {
-        "/tdei_consumer/": {
+        "/tdei_consumer": {
             "summary": "List TDEI Consumer API versions.",
             "description": "Returns a json list of the TDEI Consumer API versions.",
             "get": {
@@ -68,7 +68,7 @@
             }
         },
         "/tdei_consumer/v1.0/agencies": {
-            "summary": "Path used to manage the list of agencies.",
+            "summary": "Path used to retrieve the list of agencies with data in the TDEI system.",
             "description": "Returns a list of agency names and agency ids for all agencies with data in the TDEI system. This path contains `GET` operation to retrive the list of agencies. ",
             "get": {
                 "responses": {
@@ -103,12 +103,128 @@
             }
         },
         "/tdei_consumer/v1.0/gtfs_pathways/": {
-            "summary": "Retrieve the most current pathways files for an agency.",
-            "description": "Returns a url to a zip file containing the most current GTFS static data, including pathways.txt, stops.txt and levels.txt, for the specified agency. ",
+            "summary": "Path used to manage the list of gtfs_pathways.",
+            "description": "The REST endpoint/path used to list and create zero or more `gtfs_pathways` entities.  This path contains a `GET` operation to return the list of pathways files.",
+            "get": {
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/gtfs_pathways"
+                                    }
+                                }
+                            }
+                        },
+                        "description": "Successful response - returns an array of `gtfs_pathways` entities."
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/Unauthorized"
+                    },
+                    "500": {
+                        "$ref": "#/components/responses/InternalServerError"
+                    }
+                },
+                "operationId": "getPathwaysDataList",
+                "summary": "List all gtfs_pathways data files that exist.",
+                "description": "Gets a list of all `gtfs_pathways` entities."
+            },
+            "post": {
+                "requestBody": {
+                    "description": "A new `gtfs_pathways` to be created.",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/gtfs_pathways"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "201": {
+                        "description": "Successful response."
+                    }
+                },
+                "operationId": "creategtfs_pathways",
+                "summary": "Create a gtfs_pathways",
+                "description": "Creates a new instance of a `gtfs_pathways`."
+            }
+        },
+        "/tdei_consumer/v1.0/gtfs_pathways/{gtfs_pathwaysId}": {
+            "summary": "Path used to manage a single gtfs_pathways.",
+            "description": "The REST endpoint/path used to get, update, and delete single instances of an `gtfs_pathways`.  This path contains `GET`, `PUT`, and `DELETE` operations used to perform the get, update, and delete tasks, respectively.",
+            "get": {
+                "responses": {
+                    "200": {
+                        "$ref": "#/components/responses/PathwaysResponse"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/Unauthorized"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/FileIdNotFound"
+                    },
+                    "500": {
+                        "$ref": "#/components/responses/InternalServerError"
+                    }
+                },
+                "operationId": "getPathwaysDataFile",
+                "summary": "Get a gtfs_pathways data file",
+                "description": "Gets the details of a single instance of a `gtfs_pathways`."
+            },
+            "put": {
+                "requestBody": {
+                    "description": "Updated `gtfs_pathways` information.",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/gtfs_pathways"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "202": {
+                        "description": "Successful response."
+                    }
+                },
+                "operationId": "updategtfs_pathways",
+                "summary": "Update a gtfs_pathways",
+                "description": "Updates an existing `gtfs_pathways`."
+            },
+            "delete": {
+                "responses": {
+                    "204": {
+                        "description": "Successful response."
+                    }
+                },
+                "operationId": "deletegtfs_pathways",
+                "summary": "Delete a gtfs_pathways",
+                "description": "Deletes an existing `gtfs_pathways`."
+            },
+            "parameters": [
+                {
+                    "name": "gtfs_pathwaysId",
+                    "description": "A unique identifier for a `gtfs_pathways`.",
+                    "schema": {
+                        "type": "string"
+                    },
+                    "in": "path",
+                    "required": true
+                }
+            ]
+        },
+        "/tdei_consumer/v1.0/gtfs_pathways/latest": {
+            "summary": "Retrieve the most current pathways files for an station.",
+            "description": "Returns a url to a zip file containing the most current GTFS static data, including pathways.txt, stops.txt and levels.txt, for the specified station. Can get list of stations using /stations endpoint. ",
             "get": {
                 "parameters": [
                     {
-                        "name": "agency_id",
+                        "name": "station_id",
                         "description": "An integer identifying the agency for which the data is requested. Valid agency_ids can be retrieved using the /agencies path.",
                         "schema": {
                             "type": "integer"
@@ -123,17 +239,35 @@
                             "type": "integer"
                         },
                         "in": "query"
+                    },
+                    {
+                        "name": "schema_version",
+                        "description": "version name of the pathways schema version that the application requests. list of versions can be found with /tdei_consumer/v1.0/gtfs_pathways/versions path",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "in": "query",
+                        "required": false
+                    },
+                    {
+                        "name": "agency_id",
+                        "description": "id of the agency for which data is requested, station_id must also be specified.",
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "in": "query",
+                        "required": true
                     }
                 ],
                 "responses": {
                     "200": {
-                        "$ref": "#/components/responses/GTFSResponseData"
+                        "$ref": "#/components/responses/PathwaysResponse"
                     },
                     "401": {
                         "$ref": "#/components/responses/Unauthorized"
                     },
                     "404": {
-                        "$ref": "#/components/responses/IdNotFound"
+                        "$ref": "#/components/responses/PathwaysFileNotFound"
                     },
                     "500": {
                         "$ref": "#/components/responses/InternalServerError"
@@ -149,7 +283,258 @@
                 "description": "Returns a url to a zip file containing the most current\nGTFS-static files, including the pathways.txt, stops.txt, and levels.txt files, for the specified agency.\n\n"
             }
         },
-        "/tdei_consumer/v1.0/gtfs_flex/v2/": {
+        "/tdei_consumer/v1.0/gtfs_pathways/versions/": {
+            "summary": "List GTFS Pathways versions supported by TDEI.",
+            "description": "Returns a json list of the GTFS Pathways versions supported by TDEI.",
+            "get": {
+                "tags": [],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/versionList"
+                                },
+                                "example": {
+                                    "total": 2,
+                                    "apis": [
+                                        {
+                                            "apiKey": "oa_citations",
+                                            "apiVersionNumber": "v1",
+                                            "apiUrl": "https://developer.uspto.gov/ds-api/oa_citations/v1/fields",
+                                            "apiDocumentationUrl": "https://developer.uspto.gov/ds-api-docs/index.html?url=https://developer.uspto.gov/ds-api/swagger/docs/oa_citations.json"
+                                        },
+                                        {
+                                            "apiKey": "cancer_moonshot",
+                                            "apiVersionNumber": "v1",
+                                            "apiUrl": "https://developer.uspto.gov/ds-api/cancer_moonshot/v1/fields",
+                                            "apiDocumentationUrl": "https://developer.uspto.gov/ds-api-docs/index.html?url=https://developer.uspto.gov/ds-api/swagger/docs/cancer_moonshot.json"
+                                        }
+                                    ]
+                                }
+                            }
+                        },
+                        "description": "Returns a list of pathways versions"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/Unauthorized"
+                    },
+                    "500": {
+                        "$ref": "#/components/responses/InternalServerError"
+                    }
+                },
+                "security": [
+                    {
+                        "ApplicationId": []
+                    }
+                ],
+                "operationId": "list-pathways-versions",
+                "summary": "List available GTFS Pathways versions",
+                "description": "Lists the versions of GTFS pathways data which are supported by TDEI."
+            }
+        },
+        "/tdei_consumer/v1.0/stations": {
+            "summary": "Path used to retrieve the list of agencies with data in the TDEI system.",
+            "description": "Returns a list of agency names and agency ids for all agencies with data in the TDEI system. This path contains `GET` operation to retrive the list of agencies. ",
+            "get": {
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/station"
+                                    }
+                                }
+                            }
+                        },
+                        "description": "Successful response - returns an array of `Station` entities."
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/Unauthorized"
+                    },
+                    "500": {
+                        "$ref": "#/components/responses/InternalServerError"
+                    }
+                },
+                "security": [
+                    {
+                        "ApplicationId": []
+                    }
+                ],
+                "operationId": "list-stations",
+                "summary": "List Stations",
+                "description": "Gets a list of all `Station` entities."
+            }
+        },
+        "/tdei_consumer/v1.0/osw/versions": {
+            "summary": "List GTFS Pathways versions supported by TDEI.",
+            "description": "Returns a json list of the GTFS flex versions supported by TDEI.",
+            "get": {
+                "tags": [],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/versionList"
+                                },
+                                "example": {
+                                    "total": 2,
+                                    "apis": [
+                                        {
+                                            "apiKey": "oa_citations",
+                                            "apiVersionNumber": "v1",
+                                            "apiUrl": "https://developer.uspto.gov/ds-api/oa_citations/v1/fields",
+                                            "apiDocumentationUrl": "https://developer.uspto.gov/ds-api-docs/index.html?url=https://developer.uspto.gov/ds-api/swagger/docs/oa_citations.json"
+                                        },
+                                        {
+                                            "apiKey": "cancer_moonshot",
+                                            "apiVersionNumber": "v1",
+                                            "apiUrl": "https://developer.uspto.gov/ds-api/cancer_moonshot/v1/fields",
+                                            "apiDocumentationUrl": "https://developer.uspto.gov/ds-api-docs/index.html?url=https://developer.uspto.gov/ds-api/swagger/docs/cancer_moonshot.json"
+                                        }
+                                    ]
+                                }
+                            }
+                        },
+                        "description": "Returns a list of pathways versions"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/Unauthorized"
+                    },
+                    "500": {
+                        "$ref": "#/components/responses/InternalServerError"
+                    }
+                },
+                "security": [
+                    {
+                        "ApplicationId": []
+                    }
+                ],
+                "operationId": "list-osw-versions",
+                "summary": "List available OSW versions",
+                "description": "Lists the versions of OSW data which are supported by TDEI."
+            }
+        },
+        "/tdei_consumer/v1.0/gtfs_flex": {
+            "summary": "Path used to manage the list of flexdatafiles.",
+            "description": "The REST endpoint/path used to list and create zero or more `flexDataFile` entities.  This path contains a `GET` and `POST` operation to perform the list and create tasks, respectively.",
+            "get": {
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/gtfs_flex"
+                                    }
+                                }
+                            }
+                        },
+                        "description": "Successful response - returns an array of `gtfs_flex` entities."
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/Unauthorized"
+                    },
+                    "500": {
+                        "$ref": "#/components/responses/InternalServerError"
+                    }
+                },
+                "operationId": "getflexDataList",
+                "summary": "List All flexDataFiles",
+                "description": "Gets a list of all `flexDataFile` entities."
+            },
+            "post": {
+                "requestBody": {
+                    "description": "A new `flexDataFile` to be created.",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/gtfs_flex"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "201": {
+                        "description": "Successful response."
+                    }
+                },
+                "operationId": "createflexDataFile",
+                "summary": "Create a flexDataFile",
+                "description": "Creates a new instance of a `flexDataFile`."
+            }
+        },
+        "/tdei_consumer/v1.0/gtfs_flex/{gtfs_flexId}": {
+            "summary": "Path used to manage a single flexDataFile.",
+            "description": "The REST endpoint/path used to get, update, and delete single instances of an `flexDataFile`.  This path contains `GET` operation used to retrieve a gtfs_flex data file.",
+            "get": {
+                "responses": {
+                    "200": {
+                        "$ref": "#/components/responses/FlexResponse"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/Unauthorized"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/FileIdNotFound"
+                    },
+                    "500": {
+                        "$ref": "#/components/responses/InternalServerError"
+                    }
+                },
+                "operationId": "getflexDataFile",
+                "summary": "Get a flexDataFile",
+                "description": "Gets the details of a single instance of a `flexDataFile`."
+            },
+            "put": {
+                "requestBody": {
+                    "description": "Updated `flexDataFile` information.",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/gtfs_flex"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "202": {
+                        "description": "Successful response."
+                    }
+                },
+                "operationId": "updateflexDataFile",
+                "summary": "Update a flexDataFile",
+                "description": "Updates an existing `flexDataFile`."
+            },
+            "delete": {
+                "responses": {
+                    "204": {
+                        "description": "Successful response."
+                    }
+                },
+                "operationId": "deleteflexDataFile",
+                "summary": "Delete a flexDataFile",
+                "description": "Deletes an existing `flexDataFile`."
+            },
+            "parameters": [
+                {
+                    "name": "gtfs_flexId",
+                    "description": "A unique identifier for a `flexDataFile`.",
+                    "schema": {
+                        "type": "string"
+                    },
+                    "in": "path",
+                    "required": true
+                }
+            ]
+        },
+        "/tdei_consumer/v1.0/gtfs_flex/latest": {
             "summary": "Retrieve the most current flex files for an agency,.",
             "description": "Returns a url to a zip file containing the most current flexible trips and booking rules files for the specified agency. ",
             "get": {
@@ -171,17 +556,26 @@
                         },
                         "in": "query",
                         "required": false
+                    },
+                    {
+                        "name": "schema_version",
+                        "description": "version name of the flex schema version that the application requests. list of versions can be found with /tdei_consumer/v1.0/gtfs_flex/versions path",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "in": "query",
+                        "required": false
                     }
                 ],
                 "responses": {
                     "200": {
-                        "$ref": "#/components/responses/GTFSResponseData"
+                        "$ref": "#/components/responses/FlexResponse"
                     },
                     "401": {
                         "$ref": "#/components/responses/Unauthorized"
                     },
                     "404": {
-                        "$ref": "#/components/responses/IdNotFound"
+                        "$ref": "#/components/responses/FlexFileNotFound"
                     },
                     "500": {
                         "$ref": "#/components/responses/InternalServerError"
@@ -197,7 +591,57 @@
                 "description": "Returns a url to a zip file containing the most current\nflexible trips and booking rules files for the specified agency."
             }
         },
-        "/tdei_consumer/v1.0/osw/v1": {
+        "/tdei_consumer/v1.0/gtfs_flex/versions": {
+            "summary": "List GTFS flex versions supported by TDEI.",
+            "description": "Returns a json list of the GTFS flex versions supported by TDEI.",
+            "get": {
+                "tags": [],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/versionList"
+                                },
+                                "example": {
+                                    "total": 2,
+                                    "apis": [
+                                        {
+                                            "apiKey": "oa_citations",
+                                            "apiVersionNumber": "v1",
+                                            "apiUrl": "https://developer.uspto.gov/ds-api/oa_citations/v1/fields",
+                                            "apiDocumentationUrl": "https://developer.uspto.gov/ds-api-docs/index.html?url=https://developer.uspto.gov/ds-api/swagger/docs/oa_citations.json"
+                                        },
+                                        {
+                                            "apiKey": "cancer_moonshot",
+                                            "apiVersionNumber": "v1",
+                                            "apiUrl": "https://developer.uspto.gov/ds-api/cancer_moonshot/v1/fields",
+                                            "apiDocumentationUrl": "https://developer.uspto.gov/ds-api-docs/index.html?url=https://developer.uspto.gov/ds-api/swagger/docs/cancer_moonshot.json"
+                                        }
+                                    ]
+                                }
+                            }
+                        },
+                        "description": "Returns a list of pathways versions"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/Unauthorized"
+                    },
+                    "500": {
+                        "$ref": "#/components/responses/InternalServerError"
+                    }
+                },
+                "security": [
+                    {
+                        "ApplicationId": []
+                    }
+                ],
+                "operationId": "list-flex-versions",
+                "summary": "List available GTFS flex versions",
+                "description": "Lists the versions of GTFS flex data which are supported by TDEI."
+            }
+        },
+        "/tdei_consumer/v1.0/osw/": {
             "summary": "Retrieve the most current pathways files for an agency, station or bounding box.",
             "description": "Returns a url to a gzip'd containing geojson OSW v1 data for the specified bounding box. ",
             "get": {
@@ -225,17 +669,25 @@
                             "type": "integer"
                         },
                         "in": "query"
+                    },
+                    {
+                        "name": "schema_version",
+                        "description": "A string with the name of the schema version the application requests.",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "in": "query"
                     }
                 ],
                 "responses": {
                     "200": {
-                        "$ref": "#/components/responses/OSWResponseData"
+                        "$ref": "#/components/responses/OSWResponse"
                     },
                     "401": {
                         "$ref": "#/components/responses/Unauthorized"
                     },
                     "404": {
-                        "$ref": "#/components/responses/BBoxNotFound"
+                        "$ref": "#/components/responses/OSWNotFound"
                     },
                     "500": {
                         "$ref": "#/components/responses/InternalServerError"
@@ -268,8 +720,14 @@
                 },
                 "example": {
                     "versions": [
-                        "v1.0",
-                        "v1.1"
+                        {
+                            "version": "v1.0",
+                            "documentation": "link to v1.0 documentation"
+                        },
+                        {
+                            "version": "v1.1",
+                            "documentation": "link to v1.1 documentation"
+                        }
                     ]
                 }
             },
@@ -297,6 +755,113 @@
                         "agency_name": "King County Metro"
                     }
                 }
+            },
+            "station": {
+                "title": "Root Type for Agency",
+                "description": "An agency which has data stored in the TDEI system. Includes agency_id and associated agency_name. ",
+                "type": "object",
+                "properties": {
+                    "station": {
+                        "type": "object",
+                        "properties": {
+                            "agency_id": {
+                                "format": "int32",
+                                "type": "integer"
+                            },
+                            "agency_name": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                },
+                "example": {
+                    "station": {
+                        "agency_id": 1,
+                        "agency_name": "King County Metro",
+                        "station_id": 4,
+                        "station_name": "Northgate"
+                    }
+                }
+            },
+            "gtfs_flex": {
+                "title": "Root Type for flexDataFile",
+                "description": "Information about a flex data file and it's metadata.",
+                "type": "object",
+                "properties": {
+                    "data_record_id": {
+                        "format": "int32",
+                        "type": "integer"
+                    },
+                    "agency_name": {
+                        "type": "string"
+                    },
+                    "agency_id": {
+                        "format": "int32",
+                        "type": "integer"
+                    },
+                    "confidence_level": {
+                        "format": "int32",
+                        "type": "integer"
+                    },
+                    "valid_from": {
+                        "type": "string"
+                    },
+                    "valid_to": {
+                        "type": "string"
+                    }
+                },
+                "example": {
+                    "data_record_id": 23,
+                    "agency_name": "King County Metro",
+                    "agency_id": 1,
+                    "confidence_level": 5,
+                    "valid_from": "05-19-2022",
+                    "valid_to": "05-20-2022"
+                }
+            },
+            "gtfs_pathways": {
+                "title": "Root Type for gtfs_pathways",
+                "description": "Describes a gtfs pathways file meta data.",
+                "type": "object",
+                "properties": {
+                    "agency_name": {
+                        "type": "string"
+                    },
+                    "agency_id": {
+                        "format": "int32",
+                        "type": "integer"
+                    },
+                    "station_name": {
+                        "type": "string"
+                    },
+                    "station_id": {
+                        "format": "int32",
+                        "type": "integer"
+                    },
+                    "confidence_level": {
+                        "format": "int32",
+                        "type": "integer"
+                    },
+                    "valid_from": {
+                        "type": "string"
+                    },
+                    "valid_to": {
+                        "type": "string"
+                    },
+                    "url": {
+                        "type": "string"
+                    }
+                },
+                "example": {
+                    "agency_name": "King County Metro",
+                    "agency_id": 1,
+                    "station_name": "Northgate",
+                    "station_id": 4,
+                    "confidence_level": 5,
+                    "valid_from": "05-19-2022",
+                    "valid_to": "05-20-2022",
+                    "url": "url with link to the data file"
+                }
             }
         },
         "responses": {
@@ -306,27 +871,11 @@
             "InternalServerError": {
                 "description": "An server error occurred."
             },
-            "IdNotFound": {
-                "description": "The requested id was not found. That is the agency_id provided does not exist in the TDEI system. Use the /agencies path to find valid agency_ids."
-            },
-            "BBoxNotFound": {
-                "description": "There was no data found in the specified bounding box. Data is expected to be available for King and Snohomish counties in Washington, Multnomah and Columbia counties in Oregon, and Baltimore and Harford counties in Maryland."
-            },
-            "GTFSResponseData": {
+            "FlexResponse": {
                 "content": {
                     "application/json": {
                         "examples": {
-                            "GTFS Return Object with valid range": {
-                                "value": {
-                                    "agency_name": "King County Metro",
-                                    "agency_id": 1,
-                                    "confidence_level": 5,
-                                    "valid_from": "05-19-2022",
-                                    "valid_to": "05-20-2022",
-                                    "url": "url with link to the data file"
-                                }
-                            },
-                            "GTFS return object - latest data": {
+                            "Flex return object": {
                                 "value": {
                                     "agency_name": "King County Metro",
                                     "agency_id": 1,
@@ -339,20 +888,33 @@
                         }
                     }
                 },
-                "description": "A list of urls with gtfs data. urls are identified by station_id."
+                "description": "Response object for returning flex data. Includes metadata about flex file and uri to flex file."
             },
-            "OSWResponseData": {
+            "PathwaysResponse": {
                 "content": {
                     "application/json": {
                         "examples": {
-                            "OSW Return Object - Latest data": {
+                            "Pathways return object": {
                                 "value": {
-                                    "bounding_box": "123.1, 123.4, 123.6, 123.7",
+                                    "agency_name": "King County Metro",
+                                    "agency_id": 1,
+                                    "station_name": "Northgate",
+                                    "station_id": 4,
                                     "confidence_level": 5,
                                     "valid_from": "05-19-2022",
-                                    "url": "url with link to data file"
+                                    "valid_to": "05-20-2022",
+                                    "url": "url with link to the data file"
                                 }
-                            },
+                            }
+                        }
+                    }
+                },
+                "description": "A list of urls with gtfs data. urls are identified by station_id."
+            },
+            "OSWResponse": {
+                "content": {
+                    "application/json": {
+                        "examples": {
                             "OSW Return object with valid range": {
                                 "value": {
                                     "bounding_box": "123.1, 123.4, 123.6, 123.7",
@@ -366,6 +928,18 @@
                     }
                 },
                 "description": "A url to a gzip'd geojson OSW file."
+            },
+            "PathwaysFileNotFound": {
+                "description": "A GTFS pathways file that matches the specified parameters (combination of agencyid, stationid, confidence level, and version) was not found."
+            },
+            "FlexFileNotFound": {
+                "description": "A GTFS flex file that matches the specified parameters (combination of agencyid, confidence level, and version) was not found."
+            },
+            "FileIdNotFound": {
+                "description": "A file with the specified id was not found. Use the /tdei_consumer/v1.0/gtfs_pathways or /tdei_consumer/v1.0/gtfs_flex endpoints to find valid file ids. "
+            },
+            "OSWNotFound": {
+                "description": "OSW data meeting the specifications (version and bounding box) was not found.Data is expected to be available for King and Snohomish counties in Washington, Multnomah and Columbia counties in Oregon, and Baltimore and Harford counties in Maryland."
             }
         },
         "securitySchemes": {
