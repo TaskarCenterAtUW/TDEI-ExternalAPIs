@@ -420,7 +420,7 @@
         },
         "/tdei_consumer/v1.0/gtfs_flex": {
             "summary": "Path used to manage the list of flexdatafiles.",
-            "description": "The REST endpoint/path used to list and create zero or more `flexDataFile` entities.  This path contains a `GET` and `POST` operation to perform the list and create tasks, respectively.",
+            "description": "The REST endpoint/path used to list and create zero or more `flexDataFile` entities.  This path contains a `GET` operation to list the files.",
             "get": {
                 "responses": {
                     "200": {
