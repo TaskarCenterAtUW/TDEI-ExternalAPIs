@@ -9,8 +9,9 @@ acknowledge a data use agreement.
 
 ## General API Calls:
 ### Use Cases
-- As an application, I wish to retrieve a list of TDEI Producer API versions
-- As an application, I wish to retrieve a list of agencies for which the TDEI has data
+- As an application, I wish to retrieve a list of TDEI Producer API versions. (/tdei_producer)
+- As an application, I wish to retrieve a list of agencies for which the TDEI has data (/tdei_producer/v1.0/agencies)
+- As an application, I wish to retrieve a list of transit stations for which the TDEI has data (/tdei_producer/v1.0/stations)
 
 ## Pathways Producer API - v1.0:
 ### Use Cases
@@ -32,7 +33,12 @@ acknowledge a data use agreement.
          - valid_to (need to be provided in API, need to allow an indefinite option) 
          - versionid (assigned by TDEI)
          - blob_uri (assigned by TDEI
-         
+- As an agency or data contributor, I wish to update the valid_to date of a GTFS-pathways file
+  - file will be identified by data_record_id which can be retrieved from the /gtfs_flex endpoint
+- As an agency or data contributor, I wish to retrieve a list of gtfs pathways files 
+
+
+
 ### Specifications
 - One path, following will be required
   - appID
