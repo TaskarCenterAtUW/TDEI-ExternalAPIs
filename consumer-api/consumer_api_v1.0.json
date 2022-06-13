@@ -130,32 +130,11 @@
                 "operationId": "getPathwaysDataList",
                 "summary": "List all gtfs_pathways data files that exist.",
                 "description": "Gets a list of all `gtfs_pathways` entities."
-            },
-            "post": {
-                "requestBody": {
-                    "description": "A new `gtfs_pathways` to be created.",
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "$ref": "#/components/schemas/gtfs_pathways"
-                            }
-                        }
-                    },
-                    "required": true
-                },
-                "responses": {
-                    "201": {
-                        "description": "Successful response."
-                    }
-                },
-                "operationId": "creategtfs_pathways",
-                "summary": "Create a gtfs_pathways",
-                "description": "Creates a new instance of a `gtfs_pathways`."
             }
         },
         "/tdei_consumer/v1.0/gtfs_pathways/{gtfs_pathwaysId}": {
             "summary": "Path used to manage a single gtfs_pathways.",
-            "description": "The REST endpoint/path used to get, update, and delete single instances of an `gtfs_pathways`.  This path contains `GET`, `PUT`, and `DELETE` operations used to perform the get, update, and delete tasks, respectively.",
+            "description": "The REST endpoint/path used to get, update, and delete single instances of an `gtfs_pathways`.  This path contains `GET` operation used to retrieve a GTFS pathways file.\n",
             "get": {
                 "responses": {
                     "200": {
@@ -174,37 +153,6 @@
                 "operationId": "getPathwaysDataFile",
                 "summary": "Get a gtfs_pathways data file",
                 "description": "Gets the details of a single instance of a `gtfs_pathways`."
-            },
-            "put": {
-                "requestBody": {
-                    "description": "Updated `gtfs_pathways` information.",
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "$ref": "#/components/schemas/gtfs_pathways"
-                            }
-                        }
-                    },
-                    "required": true
-                },
-                "responses": {
-                    "202": {
-                        "description": "Successful response."
-                    }
-                },
-                "operationId": "updategtfs_pathways",
-                "summary": "Update a gtfs_pathways",
-                "description": "Updates an existing `gtfs_pathways`."
-            },
-            "delete": {
-                "responses": {
-                    "204": {
-                        "description": "Successful response."
-                    }
-                },
-                "operationId": "deletegtfs_pathways",
-                "summary": "Delete a gtfs_pathways",
-                "description": "Deletes an existing `gtfs_pathways`."
             },
             "parameters": [
                 {
@@ -419,8 +367,8 @@
             }
         },
         "/tdei_consumer/v1.0/gtfs_flex": {
-            "summary": "Path used to manage the list of flexdatafiles.",
-            "description": "The REST endpoint/path used to list and create zero or more `flexDataFile` entities.  This path contains a `GET` operation to list the files.",
+            "summary": "Path used to manage the list of gtfs_flex data files.",
+            "description": "The REST endpoint/path used to list `gtfs_flex` data file entities.  This path contains a `GET`  operation to list the files. ",
             "get": {
                 "responses": {
                     "200": {
@@ -445,33 +393,12 @@
                 },
                 "operationId": "getflexDataList",
                 "summary": "List All flexDataFiles",
-                "description": "Gets a list of all `flexDataFile` entities."
-            },
-            "post": {
-                "requestBody": {
-                    "description": "A new `flexDataFile` to be created.",
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "$ref": "#/components/schemas/gtfs_flex"
-                            }
-                        }
-                    },
-                    "required": true
-                },
-                "responses": {
-                    "201": {
-                        "description": "Successful response."
-                    }
-                },
-                "operationId": "createflexDataFile",
-                "summary": "Create a flexDataFile",
-                "description": "Creates a new instance of a `flexDataFile`."
+                "description": "Gets a list of all `gtfs_flex` data file entities."
             }
         },
         "/tdei_consumer/v1.0/gtfs_flex/{gtfs_flexId}": {
             "summary": "Path used to manage a single flexDataFile.",
-            "description": "The REST endpoint/path used to get, update, and delete single instances of an `flexDataFile`.  This path contains `GET` operation used to retrieve a gtfs_flex data file.",
+            "description": "The REST endpoint/path used to get, update, and delete single instances of an `gtfs_flex' data file.  This path contains `GET` operation used to retrieve a gtfs_flex data file.",
             "get": {
                 "responses": {
                     "200": {
@@ -489,38 +416,7 @@
                 },
                 "operationId": "getflexDataFile",
                 "summary": "Get a flexDataFile",
-                "description": "Gets the details of a single instance of a `flexDataFile`."
-            },
-            "put": {
-                "requestBody": {
-                    "description": "Updated `flexDataFile` information.",
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "$ref": "#/components/schemas/gtfs_flex"
-                            }
-                        }
-                    },
-                    "required": true
-                },
-                "responses": {
-                    "202": {
-                        "description": "Successful response."
-                    }
-                },
-                "operationId": "updateflexDataFile",
-                "summary": "Update a flexDataFile",
-                "description": "Updates an existing `flexDataFile`."
-            },
-            "delete": {
-                "responses": {
-                    "204": {
-                        "description": "Successful response."
-                    }
-                },
-                "operationId": "deleteflexDataFile",
-                "summary": "Delete a flexDataFile",
-                "description": "Deletes an existing `flexDataFile`."
+                "description": "Gets the details of a single instance of a `gtfs_flex`."
             },
             "parameters": [
                 {
@@ -898,6 +794,122 @@
                     "valid_to": "05-20-2022",
                     "url": "url with link to the data file"
                 }
+            },
+            "gtfs_flex_uri": {
+                "title": "Root Type for flexDataFile",
+                "description": "Information about a flex data file and it's metadata. Same as gtfs_flex, but contains uri.",
+                "required": [
+                    "valid_from",
+                    "data_record_id",
+                    "confidence_level",
+                    "agency_name",
+                    "agency_id",
+                    "flex_schema_version"
+                ],
+                "type": "object",
+                "properties": {
+                    "data_record_id": {
+                        "format": "int32",
+                        "description": "TDEI-assigned data_record.",
+                        "type": "integer"
+                    },
+                    "agency_name": {
+                        "description": "agency name",
+                        "type": "string"
+                    },
+                    "agency_id": {
+                        "format": "int32",
+                        "description": "TDEI agency_id. ",
+                        "type": "integer"
+                    },
+                    "confidence_level": {
+                        "format": "int32",
+                        "description": "TDEI-assigned confidence level.",
+                        "type": "integer"
+                    },
+                    "valid_from": {
+                        "description": "date this file is valid from",
+                        "type": "string"
+                    },
+                    "valid_to": {
+                        "description": "date this file is valid to, if empty or not included, means file is valid as of the date downloaded.",
+                        "type": "string"
+                    },
+                    "flex_schema_version": {
+                        "description": "version of the flex schema to which this file conforms",
+                        "type": "string"
+                    }
+                },
+                "example": {
+                    "agency_id": 1,
+                    "agency_name": "King County Metro",
+                    "confidence_level": 5,
+                    "data_record_id": 23,
+                    "url": "url where the data file can be downloaded from",
+                    "valid_from": "05-19-2022",
+                    "valid_to": "05-20-2022"
+                }
+            },
+            "gtfs_pathways_uri": {
+                "title": "Root Type for gtfs_pathways",
+                "description": "Describes a gtfs pathways file meta data. Same as gtfs_pathways, but contains uri.",
+                "required": [
+                    "agency_id",
+                    "agency_name",
+                    "confidence_level",
+                    "station_id",
+                    "station_name",
+                    "valid_from",
+                    "pathways_schema_version"
+                ],
+                "type": "object",
+                "properties": {
+                    "agency_name": {
+                        "description": "agency name",
+                        "type": "string"
+                    },
+                    "agency_id": {
+                        "format": "int32",
+                        "description": "TDEI Agency id",
+                        "type": "integer"
+                    },
+                    "station_name": {
+                        "description": "transit station name",
+                        "type": "string"
+                    },
+                    "station_id": {
+                        "format": "int32",
+                        "description": "TDEI transit station id.",
+                        "type": "integer"
+                    },
+                    "confidence_level": {
+                        "format": "int32",
+                        "description": "TDEI assigned confidence level.",
+                        "type": "integer"
+                    },
+                    "valid_from": {
+                        "description": "date from which this file is valid",
+                        "type": "string"
+                    },
+                    "valid_to": {
+                        "description": "date through which this file is valid, empty indicates the file is valid as of the date downloaded",
+                        "type": "string"
+                    },
+                    "pathways_schema_version": {
+                        "description": "version of the pathways schema to which this file conforms",
+                        "type": "string"
+                    }
+                },
+                "example": {
+                    "agency_name": "King County Metro",
+                    "agency_id": 1,
+                    "station_name": "Northgate",
+                    "station_id": 4,
+                    "confidence_level": 5,
+                    "valid_from": "05-19-2022",
+                    "valid_to": "05-20-2022",
+                    "url": "url with link to the data file"
+                }
             }
         },
         "responses": {
@@ -910,44 +922,22 @@
             "FlexResponse": {
                 "content": {
                     "application/json": {
-                        "examples": {
-                            "Flex return object": {
-                                "value": {
-                                    "agency_name": "King County Metro",
-                                    "agency_id": 1,
-                                    "confidence_level": 5,
-                                    "flex_schema_version": "2.0",
-                                    "valid_from": "05-19-2022",
-                                    "valid_to": "05-20-2022",
-                                    "url": "url with link to the data file"
-                                }
-                            }
+                        "schema": {
+                            "$ref": "#/components/schemas/gtfs_flex_uri"
                         }
                     }
                 },
-                "description": "Response object for returning flex data. Includes metadata about flex file and uri to flex file. same schema as gtfs_flex, but adds url"
+                "description": "Response object for returning flex data. Includes metadata about flex file and uri to flex file."
             },
             "PathwaysResponse": {
                 "content": {
                     "application/json": {
-                        "examples": {
-                            "Pathways return object": {
-                                "value": {
-                                    "agency_name": "King County Metro",
-                                    "agency_id": 1,
-                                    "station_name": "Northgate",
-                                    "station_id": 4,
-                                    "confidence_level": 5,
-                                    "pathways_schema_version": "1.0",
-                                    "valid_from": "05-19-2022",
-                                    "valid_to": "05-20-2022",
-                                    "url": "url with link to the data file"
-                                }
-                            }
+                        "schema": {
+                            "$ref": "#/components/schemas/gtfs_pathways_uri"
                         }
                     }
                 },
-                "description": "A list of urls with gtfs data. urls are identified by station_id, same schema as gtfs_pathways, but adds url."
+                "description": "A list of urls with gtfs data. urls are identified by station_id."
             },
             "OSWResponse": {
                 "content": {
