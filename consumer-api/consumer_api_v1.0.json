@@ -804,7 +804,8 @@
                     "confidence_level",
                     "agency_name",
                     "agency_id",
-                    "flex_schema_version"
+                    "flex_schema_version",
+                    "uri"
                 ],
                 "type": "object",
                 "properties": {
@@ -838,6 +839,9 @@
                     "flex_schema_version": {
                         "description": "version of the flex schema to which this file conforms",
                         "type": "string"
+                    },
+                    "uri": {
+                        "description": "uri that points to a location where the file can be downloaded from"
                     }
                 },
                 "example": {
@@ -860,7 +864,8 @@
                     "station_id",
                     "station_name",
                     "valid_from",
-                    "pathways_schema_version"
+                    "pathways_schema_version",
+                    "uri"
                 ],
                 "type": "object",
                 "properties": {
@@ -898,6 +903,9 @@
                     "pathways_schema_version": {
                         "description": "version of the pathways schema to which this file conforms",
                         "type": "string"
+                    },
+                    "uri": {
+                        "description": "uri that points to a location where the file can be downloaded from"
                     }
                 },
                 "example": {
