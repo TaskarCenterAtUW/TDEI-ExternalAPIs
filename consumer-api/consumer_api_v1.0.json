@@ -729,7 +729,7 @@
                     "agency_name": "King County Metro",
                     "confidence_level": 5,
                     "data_record_id": 23,
-                    "url": "url where the data file can be downloaded from",
+                    "flex_schema_version": 1,
                     "valid_from": "05-19-2022",
                     "valid_to": "05-20-2022"
                 }
@@ -744,7 +744,8 @@
                     "station_id",
                     "station_name",
                     "valid_from",
-                    "pathways_schema_version"
+                    "pathways_schema_version",
+                    "data_record_id"
                 ],
                 "type": "object",
                 "properties": {
@@ -782,17 +783,22 @@
                     "pathways_schema_version": {
                         "description": "version of the pathways schema to which this file conforms",
                         "type": "string"
+                    },
+                    "data_record_id": {
+                        "description": "TDEI assigned data record id",
+                        "type": "integer"
                     }
                 },
                 "example": {
-                    "agency_name": "King County Metro",
                     "agency_id": 1,
-                    "station_name": "Northgate",
-                    "station_id": 4,
+                    "agency_name": "King County Metro",
                     "confidence_level": 5,
+                    "data_record_id": 23,
+                    "pathways_schema_version": 1,
+                    "station_id": 4,
+                    "station_name": "Northgate",
                     "valid_from": "05-19-2022",
-                    "valid_to": "05-20-2022",
-                    "url": "url with link to the data file"
+                    "valid_to": "05-20-2022"
                 }
             },
             "gtfs_flex_uri": {
@@ -841,7 +847,8 @@
                         "type": "string"
                     },
                     "uri": {
-                        "description": "uri that points to a location where the file can be downloaded from"
+                        "description": "uri that points to a location where the file can be downloaded from",
+                        "type": "string"
                     }
                 },
                 "example": {
@@ -849,7 +856,8 @@
                     "agency_name": "King County Metro",
                     "confidence_level": 5,
                     "data_record_id": 23,
-                    "url": "url where the data file can be downloaded from",
+                    "flex_schema_version": 1,
+                    "uri": "uri where the data file can be downloaded from",
                     "valid_from": "05-19-2022",
                     "valid_to": "05-20-2022"
                 }
@@ -865,7 +873,8 @@
                     "station_name",
                     "valid_from",
                     "pathways_schema_version",
-                    "uri"
+                    "uri",
+                    "data_record_id"
                 ],
                 "type": "object",
                 "properties": {
@@ -905,18 +914,25 @@
                         "type": "string"
                     },
                     "uri": {
-                        "description": "uri that points to a location where the file can be downloaded from"
+                        "description": "uri that points to a location where the file can be downloaded from",
+                        "type": "string"
+                    },
+                    "data_record_id": {
+                        "description": "TDEI assigned data record id",
+                        "type": "integer"
                     }
                 },
                 "example": {
-                    "agency_name": "King County Metro",
                     "agency_id": 1,
-                    "station_name": "Northgate",
-                    "station_id": 4,
+                    "agency_name": "King County Metro",
                     "confidence_level": 5,
+                    "data_record_id": 23,
+                    "pathways_schema_version": 1,
+                    "station_id": 4,
+                    "station_name": "Northgate",
+                    "uri": "uri with link to the data file",
                     "valid_from": "05-19-2022",
-                    "valid_to": "05-20-2022",
-                    "url": "url with link to the data file"
+                    "valid_to": "05-20-2022"
                 }
             }
         },
