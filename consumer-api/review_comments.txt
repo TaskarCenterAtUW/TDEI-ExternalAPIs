@@ -1,0 +1,15 @@
+To do:
+-----
+1. What constitutes as the consumer API version?
+2. How do we mitigate impact of changing APIs on downstream applications?
+3. How and when will we change minor version vs major version?
+
+Review comments:
+---------------
+(Line no, comment) format 
+70: change to something like this "/tdei_consumer/<version>/agencies": 
+70: add pagination to the API 
+70: add filtering to the API; filtering by state, bbox, etc
+70: Are these agencies that are producing data? this is not the consumer agencies, right?
+
+105: do we need to return all the gtfs_pathways data?
