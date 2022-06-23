@@ -654,7 +654,7 @@
             },
             "station": {
                 "title": "Root Type for Agency",
-                "description": "An agency which has data stored in the TDEI system. Includes agency_id and associated agency_name. ",
+                "description": "An station which has data stored in the TDEI system. Includes station_id and associated station_name. ",
                 "type": "object",
                 "properties": {
                     "station": {
