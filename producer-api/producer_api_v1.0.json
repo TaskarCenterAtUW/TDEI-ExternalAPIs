@@ -833,12 +833,21 @@
                     },
                     "uri": {
                         "type": "string"
+                    },
+                    "valid": {
+                        "description": "yes/no is the file valid or not, intended to be used for the appication / data producer to indicate that a file is not valid.",
+                        "enum": [
+                            "yes",
+                            "no"
+                        ],
+                        "type": "string"
                     }
                 },
                 "example": {
                     "agency_id": 1,
                     "agency_name": "King County Metro",
                     "uri": "uri to the file - valid for post only",
+                    "valid": "yes",
                     "valid_from": "05-19-2022",
                     "valid_to": "05-20-2022"
                 }
@@ -864,12 +873,21 @@
                     },
                     "uri": {
                         "type": "string"
+                    },
+                    "valid": {
+                        "description": "yes/no is the file valid or not. Intended for use by the data producer / application to indicate a file is invalid.",
+                        "enum": [
+                            "yes",
+                            "no"
+                        ],
+                        "type": "string"
                     }
                 },
                 "example": {
                     "agency_id": 1,
                     "station_id": 4,
                     "uri": "url with link to the data file",
+                    "valid": "yes",
                     "valid_from": "05-19-2022",
                     "valid_to": "05-20-2022"
                 }
