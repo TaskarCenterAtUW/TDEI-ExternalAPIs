@@ -104,7 +104,7 @@
         },
         "/tdei_consumer/v1.0/gtfs_pathways/": {
             "summary": "Path used to manage the list of gtfs_pathways.",
-            "description": "The REST endpoint/path used to list and create zero or more `gtfs_pathways` entities.  This path contains a `GET` operation to return the list of pathways files.",
+            "description": "The REST endpoint/path used to list and create zero or more `gtfs_pathways_file` entities.  This path contains a `GET` operation to return the list of pathways files.",
             "get": {
                 "responses": {
                     "200": {
@@ -113,12 +113,12 @@
                                 "schema": {
                                     "type": "array",
                                     "items": {
-                                        "$ref": "#/components/schemas/gtfs_pathways"
+                                        "$ref": "#/components/schemas/gtfs_pathways_file"
                                     }
                                 }
                             }
                         },
-                        "description": "Successful response - returns an array of `gtfs_pathways` entities."
+                        "description": "Successful response - returns an array of `gtfs_pathways_file` entities."
                     },
                     "401": {
                         "$ref": "#/components/responses/Unauthorized"
@@ -129,7 +129,7 @@
                 },
                 "operationId": "getPathwaysDataList",
                 "summary": "List all gtfs_pathways data files that exist.",
-                "description": "Gets a list of all `gtfs_pathways` entities."
+                "description": "Gets a list of all `gtfs_pathways_file` entities."
             }
         },
         "/tdei_consumer/v1.0/gtfs_pathways/{gtfs_pathwaysId}": {
@@ -152,7 +152,7 @@
                 },
                 "operationId": "getPathwaysDataFile",
                 "summary": "Get a gtfs_pathways data file",
-                "description": "Gets the details of a single instance of a `gtfs_pathways`."
+                "description": "Gets the details of a single instance of a `gtfs_pathways_file`."
             },
             "parameters": [
                 {
@@ -368,7 +368,7 @@
         },
         "/tdei_consumer/v1.0/gtfs_flex": {
             "summary": "Path used to manage the list of gtfs_flex data files.",
-            "description": "The REST endpoint/path used to list `gtfs_flex` data file entities.  This path contains a `GET`  operation to list the files. ",
+            "description": "The REST endpoint/path used to list `gtfs_flex_file` data file entities.  This path contains a `GET`  operation to list the files. ",
             "get": {
                 "responses": {
                     "200": {
@@ -377,12 +377,12 @@
                                 "schema": {
                                     "type": "array",
                                     "items": {
-                                        "$ref": "#/components/schemas/gtfs_flex"
+                                        "$ref": "#/components/schemas/gtfs_flex_file"
                                     }
                                 }
                             }
                         },
-                        "description": "Successful response - returns an array of `gtfs_flex` entities."
+                        "description": "Successful response - returns an array of `gtfs_flex_file` entities."
                     },
                     "401": {
                         "$ref": "#/components/responses/Unauthorized"
@@ -393,12 +393,12 @@
                 },
                 "operationId": "getflexDataList",
                 "summary": "List All flexDataFiles",
-                "description": "Gets a list of all `gtfs_flex` data file entities."
+                "description": "Gets a list of all `gtfs_flex_file` data file entities."
             }
         },
         "/tdei_consumer/v1.0/gtfs_flex/{gtfs_flexId}": {
             "summary": "Path used to manage a single flexDataFile.",
-            "description": "The REST endpoint/path used to get, update, and delete single instances of an `gtfs_flex' data file.  This path contains `GET` operation used to retrieve a gtfs_flex data file.",
+            "description": "The REST endpoint/path used to get a single instances of an `gtfs_flex' data file.  This path contains `GET` operation used to retrieve a gtfs_flex data file.",
             "get": {
                 "responses": {
                     "200": {
@@ -416,7 +416,7 @@
                 },
                 "operationId": "getflexDataFile",
                 "summary": "Get a flexDataFile",
-                "description": "Gets the details of a single instance of a `gtfs_flex`."
+                "description": "Gets the details of a single instance of a `gtfs_flex_file`."
             },
             "parameters": [
                 {
@@ -598,6 +598,132 @@
                 "summary": "Retrieve OSW data.",
                 "description": "Returns a url for a gzip'd geojson file containing the most current osw data for a specified bounding box. This path returns v1 osw data."
             }
+        },
+        "/tdei_consumer/v1.0/gtfs_pathways/bbox/": {
+            "summary": "Retrieve the most current pathways files for an station.",
+            "description": "Returns a url to a zip file containing the most current GTFS static data, including pathways.txt, stops.txt and levels.txt, for the specified station. Can get list of stations using /stations endpoint. ",
+            "get": {
+                "parameters": [
+                    {
+                        "name": "confidence_level",
+                        "description": "Minimum confidence level required. Data returned will be at this confidence level or higher.",
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "in": "query"
+                    },
+                    {
+                        "name": "schema_version",
+                        "description": "version name of the pathways schema version that the application requests. list of versions can be found with /tdei_consumer/v1.0/gtfs_pathways/versions path",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "in": "query",
+                        "required": false
+                    },
+                    {
+                        "examples": {
+                            "bounding_box": {
+                                "value": {
+                                    "bbox": "23.5, 123.1, 23.1, 1234.5"
+                                }
+                            }
+                        },
+                        "name": "bounding_box",
+                        "description": "A bounding box which specifies the area to be searched. A bounding box is specified by a string providing the lat/lon coordinates of the corners of the bounding box. Coordinate should be specified as west, south, east, north.",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "$ref": "#/components/responses/PathwaysResponse"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/Unauthorized"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/PathwaysFileNotFound"
+                    },
+                    "500": {
+                        "$ref": "#/components/responses/InternalServerError"
+                    }
+                },
+                "security": [
+                    {
+                        "ApplicationId": []
+                    }
+                ],
+                "operationId": "retrieve-pathways-data-bbox",
+                "summary": "Retrieve GTFS pathways data by bounding box",
+                "description": "Returns a url to a zip file containing the most current GTFS pathways files, including the pathways.txt, stops.txt, and levels.txt files, for a given bounding box.\n\n"
+            }
+        },
+        "/tdei_consumer/v1.0/gtfs_flex/bbox/": {
+            "summary": "Retrieve the most current pathways files for an station.",
+            "description": "Returns a url to a zip file containing the most current GTFS static data, including pathways.txt, stops.txt and levels.txt, for the specified station. Can get list of stations using /stations endpoint. ",
+            "get": {
+                "parameters": [
+                    {
+                        "name": "confidence_level",
+                        "description": "Minimum confidence level required. Data returned will be at this confidence level or higher.",
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "in": "query"
+                    },
+                    {
+                        "name": "schema_version",
+                        "description": "version name of the pathways schema version that the application requests. list of versions can be found with /tdei_consumer/v1.0/gtfs_pathways/versions path",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "in": "query",
+                        "required": false
+                    },
+                    {
+                        "examples": {
+                            "bounding_box": {
+                                "value": {
+                                    "bbox": "23.5, 123.1, 23.1, 1234.5"
+                                }
+                            }
+                        },
+                        "name": "bounding_box",
+                        "description": "A bounding box which specifies the area to be searched. A bounding box is specified by a string providing the lat/lon coordinates of the corners of the bounding box. Coordinate should be specified as west, south, east, north.",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "$ref": "#/components/responses/PathwaysResponse"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/Unauthorized"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/PathwaysFileNotFound"
+                    },
+                    "500": {
+                        "$ref": "#/components/responses/InternalServerError"
+                    }
+                },
+                "security": [
+                    {
+                        "ApplicationId": []
+                    }
+                ],
+                "operationId": "retrieve-flex-data-bbox",
+                "summary": "Retrieve GTFS flex data by bounding box",
+                "description": "Returns a url to a zip file containing the most current GTFS flex files for a given bounding box.\n\n"
+            }
         }
     },
     "components": {
@@ -630,65 +756,171 @@
             "agency": {
                 "title": "Root Type for Agency",
                 "description": "An agency which has data stored in the TDEI system. Includes agency_id and associated agency_name. ",
+                "required": [
+                    "agency_id",
+                    "agency_name",
+                    "agency_polygon",
+                    "agency_timezone",
+                    "agency_url",
+                    "tdei_agency_id"
+                ],
                 "type": "object",
                 "properties": {
-                    "agency": {
-                        "type": "object",
-                        "properties": {
-                            "agency_id": {
-                                "format": "int32",
-                                "type": "integer"
-                            },
-                            "agency_name": {
-                                "type": "string"
-                            }
-                        }
+                    "agency_email": {
+                        "description": "Email address actively monitored by the agency’s customer service department. This email address should be a direct contact point where transit riders can reach a customer service representative at the agency.",
+                        "type": "string"
+                    },
+                    "agency_id": {
+                        "description": "The GTFS agency id.",
+                        "type": "integer"
+                    },
+                    "agency_lang": {
+                        "description": "Primary language used by this transit agency. Should be provided to help GTFS consumers choose capitalization rules and other language-specific settings for the dataset.",
+                        "type": "string"
+                    },
+                    "agency_name": {
+                        "description": "The GTFS agency name.",
+                        "type": "string"
+                    },
+                    "agency_phone": {
+                        "description": "A voice telephone number for the specified agency. This field is a string value that presents the telephone number as typical for the agency's service area. It may contain punctuation marks to group the digits of the number. Dialable text (for example, TriMet's \"503-238-RIDE\") is permitted, but the field must not contain any other descriptive text.",
+                        "type": "string"
+                    },
+                    "agency_polygon": {
+                        "description": "A polygon which represents the boundaries of the agency's service area. A polygon is specified by a string providing the lat/lon coordinates of the polygon. The last lat/lon in the string should be the same as the first lat/lon in the string.",
+                        "type": "string"
+                    },
+                    "agency_timezone": {
+                        "description": "Timezone where transit agency is located.",
+                        "type": "string"
+                    },
+                    "agency_url": {
+                        "description": "URL of the transit agency.",
+                        "type": "string"
+                    },
+                    "tdei_agency_id": {
+                        "description": "TDEI-assigned agency id. Assigned by TDEI to avoid potential conflicts between GTFS agency ids.",
+                        "type": "integer"
+                    },
+                    "agency_fare_url": {
+                        "description": "URL of fare information for the agency",
+                        "type": "string"
                     }
                 },
                 "example": {
-                    "agency": {
-                        "agency_id": 1,
-                        "agency_name": "King County Metro"
-                    }
+                    "agency_id": 1,
+                    "agency_name": "King County Metro",
+                    "agency_url": "http://kingcounty.gov",
+                    "agency_timezone": "America/Los_Angeles",
+                    "agency_lang": "en",
+                    "agency_phone": "206-296-0100",
+                    "agency_fare_url": "https://kingcounty.gov/depts/transportation/metro/fares-orca.aspx",
+                    "agency_email": "https://blue.kingcounty.gov/about/contact/",
+                    "tdei_agency_id": 5,
+                    "agency_polygon": "bbox"
                 }
             },
             "station": {
                 "title": "Root Type for Agency",
-                "description": "An agency which has data stored in the TDEI system. Includes agency_id and associated agency_name. ",
+                "description": "An station which has data stored in the TDEI system. Includes station_id and associated station_name. ",
+                "required": [
+                    "gtfs_stop_id",
+                    "stop_lat",
+                    "stop_lon",
+                    "stop_name",
+                    "tdei_stop_id"
+                ],
                 "type": "object",
                 "properties": {
-                    "station": {
-                        "type": "object",
-                        "properties": {
-                            "agency_id": {
-                                "format": "int32",
-                                "type": "integer"
-                            },
-                            "agency_name": {
-                                "type": "string"
-                            }
-                        }
+                    "gtfs_stop_id": {
+                        "description": "stop_id from GTFS.\n\nIdentifies a location: stop/platform, station, entrance/exit, generic node or boarding area (see location_type). \n\nMultiple routes may use the same stop_id.",
+                        "type": "integer"
+                    },
+                    "level_id": {
+                        "description": "Level of the location. The same level may be used by multiple unlinked stations.",
+                        "type": "integer"
+                    },
+                    "location_type": {
+                        "description": "Location type. Valid options are:\n\n0 (or blank) - Stop (or Platform). A location where passengers board or disembark from a transit vehicle. Is called a platform when defined within a parent_station.\n1 - Station. A physical structure or area that contains one or more platform.\n2 - Entrance/Exit. A location where passengers can enter or exit a station from the street. If an entrance/exit belongs to multiple stations, it may be linked by pathways to both, but the data provider must pick one of them as parent.\n3 - Generic Node. A location within a station, not matching any other location_type, that may be used to link together pathways define in pathways.txt.\n4 - Boarding Area. A specific location on a platform, where passengers can board and/or alight vehicles.",
+                        "type": "string"
+                    },
+                    "parent_station": {
+                        "description": "Defines hierarchy between the different locations defined in stops.txt. It contains the ID of the parent location, as followed:\n\n- Stop/platform (location_type=0): the parent_station field contains the ID of a station.\n- Station (location_type=1): this field must be empty.\n- Entrance/exit (location_type=2) or generic node (location_type=3): the parent_station field contains the ID of a station (location_type=1)\n- Boarding Area (location_type=4): the parent_station field contains ID of a platform.\n\nConditionally Required:\n- Required for locations which are entrances (location_type=2), generic nodes (location_type=3) or boarding areas (location_type=4).\n- Optional for stops/platforms (location_type=0).\n- Forbidden for stations (location_type=1).\n",
+                        "type": "integer"
+                    },
+                    "stop_code": {
+                        "description": "Short text or a number that identifies the location for riders. These codes are often used in phone-based transit information systems or printed on signage to make it easier for riders to get information for a particular location. The stop_code may be the same as stop_id if it is public facing. This field should be left empty for locations without a code presented to riders.\n",
+                        "type": "string"
+                    },
+                    "stop_desc": {
+                        "description": "Description of the location that provides useful, quality information. Should not be a duplicate of stop_name.",
+                        "type": "string"
+                    },
+                    "stop_lat": {
+                        "description": "Latitude of the location.\n\nFor stops/platforms (location_type=0) and boarding area (location_type=4), the coordinates must be the ones of the bus pole — if exists — and otherwise of where the travelers are boarding the vehicle (on the sidewalk or the platform, and not on the roadway or the track where the vehicle stops). \n\nConditionally Required:\n- Required for locations which are stops (location_type=0), stations (location_type=1) or entrances/exits (location_type=2).\n- Optional for locations which are generic nodes (location_type=3) or boarding areas (location_type=4).",
+                        "type": "string"
+                    },
+                    "stop_lon": {
+                        "description": "Longitude of the location.\n\nFor stops/platforms (location_type=0) and boarding area (location_type=4), the coordinates must be the ones of the bus pole — if exists — and otherwise of where the travelers are boarding the vehicle (on the sidewalk or the platform, and not on the roadway or the track where the vehicle stops). \n\nConditionally Required:\n- Required for locations which are stops (location_type=0), stations (location_type=1) or entrances/exits (location_type=2).\n- Optional for locations which are generic nodes (location_type=3) or boarding areas (location_type=4).",
+                        "type": "string"
+                    },
+                    "stop_name": {
+                        "description": "Name of the location. The stop_name should match the agency's rider-facing name for the location as printed on a timetable, published online, or represented on signage. For translations into other languages, use translations.txt.\n\nWhen the location is a boarding area (location_type=4), the stop_name should contains the name of the boarding area as displayed by the agency. It could be just one letter (like on some European intercity railway stations), or text like “Wheelchair boarding area” (NYC’s Subway) or “Head of short trains” (Paris’ RER).\n\nConditionally Required:\n- Required for locations which are stops (location_type=0), stations (location_type=1) or entrances/exits (location_type=2).\n- Optional for locations which are generic nodes (location_type=3) or boarding areas (location_type=4).",
+                        "type": "string"
+                    },
+                    "stop_timezone": {
+                        "description": "Timezone of the location",
+                        "type": "string"
+                    },
+                    "stop_url": {
+                        "description": "URL of a web page about the location. This should be different from the agency.agency_url and the routes.route_url field values.",
+                        "type": "string"
+                    },
+                    "tdei_stop_id": {
+                        "description": "TDEI assigned stop id. Included to avoid potential duplicates in the gtfs stop_id.",
+                        "type": "integer"
+                    },
+                    "tts_stop_name": {
+                        "description": "Readable version of the stop_name. See \"Text-to-speech field\" in the Term Definitions for more.",
+                        "type": "string"
+                    },
+                    "wheelchair_boarding": {
+                        "description": "Indicates whether wheelchair boardings are possible from the location. Valid options are: \n\nFor parentless stops:\n0 or empty - No accessibility information for the stop.\n1 - Some vehicles at this stop can be boarded by a rider in a wheelchair.\n2 - Wheelchair boarding is not possible at this stop. \n\nFor child stops: \n0 or empty - Stop will inherit its wheelchair_boarding behavior from the parent station, if specified in the parent.\n1 - There exists some accessible path from outside the station to the specific stop/platform.\n2 - There exists no accessible path from outside the station to the specific stop/platform.\n\nFor station entrances/exits: \n0 or empty - Station entrance will inherit its wheelchair_boarding behavior from the parent station, if specified for the parent.\n1 - Station entrance is wheelchair accessible.\n2 - No accessible path from station entrance to stops/platforms.",
+                        "type": "string"
+                    },
+                    "zone_id": {
+                        "description": "Identifies the fare zone for a stop. If this record represents a station or station entrance, the zone_id is ignored.\n\nConditionally Required:\n- Required if providing fare information using fare_rules.txt \n- Optional otherwise.",
+                        "type": "integer"
                     }
                 },
                 "example": {
-                    "station": {
-                        "agency_id": 1,
-                        "agency_name": "King County Metro",
-                        "station_id": 4,
-                        "station_name": "Northgate"
-                    }
+                    "stop_id": 990006,
+                    "stop_code": "stop code - need example",
+                    "stop_name": "Northgate Station",
+                    "tts_stop_name": "Northgate Station - need to verify",
+                    "stop_desc": "Northgate Transit station - need more detail",
+                    "stop_lat": "47.70312",
+                    "stop_lon": "-122.32839",
+                    "zone_id": "fare zoneid - need example",
+                    "stop_url": "https://www.soundtransit.org/ride-with-us/stops-stations/northgate-station",
+                    "location_type": "1",
+                    "parent_station": "not valid for Northgate, but will be valid for others",
+                    "stop_timezone": "America/Los_Angeles",
+                    "wheelchair_boarding": "1",
+                    "level_id": "level - need example",
+                    "platform_code": "not valid for northgate, but may valid for others",
+                    "tdei_stop_id": 23
                 }
             },
-            "gtfs_flex": {
+            "gtfs_flex_file": {
                 "title": "Root Type for flexDataFile",
                 "description": "Information about a flex data file and it's metadata.",
                 "required": [
                     "valid_from",
                     "data_record_id",
                     "confidence_level",
-                    "agency_name",
-                    "agency_id",
-                    "flex_schema_version"
+                    "flex_schema_version",
+                    "agency"
                 ],
                 "type": "object",
                 "properties": {
@@ -697,31 +929,28 @@
                         "description": "TDEI-assigned data_record.",
                         "type": "integer"
                     },
-                    "agency_name": {
-                        "description": "agency name",
-                        "type": "string"
-                    },
-                    "agency_id": {
-                        "format": "int32",
-                        "description": "TDEI agency_id. ",
-                        "type": "integer"
-                    },
                     "confidence_level": {
                         "format": "int32",
                         "description": "TDEI-assigned confidence level.",
                         "type": "integer"
                     },
                     "valid_from": {
+                        "format": "date",
                         "description": "date this file is valid from",
                         "type": "string"
                     },
                     "valid_to": {
+                        "format": "date",
                         "description": "date this file is valid to, if empty or not included, means file is valid as of the date downloaded.",
                         "type": "string"
                     },
                     "flex_schema_version": {
                         "description": "version of the flex schema to which this file conforms",
                         "type": "string"
+                    },
+                    "agency": {
+                        "$ref": "#/components/schemas/agency",
+                        "description": "agency information"
                     }
                 },
                 "example": {
@@ -734,178 +963,71 @@
                     "valid_to": "05-20-2022"
                 }
             },
-            "gtfs_pathways": {
-                "title": "Root Type for gtfs_pathways",
-                "description": "Describes a gtfs pathways file meta data.",
-                "required": [
-                    "agency_id",
-                    "agency_name",
-                    "confidence_level",
-                    "station_id",
-                    "station_name",
-                    "valid_from",
-                    "pathways_schema_version",
-                    "data_record_id"
-                ],
-                "type": "object",
-                "properties": {
-                    "agency_name": {
-                        "description": "agency name",
-                        "type": "string"
-                    },
-                    "agency_id": {
-                        "format": "int32",
-                        "description": "TDEI Agency id",
-                        "type": "integer"
-                    },
-                    "station_name": {
-                        "description": "transit station name",
-                        "type": "string"
-                    },
-                    "station_id": {
-                        "format": "int32",
-                        "description": "TDEI transit station id.",
-                        "type": "integer"
-                    },
-                    "confidence_level": {
-                        "format": "int32",
-                        "description": "TDEI assigned confidence level.",
-                        "type": "integer"
-                    },
-                    "valid_from": {
-                        "description": "date from which this file is valid",
-                        "type": "string"
-                    },
-                    "valid_to": {
-                        "description": "date through which this file is valid, empty indicates the file is valid as of the date downloaded",
-                        "type": "string"
-                    },
-                    "pathways_schema_version": {
-                        "description": "version of the pathways schema to which this file conforms",
-                        "type": "string"
-                    },
-                    "data_record_id": {
-                        "description": "TDEI assigned data record id",
-                        "type": "integer"
-                    }
-                },
-                "example": {
-                    "agency_id": 1,
-                    "agency_name": "King County Metro",
-                    "confidence_level": 5,
-                    "data_record_id": 23,
-                    "pathways_schema_version": 1,
-                    "station_id": 4,
-                    "station_name": "Northgate",
-                    "valid_from": "05-19-2022",
-                    "valid_to": "05-20-2022"
-                }
-            },
-            "gtfs_flex_uri": {
+            "gtfs_flex_download": {
                 "title": "Root Type for flexDataFile",
                 "description": "Information about a flex data file and it's metadata. Same as gtfs_flex, but contains uri.",
                 "required": [
-                    "valid_from",
-                    "data_record_id",
-                    "confidence_level",
-                    "agency_name",
-                    "agency_id",
-                    "flex_schema_version",
-                    "uri"
+                    "uri",
+                    "gtfs_flex_file"
                 ],
                 "type": "object",
                 "properties": {
-                    "data_record_id": {
-                        "format": "int32",
-                        "description": "TDEI-assigned data_record.",
-                        "type": "integer"
-                    },
-                    "agency_name": {
-                        "description": "agency name",
-                        "type": "string"
-                    },
-                    "agency_id": {
-                        "format": "int32",
-                        "description": "TDEI agency_id. ",
-                        "type": "integer"
-                    },
-                    "confidence_level": {
-                        "format": "int32",
-                        "description": "TDEI-assigned confidence level.",
-                        "type": "integer"
-                    },
-                    "valid_from": {
-                        "description": "date this file is valid from",
-                        "type": "string"
-                    },
-                    "valid_to": {
-                        "description": "date this file is valid to, if empty or not included, means file is valid as of the date downloaded.",
-                        "type": "string"
-                    },
-                    "flex_schema_version": {
-                        "description": "version of the flex schema to which this file conforms",
-                        "type": "string"
-                    },
                     "uri": {
                         "description": "uri that points to a location where the file can be downloaded from",
                         "type": "string"
+                    },
+                    "gtfs_flex_file": {
+                        "$ref": "#/components/schemas/gtfs_flex_file",
+                        "description": "file meta data"
                     }
                 },
                 "example": {
-                    "agency_id": 1,
-                    "agency_name": "King County Metro",
-                    "confidence_level": 5,
-                    "data_record_id": 23,
-                    "flex_schema_version": 1,
-                    "uri": "uri where the data file can be downloaded from",
-                    "valid_from": "05-19-2022",
-                    "valid_to": "05-20-2022"
+                    "uri": "some text",
+                    "gtfs_flex_file": {
+                        "data_record_id": 65,
+                        "confidence_level": 0,
+                        "valid_from": "2018-01-17",
+                        "valid_to": "2018-01-17",
+                        "flex_schema_version": "some text",
+                        "agency": {
+                            "agency_email": "some text",
+                            "agency_id": 40,
+                            "agency_lang": "some text",
+                            "agency_name": "some text",
+                            "agency_phone": "some text",
+                            "agency_polygon": "some text",
+                            "agency_timezone": "some text",
+                            "agency_url": "some text",
+                            "tdei_agency_id": 20,
+                            "agency_fare_url": "some text"
+                        }
+                    }
                 }
             },
-            "gtfs_pathways_uri": {
+            "gtfs_pathways_file": {
                 "title": "Root Type for gtfs_pathways",
-                "description": "Describes a gtfs pathways file meta data. Same as gtfs_pathways, but contains uri.",
+                "description": "Describes a gtfs pathways file meta data.",
                 "required": [
-                    "agency_id",
-                    "agency_name",
                     "confidence_level",
-                    "station_id",
-                    "station_name",
                     "valid_from",
                     "pathways_schema_version",
-                    "uri",
-                    "data_record_id"
+                    "data_record_id",
+                    "station"
                 ],
                 "type": "object",
                 "properties": {
-                    "agency_name": {
-                        "description": "agency name",
-                        "type": "string"
-                    },
-                    "agency_id": {
-                        "format": "int32",
-                        "description": "TDEI Agency id",
-                        "type": "integer"
-                    },
-                    "station_name": {
-                        "description": "transit station name",
-                        "type": "string"
-                    },
-                    "station_id": {
-                        "format": "int32",
-                        "description": "TDEI transit station id.",
-                        "type": "integer"
-                    },
                     "confidence_level": {
                         "format": "int32",
                         "description": "TDEI assigned confidence level.",
                         "type": "integer"
                     },
                     "valid_from": {
+                        "format": "date",
                         "description": "date from which this file is valid",
                         "type": "string"
                     },
                     "valid_to": {
+                        "format": "date",
                         "description": "date through which this file is valid, empty indicates the file is valid as of the date downloaded",
                         "type": "string"
                     },
@@ -913,26 +1035,84 @@
                         "description": "version of the pathways schema to which this file conforms",
                         "type": "string"
                     },
-                    "uri": {
-                        "description": "uri that points to a location where the file can be downloaded from",
-                        "type": "string"
-                    },
                     "data_record_id": {
                         "description": "TDEI assigned data record id",
                         "type": "integer"
+                    },
+                    "station": {
+                        "$ref": "#/components/schemas/station",
+                        "description": "information about the station with which this file is associated."
                     }
                 },
                 "example": {
-                    "agency_id": 1,
-                    "agency_name": "King County Metro",
-                    "confidence_level": 5,
-                    "data_record_id": 23,
-                    "pathways_schema_version": 1,
-                    "station_id": 4,
-                    "station_name": "Northgate",
-                    "uri": "uri with link to the data file",
-                    "valid_from": "05-19-2022",
-                    "valid_to": "05-20-2022"
+                    "confidence_level": 36,
+                    "valid_from": "some text",
+                    "valid_to": "some text",
+                    "pathways_schema_version": "some text",
+                    "data_record_id": 49,
+                    "station": {
+                        "gtfs_stop_id": 83,
+                        "level_id": 20,
+                        "location_type": "some text",
+                        "parent_station": 96,
+                        "stop_code": "some text",
+                        "stop_desc": "some text",
+                        "stop_lat": "some text",
+                        "stop_lon": "some text",
+                        "stop_name": "some text",
+                        "stop_timezone": "some text",
+                        "stop_url": "some text",
+                        "tdei_stop_id": 89,
+                        "tts_stop_name": "some text",
+                        "wheelchair_boarding": "some text",
+                        "zone_id": 49
+                    }
+                }
+            },
+            "gtfs_pathways_download": {
+                "title": "Root Type for gtfs_pathways",
+                "description": "Describes a gtfs pathways file meta data. Same as gtfs_pathways, but contains uri.",
+                "required": [
+                    "url",
+                    "gtfs_pathways_file"
+                ],
+                "type": "object",
+                "properties": {
+                    "url": {
+                        "description": "url that points to a location where the file can be downloaded from",
+                        "type": "string"
+                    },
+                    "gtfs_pathways_file": {
+                        "$ref": "#/components/schemas/gtfs_pathways_file",
+                        "description": "information about the gtfs_pathways file to be downloaded"
+                    }
+                },
+                "example": {
+                    "url": "some text",
+                    "gtfs_pathways_file": {
+                        "confidence_level": 70,
+                        "valid_from": "2018-01-17",
+                        "valid_to": "2018-01-17",
+                        "pathways_schema_version": "some text",
+                        "data_record_id": 82,
+                        "station": {
+                            "gtfs_stop_id": 50,
+                            "level_id": 55,
+                            "location_type": "some text",
+                            "parent_station": 24,
+                            "stop_code": "some text",
+                            "stop_desc": "some text",
+                            "stop_lat": "some text",
+                            "stop_lon": "some text",
+                            "stop_name": "some text",
+                            "stop_timezone": "some text",
+                            "stop_url": "some text",
+                            "tdei_stop_id": 72,
+                            "tts_stop_name": "some text",
+                            "wheelchair_boarding": "some text",
+                            "zone_id": 48
+                        }
+                    }
                 }
             }
         },
@@ -947,7 +1127,7 @@
                 "content": {
                     "application/json": {
                         "schema": {
-                            "$ref": "#/components/schemas/gtfs_flex_uri"
+                            "$ref": "#/components/schemas/gtfs_flex_download"
                         }
                     }
                 },
@@ -957,7 +1137,7 @@
                 "content": {
                     "application/json": {
                         "schema": {
-                            "$ref": "#/components/schemas/gtfs_pathways_uri"
+                            "$ref": "#/components/schemas/gtfs_pathways_download"
                         }
                     }
                 },
