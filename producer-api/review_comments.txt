@@ -1,6 +1,18 @@
 To Do:
 -----
 
+Questions:
+---------
+1. Does each station have just one pathways file?
+2. Does a pathways file corresponds to a station? Meaning if a pathways file is uploaded is it just for one station, or can have info about multiple stations?
+3. Is each station identified by a unique station_id? Is this station_id, globally unique, or unique for that agency?
+4. How do we uniquely identify a station?
+5. Do we need to track by agency or user of the agency?
+6. Why do we need to access all the pathways files from producers side?
+
 Review comments:
 -------------
 (line no, comment)
+434: Where does one get gtfs_pathwaysId from? If this is a unique ID for each gtfs_pathways file uploaded, then we should return this as part of 'post' API.
+134: post seems to require an URI to be sent to the server. 
+737,865: If we add uri to gtfs_pathways schema, we can avoid one schema and one additional round trip to the server from the user's perspective
