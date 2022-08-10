@@ -64,12 +64,12 @@
                 ],
                 "operationId": "list-api-versions",
                 "summary": "List available API versions",
-                "description": "Lists the versions of the TDEI  API which are available."
+                "description": "Lists the versions of the TDEI API which are available."
             }
         },
         "/api/v1.0/agencies": {
             "summary": "Path used to retrieve the list of agencies with data in the TDEI system. Allows callers to get the tdei_agency_id id for an agency.",
-            "description": "Returns the tdei_agency_id and gtfs agency information for all agencies with data in the TDEI system. ",
+            "description": "Returns the tdei_agency_id and agency information for all agencies with data in the TDEI system. ",
             "get": {
                 "responses": {
                     "200": {
@@ -104,7 +104,7 @@
         },
         "/api/v1.0/stations": {
             "summary": "Path used to retrieve the list of stations with data in the TDEI system. Allows callers to get the tdei_station_id id for a station.",
-            "description": "Returns the tdei_station_id and gtfs station information for all stations with data in the TDEI system. ",
+            "description": "Returns the tdei_station_id and station information for all stations with data in the TDEI system. ",
             "get": {
                 "responses": {
                     "200": {
