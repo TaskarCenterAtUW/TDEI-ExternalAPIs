@@ -64,7 +64,7 @@
                 ],
                 "operationId": "list-api-versions",
                 "summary": "List available API versions",
-                "description": "Lists the versions of the TDEI API which are available."
+                "description": "Lists the versions of the TDEI  API which are available."
             }
         },
         "/api/v1.0/agencies": {
@@ -99,7 +99,7 @@
                 ],
                 "operationId": "list-agencies",
                 "summary": "List Agencies",
-                "description": "Returns a list of all `agency` entities. See endpoint description for detail."
+                "description": "Path used to retrieve the list of agencies with data in the TDEI system. Allows callers to get the tdei_agency_id id for an agency.\n\nReturns the tdei_agency_id and agency information for all agencies with data in the TDEI system. "
             }
         },
         "/api/v1.0/stations": {
@@ -138,8 +138,8 @@
             }
         },
         "/api/v1.0/osw/": {
-            "summary": "List GTFS Pathways versions supported by TDEI.",
-            "description": "Returns a json list of the GTFS flex versions supported by TDEI.",
+            "summary": "List OSW versions supported by TDEI.",
+            "description": "Returns a json list of the OSW versions supported by TDEI.",
             "get": {
                 "tags": [],
                 "responses": {
@@ -168,7 +168,7 @@
                                 }
                             }
                         },
-                        "description": "Returns a list of pathways versions"
+                        "description": "Returns a json list of osw versions supported by TDEI."
                     },
                     "401": {
                         "$ref": "#/components/responses/Unauthorized"
@@ -234,7 +234,7 @@
                 ],
                 "operationId": "list-flex-versions",
                 "summary": "List available GTFS flex versions",
-                "description": "Lists the versions of GTFS flex data which are supported by TDEI."
+                "description": "List GTFS flex versions supported by TDEI.\n\nReturns a json list of the GTFS flex versions supported by TDEI."
             }
         },
         "/api/v1.0/gtfs-pathways/": {
@@ -284,7 +284,7 @@
                 ],
                 "operationId": "list-pathways-versions",
                 "summary": "List available GTFS Pathways versions",
-                "description": "Lists the versions of GTFS pathways data which are supported by TDEI."
+                "description": "Lists the versions of GTFS pathways data which are supported by TDEI.\nReturns a json list of the GTFS pathways versions supported by TDEI."
             }
         },
         "/api/v1.0/gtfs-pathways/list": {
@@ -347,7 +347,7 @@
                                 }
                             }
                         },
-                        "description": "Successful response - returns an array of `gtfs_pathways_file` entities."
+                        "description": "Successful response - returns an array of `gtfs_pathways_download` entities."
                     },
                     "401": {
                         "$ref": "#/components/responses/Unauthorized"
@@ -363,12 +363,12 @@
                 ],
                 "operationId": "list-pathways-files",
                 "summary": "List pathways files meeting criteria.",
-                "description": "Returns a list of all `gtfs_pathways_file` file entities. See endpoint description for detail."
+                "description": "This endpoint returns a json list of all gtfs pathways files stored in the TDEI system that meet the specified criteria. Criteria that can be specified include: bounding box, minimum confidence level, pathways version, date time and agency id.\n\nThis endpoint can be used by an application developer to obtain a list of gtfs pathways files in the TDEI system meeting the specified criteria. This endpoint returns a list of file-metadata including the uris of the file, which can be used to fetch the files themselves."
             }
         },
         "/api/v1.0/gtfs-pathways/upload/": {
             "summary": "Path used to upload / create a new gtfs pathways file.",
-            "description": "This path allows a user to upload or create a new gtfs pathways file. The caller must provide metadata about the file - both gtfs station metadata and metadata for the tdei system. tdei required metadata includes information about how and when the data was collected and valid dates of the file.  Returns the tdei_record_id of the file.",
+            "description": "This path allows a user to upload or create a new gtfs pathways file. The caller must provide metadata about the file. Required metadata includes information about how and when the data was collected and valid dates of the file",
             "post": {
                 "requestBody": {
                     "description": "meta-data and uri for pathways file",
@@ -402,12 +402,12 @@
                 ],
                 "operationId": "upload-pathways-file",
                 "summary": "create pathways file.",
-                "description": "Allows application to upload / create a new gtfs pathways file. See endpoint description for detail."
+                "description": "This call allows a user to upload or create a new gtfs pathways file. The caller must provide metadata about the file. Required metadata includes information about how and when the data was collected and valid dates of the file."
             }
         },
         "/api/v1.0/osw/list": {
             "summary": "Path used to retrieve a list of osw files. Bounding box, confidence, osw version can be specified. Allows user to get the tdei_record_id for a specific file so file can be updated.",
-            "description": "This endpoint returns a list of url to gzip'd geojson files with osw data that meet the specified criteria. Criteria that can be specified include: bounding box, minimum confidence level and pathways version.\n\nThis endpoing can be used by an application developer to obtain a list of osw files in the TDEI system meeting the specified criteria.",
+            "description": "This endpoint returns a list of url to gzip'd geojson files with osw data that meet the specified criteria. Criteria that can be specified include: bounding box, minimum confidence level and pathways version.\n\nThis endpoint can be used by an application developer to obtain a list of osw files in the TDEI system meeting the specified criteria.",
             "get": {
                 "parameters": [
                     {
@@ -445,7 +445,14 @@
                 ],
                 "responses": {
                     "200": {
-                        "$ref": "#/components/responses/OSWResponse"
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/osw_download"
+                                }
+                            }
+                        },
+                        "description": "Successful response - returns an array of `osw_download` entities."
                     },
                     "401": {
                         "$ref": "#/components/responses/Unauthorized"
@@ -464,12 +471,12 @@
                 ],
                 "operationId": "list-osw-files",
                 "summary": "List osw files meeting criteria.",
-                "description": "Returns a list of all osw file entities. See endpoint description for detail."
+                "description": "This endpoint returns a list of url to gzip'd geojson files with osw data that meet the specified criteria. Criteria that can be specified include: bounding box, minimum confidence level and pathways version.\n\nThis endpoint can be used by an application developer to obtain a list of osw files in the TDEI system meeting the specified criteria."
             }
         },
         "/api/v1.0/gtfs-flex/upload": {
             "summary": "Path used to upload / create a new gtfs flex file.",
-            "description": "This path allows a user to upload or create a new gtfs flex file. The caller must provide metadata about the file - both gtfs agency metadata and metadata for the tdei system. tdei required metadata includes information about how and when the data was collected and valid dates of the file.  Returns the tdei_record_id of the file.",
+            "description": "This path allows a user to upload or create a new gtfs flex file. The caller must provide metadata about the file. Required metadata includes information about how and when the data was collected and valid dates of the file.  ",
             "post": {
                 "requestBody": {
                     "description": "specify metadata and uri for new file",
@@ -496,12 +503,12 @@
                 ],
                 "operationId": "upload-flex-file",
                 "summary": "upload a new gtfs_flex file",
-                "description": "Allows application to upload / create a new gtfs_flex file. See endpoint description for detail."
+                "description": "This call allows a user to upload or create a new gtfs pathways file. The caller must provide metadata about the file. Required metadata includes information about how and when the data was collected and valid dates of the file."
             }
         },
         "/api/v1.0/osw/upload/": {
             "summary": "Path used to upload/create a new osw data file.",
-            "description": "This path allows a user to upload or create a new osw file. The caller must provide metadata about the file - both osw-specific metadata and metadata for the tdei system.\ntdei required metadata includes information about how and when the data was collected and valid dates of the file. Returns the tdei_record_id of the file.",
+            "description": "This path allows a user to upload or create a new osw file. The caller must provide metadata about the file - includes information about how and when the data was collected and valid dates of the file. ",
             "post": {
                 "requestBody": {
                     "description": "meta-data and uri for pathways file",
@@ -542,7 +549,7 @@
                 ],
                 "operationId": "upload-osw-file",
                 "summary": "upload a new osw file",
-                "description": "Allows application to upload / create a new osw file. See endpoint description for detail."
+                "description": "This path allows a user to upload or create a new osw file. The caller must provide metadata about the file - includes information about how and when the data was collected and valid dates of the file. "
             }
         },
         "/api/v1.0/gtfs-flex/list/": {
@@ -607,7 +614,7 @@
                                 }
                             }
                         },
-                        "description": "Successful response - returns an array of `gtfs_flex_file` entities."
+                        "description": "Successful response - returns an array of `gtfs_flex_download` entities."
                     },
                     "401": {
                         "$ref": "#/components/responses/Unauthorized"
@@ -623,7 +630,7 @@
                 ],
                 "operationId": "list-flex-files",
                 "summary": "List flex files meeting specified criteria.",
-                "description": "Returns a list of all `gtfs_flex_file` file entities. See endpoint description for detail."
+                "description": "This endpoint returns a json list of all gtfs flex files stored in the TDEI system that meet the specified criteria. Criteria that can be specified include: bounding box, minimum confidence level, flex version, date time and agency id.\n\nThis endpoint can be used by an application developer to obtain a list of gtfs flex files in the TDEI system meeting the specified criteria. This endpoint returns a list of file-metadata including the uris of the file, which can be used to fetch the files themselves."
             }
         }
     },
@@ -652,151 +659,6 @@
                             "documentation": "link to v1.1 documentation"
                         }
                     ]
-                }
-            },
-            "osw_file": {
-                "title": "Root Type for gtfs_pathways",
-                "description": "Describes a gtfs pathways file meta data.",
-                "required": [
-                    "tdei_generator_metadata",
-                    "tdei_system_metadata",
-                    "osw_metadata"
-                ],
-                "type": "object",
-                "properties": {
-                    "tdei_generator_metadata": {
-                        "$ref": "#/components/schemas/tdei_generator_metadata",
-                        "description": "Metadata provided by the data generator"
-                    },
-                    "tdei_system_metadata": {
-                        "$ref": "#/components/schemas/tdei_system_metadata",
-                        "description": "Metadata provided by the tdei system."
-                    },
-                    "osw_metadata": {
-                        "$ref": "#/components/schemas/osw_metadata",
-                        "description": "metadata about an osw file"
-                    }
-                },
-                "example": {
-                    "valid_from": "2018-01-17",
-                    "valid_to": "2018-01-17",
-                    "confidence_level": 74,
-                    "tdei_record_id": 61,
-                    "pathways_schema_version": "some text",
-                    "station": {
-                        "stop_code": "some text",
-                        "stop_name": "some text",
-                        "tts_stop_name": "some text",
-                        "stop_desc": "some text",
-                        "stop_lat": "some text",
-                        "stop_lon": "some text",
-                        "zone_id": 24,
-                        "stop_url": "some text",
-                        "location_type": "some text",
-                        "parent_station": 1,
-                        "stop_timezone": "some text",
-                        "wheelchair_boarding": "some text",
-                        "level_id": 53,
-                        "platform_code": "some text",
-                        "tdei_stop_id": 68,
-                        "gtfs_stop_id": 61
-                    }
-                }
-            },
-            "gtfs_station": {
-                "title": "Root Type for Agency",
-                "description": "The gtfs station information for an agency with data stored in tdei. Matches the gtfs spec for station. ",
-                "required": [
-                    "gtfs_stop_id",
-                    "stop_name",
-                    "stop_lat",
-                    "stop_lon",
-                    "tdei_stop_id"
-                ],
-                "type": "object",
-                "properties": {
-                    "stop_code": {
-                        "description": "Short text or a number that identifies the location for riders. These codes are often used in phone-based transit information systems or printed on signage to make it easier for riders to get information for a particular location. The stop_code may be the same as stop_id if it is public facing. This field should be left empty for locations without a code presented to riders.\n",
-                        "type": "string"
-                    },
-                    "stop_name": {
-                        "description": "Name of the location. The stop_name should match the agency's rider-facing name for the location as printed on a timetable, published online, or represented on signage. For translations into other languages, use translations.txt.\n\nWhen the location is a boarding area (location_type=4), the stop_name should contains the name of the boarding area as displayed by the agency. It could be just one letter (like on some European intercity railway stations), or text like “Wheelchair boarding area” (NYC’s Subway) or “Head of short trains” (Paris’ RER).\n\nConditionally Required:\n- Required for locations which are stops (location_type=0), stations (location_type=1) or entrances/exits (location_type=2).\n- Optional for locations which are generic nodes (location_type=3) or boarding areas (location_type=4).",
-                        "type": "string"
-                    },
-                    "tts_stop_name": {
-                        "description": "Readable version of the stop_name. See \"Text-to-speech field\" in the Term Definitions for more.",
-                        "type": "string"
-                    },
-                    "stop_desc": {
-                        "description": "Description of the location that provides useful, quality information. Should not be a duplicate of stop_name.",
-                        "type": "string"
-                    },
-                    "stop_lat": {
-                        "description": "Latitude of the location.\n\nFor stops/platforms (location_type=0) and boarding area (location_type=4), the coordinates must be the ones of the bus pole — if exists — and otherwise of where the travelers are boarding the vehicle (on the sidewalk or the platform, and not on the roadway or the track where the vehicle stops). \n\nConditionally Required:\n- Required for locations which are stops (location_type=0), stations (location_type=1) or entrances/exits (location_type=2).\n- Optional for locations which are generic nodes (location_type=3) or boarding areas (location_type=4).",
-                        "type": "string"
-                    },
-                    "stop_lon": {
-                        "description": "Longitude of the location.\n\nFor stops/platforms (location_type=0) and boarding area (location_type=4), the coordinates must be the ones of the bus pole — if exists — and otherwise of where the travelers are boarding the vehicle (on the sidewalk or the platform, and not on the roadway or the track where the vehicle stops). \n\nConditionally Required:\n- Required for locations which are stops (location_type=0), stations (location_type=1) or entrances/exits (location_type=2).\n- Optional for locations which are generic nodes (location_type=3) or boarding areas (location_type=4).",
-                        "type": "string"
-                    },
-                    "zone_id": {
-                        "description": "Identifies the fare zone for a stop. If this record represents a station or station entrance, the zone_id is ignored.\n\nConditionally Required:\n- Required if providing fare information using fare_rules.txt \n- Optional otherwise.",
-                        "type": "integer"
-                    },
-                    "stop_url": {
-                        "description": "URL of a web page about the location. This should be different from the agency.agency_url and the routes.route_url field values.",
-                        "type": "string"
-                    },
-                    "location_type": {
-                        "description": "Location type. Valid options are:\n\n0 (or blank) - Stop (or Platform). A location where passengers board or disembark from a transit vehicle. Is called a platform when defined within a parent_station.\n1 - Station. A physical structure or area that contains one or more platform.\n2 - Entrance/Exit. A location where passengers can enter or exit a station from the street. If an entrance/exit belongs to multiple stations, it may be linked by pathways to both, but the data provider must pick one of them as parent.\n3 - Generic Node. A location within a station, not matching any other location_type, that may be used to link together pathways define in pathways.txt.\n4 - Boarding Area. A specific location on a platform, where passengers can board and/or alight vehicles.",
-                        "type": "string"
-                    },
-                    "parent_station": {
-                        "description": "Defines hierarchy between the different locations defined in stops.txt. It contains the ID of the parent location, as followed:\n\n- Stop/platform (location_type=0): the parent_station field contains the ID of a station.\n- Station (location_type=1): this field must be empty.\n- Entrance/exit (location_type=2) or generic node (location_type=3): the parent_station field contains the ID of a station (location_type=1)\n- Boarding Area (location_type=4): the parent_station field contains ID of a platform.\n\nConditionally Required:\n- Required for locations which are entrances (location_type=2), generic nodes (location_type=3) or boarding areas (location_type=4).\n- Optional for stops/platforms (location_type=0).\n- Forbidden for stations (location_type=1).\n",
-                        "type": "integer"
-                    },
-                    "stop_timezone": {
-                        "description": "Timezone of the location. If the location has a parent station, it inherits the parent station’s timezone instead of applying its own. Stations and parentless stops with empty stop_timezone inherit the timezone specified by agency.agency_timezone. If stop_timezone values are provided, the times in stop_times.txt should be entered as the time since midnight in the timezone specified by agency.agency_timezone. This ensures that the time values in a trip always increase over the course of a trip, regardless of which timezones the trip crosses.",
-                        "type": "string"
-                    },
-                    "wheelchair_boarding": {
-                        "description": "Indicates whether wheelchair boardings are possible from the location. Valid options are: \n\nFor parentless stops:\n0 or empty - No accessibility information for the stop.\n1 - Some vehicles at this stop can be boarded by a rider in a wheelchair.\n2 - Wheelchair boarding is not possible at this stop. \n\nFor child stops: \n0 or empty - Stop will inherit its wheelchair_boarding behavior from the parent station, if specified in the parent.\n1 - There exists some accessible path from outside the station to the specific stop/platform.\n2 - There exists no accessible path from outside the station to the specific stop/platform.\n\nFor station entrances/exits: \n0 or empty - Station entrance will inherit its wheelchair_boarding behavior from the parent station, if specified for the parent.\n1 - Station entrance is wheelchair accessible.\n2 - No accessible path from station entrance to stops/platforms.",
-                        "type": "string"
-                    },
-                    "level_id": {
-                        "description": "Level of the location. The same level may be used by multiple unlinked stations.",
-                        "type": "integer"
-                    },
-                    "platform_code": {
-                        "description": "Platform identifier for a platform stop (a stop belonging to a station). This should be just the platform identifier (eg. \"G\" or \"3\"). Words like “platform” or \"track\" (or the feed’s language-specific equivalent) should not be included. This allows feed consumers to more easily internationalize and localize the platform identifier into other languages.",
-                        "type": "string"
-                    },
-                    "tdei_stop_id": {
-                        "description": "TDEI assigned stop id. Included to avoid potential duplicates in the gtfs stop_id.",
-                        "type": "integer"
-                    },
-                    "gtfs_stop_id": {
-                        "description": "stop_id from GTFS.\n\nIdentifies a location: stop/platform, station, entrance/exit, generic node or boarding area (see location_type). \n\nMultiple routes may use the same stop_id.",
-                        "type": "integer"
-                    }
-                },
-                "example": {
-                    "gtfs_stop_id": 990006,
-                    "stop_code": "stop code - need example",
-                    "stop_name": "Northgate Station",
-                    "tts_stop_name": "Northgate Station - need to verify",
-                    "stop_desc": "Northgate Transit station - need more detail",
-                    "stop_lat": "47.70312",
-                    "stop_lon": "-122.32839",
-                    "zone_id": "fare zoneid - need example",
-                    "stop_url": "https://www.soundtransit.org/ride-with-us/stops-stations/northgate-station",
-                    "location_type": "1",
-                    "parent_station": "not valid for Northgate, but will be valid for others",
-                    "stop_timezone": "America/Los_Angeles",
-                    "wheelchair_boarding": "1",
-                    "level_id": "level - need example",
-                    "platform_code": "not valid for northgate, but may valid for others",
-                    "tdei_stop_id": 23
                 }
             },
             "agency": {
@@ -910,7 +772,6 @@
                     "valid_from": "2018-02-10T09:30Z",
                     "valid_to": "2018-02-10T09:30Z",
                     "schema_version": "some text",
-                    "confidence_level": 42,
                     "uri": "some text",
                     "data_source": "some text",
                     "polygon": "some text"
@@ -984,7 +845,6 @@
                     "valid_from": "2018-02-10T09:30Z",
                     "valid_to": "2018-02-10T09:30Z",
                     "schema_version": "some text",
-                    "confidence_level": 6,
                     "uri": "some text",
                     "data_source": "some text",
                     "tdei_station_id": "some text"
@@ -1063,7 +923,7 @@
                     "valid_from": "2018-02-10T09:30Z",
                     "valid_to": "2018-02-10T09:30Z",
                     "schema_version": "some text",
-                    "confidence_level": 42,
+                    "confidence_level": 26,
                     "uri": "some text",
                     "data_source": "some text",
                     "polygon": "some text"
@@ -1142,10 +1002,150 @@
                     "valid_from": "2018-02-10T09:30Z",
                     "valid_to": "2018-02-10T09:30Z",
                     "schema_version": "some text",
-                    "confidence_level": 6,
+                    "confidence_level": 37,
                     "uri": "some text",
                     "data_source": "some text",
                     "tdei_station_id": "some text"
+                }
+            },
+            "osw_upload": {
+                "title": "Root Type for gtfs_flex",
+                "description": "represents a gtfs_flex data file. same as in consumer api, ",
+                "required": [
+                    "collected_by",
+                    "collection_date",
+                    "collection_method",
+                    "valid_from",
+                    "schema_version",
+                    "uri",
+                    "data_source",
+                    "polygon"
+                ],
+                "type": "object",
+                "properties": {
+                    "collected_by": {
+                        "description": "Description of who data was collected by. See Best Practices document for information on how to format this string.",
+                        "type": "string"
+                    },
+                    "collection_date": {
+                        "format": "date-time",
+                        "description": "date-time that data was collected",
+                        "type": "string"
+                    },
+                    "collection_method": {
+                        "description": "Method by which the data was collected. See Best Practices document for information on how to format this string.",
+                        "type": "string"
+                    },
+                    "valid_from": {
+                        "format": "date-time",
+                        "description": "date from which this file is valid",
+                        "type": "string"
+                    },
+                    "valid_to": {
+                        "format": "date-time",
+                        "description": "date until which this data is valid",
+                        "type": "string"
+                    },
+                    "schema_version": {
+                        "description": "version of gtfs flex schema this file conforms to",
+                        "type": "string"
+                    },
+                    "uri": {
+                        "description": "uri where the flex file can be retrieved from",
+                        "type": "string"
+                    },
+                    "data_source": {
+                        "description": "Description of data source or sources from which the data was collected. See Best Practices document for information on how to format this string.",
+                        "type": "string"
+                    },
+                    "polygon": {
+                        "description": "Optional polygon that indicates the boundaries of data included in this file. ",
+                        "type": "string"
+                    }
+                },
+                "example": {
+                    "collected_by": "some text",
+                    "collection_date": "2018-02-10T09:30Z",
+                    "collection_method": "some text",
+                    "valid_from": "2018-02-10T09:30Z",
+                    "valid_to": "2018-02-10T09:30Z",
+                    "schema_version": "some text",
+                    "uri": "some text",
+                    "data_source": "some text",
+                    "polygon": "some text"
+                }
+            },
+            "osw_download": {
+                "title": "Root Type for gtfs_flex",
+                "description": "represents a gtfs_flex data file. same as in consumer api, ",
+                "required": [
+                    "collected_by",
+                    "collection_date",
+                    "collection_method",
+                    "valid_from",
+                    "schema_version",
+                    "uri",
+                    "data_source",
+                    "polygon",
+                    "confidence_level"
+                ],
+                "type": "object",
+                "properties": {
+                    "collected_by": {
+                        "description": "Description of who data was collected by. See Best Practices document for information on how to format this string.",
+                        "type": "string"
+                    },
+                    "collection_date": {
+                        "format": "date-time",
+                        "description": "date-time that data was collected",
+                        "type": "string"
+                    },
+                    "collection_method": {
+                        "description": "Method by which the data was collected. See Best Practices document for information on how to format this string.",
+                        "type": "string"
+                    },
+                    "valid_from": {
+                        "format": "date-time",
+                        "description": "date from which this file is valid",
+                        "type": "string"
+                    },
+                    "valid_to": {
+                        "format": "date-time",
+                        "description": "date until which this data is valid",
+                        "type": "string"
+                    },
+                    "schema_version": {
+                        "description": "version of gtfs flex schema this file conforms to",
+                        "type": "string"
+                    },
+                    "uri": {
+                        "description": "uri where the flex file can be retrieved from",
+                        "type": "string"
+                    },
+                    "data_source": {
+                        "description": "Description of data source or sources from which the data was collected. See Best Practices document for information on how to format this string.",
+                        "type": "string"
+                    },
+                    "polygon": {
+                        "description": "Optional polygon that indicates the boundaries of data included in this file. ",
+                        "type": "string"
+                    },
+                    "confidence_level": {
+                        "description": "tdei-generated confidence level",
+                        "type": "integer"
+                    }
+                },
+                "example": {
+                    "collected_by": "some text",
+                    "collection_date": "2018-02-10T09:30Z",
+                    "collection_method": "some text",
+                    "valid_from": "2018-02-10T09:30Z",
+                    "valid_to": "2018-02-10T09:30Z",
+                    "schema_version": "some text",
+                    "uri": "some text",
+                    "data_source": "some text",
+                    "polygon": "some text",
+                    "confidence_level": 91
                 }
             }
         },
