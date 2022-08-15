@@ -1,7 +1,7 @@
 {
     "openapi": "3.0.2",
     "info": {
-        "title": "TDEI API - 08/08/2022",
+        "title": "TDEI API",
         "version": "1.0",
         "description": "This is an API for publishing data to the Transportation Data Equity Initiative (TDEI) data system. This API is intended for applications producing data for and consuming data from the TDEI system. This API supports publishing of GTFS-Pathways, GTFS-Flex v2 and OpenSidewalks data to the TDEI. ",
         "contact": {
@@ -65,136 +65,6 @@
                 "operationId": "list-api-versions",
                 "summary": "List available API versions",
                 "description": "Returns a json list of the versions of the TDEI API which are available."
-            }
-        },
-        "/api/v1.0/gtfs-flex": {
-            "summary": "Path used to manage gtfs flex files.",
-            "description": "",
-            "get": {
-                "parameters": [
-                    {
-                        "name": "bbox",
-                        "description": "A bounding box which specifies the area to be searched. A bounding box is specified by a string providing the lat/lon coordinates of the corners of the bounding box. Coordinate should be specified as west, south, east, north.",
-                        "schema": {
-                            "type": "string"
-                        },
-                        "in": "query",
-                        "required": false
-                    },
-                    {
-                        "name": "confidence-level",
-                        "description": "Minimum confidence level required by application. Data returned will be at this confidence level or higher.",
-                        "schema": {
-                            "type": "integer"
-                        },
-                        "in": "query"
-                    },
-                    {
-                        "name": "version",
-                        "description": "version name of the flex schema version that the application requests. list of versions can be found with /api/v1.0/gtfs_flex path",
-                        "schema": {
-                            "type": "string"
-                        },
-                        "in": "query"
-                    },
-                    {
-                        "name": "tdei_agency_id",
-                        "description": "tdei-assigned agency id. Necessary to ensure that agency ids are unique. Represented as a UUID.",
-                        "schema": {
-                            "type": "string"
-                        },
-                        "in": "query",
-                        "required": false
-                    },
-                    {
-                        "name": "date_time",
-                        "description": "date-time for which the caller is interested in obtaining files. all files that are valid at the specified date-time and meet the other criteria will be returned.",
-                        "schema": {
-                            "format": "date-time",
-                            "type": "string"
-                        },
-                        "in": "query",
-                        "required": false
-                    },
-                    {
-                        "name": "tdei_record_id",
-                        "description": "if included, returns the metadata for the specified file, all other parameters will be ignored.",
-                        "schema": {
-                            "type": "string"
-                        },
-                        "in": "query"
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "array",
-                                    "items": {
-                                        "$ref": "#/components/schemas/gtfs_flex_download"
-                                    }
-                                }
-                            }
-                        },
-                        "description": "Successful response - returns an array of `gtfs_flex_download` entities."
-                    },
-                    "401": {
-                        "$ref": "#/components/responses/Unauthorized"
-                    },
-                    "500": {
-                        "$ref": "#/components/responses/InternalServerError"
-                    }
-                },
-                "security": [
-                    {
-                        "ApplicationId": []
-                    }
-                ],
-                "operationId": "list-flex-files",
-                "summary": "List flex files meeting specified criteria.",
-                "description": "This endpoint returns a json list of all gtfs flex files stored in the TDEI system that meet the specified criteria. Criteria that can be specified include: bounding box, minimum confidence level, flex version, date time and agency id.\n\nThis endpoint can be used by an application developer to obtain a list of gtfs flex files in the TDEI system meeting the specified criteria. This endpoint returns a list of file-metadata including the uris of the file, which can be used to fetch the files themselves."
-            },
-            "post": {
-                "requestBody": {
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "$ref": "#/components/schemas/gtfs_flex_upload"
-                            }
-                        }
-                    },
-                    "required": true
-                },
-                "responses": {
-                    "202": {
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "string"
-                                }
-                            }
-                        },
-                        "description": "Successful file creation. returns tdei_record_id of new file."
-                    },
-                    "400": {
-                        "$ref": "#/components/responses/InvalidRequest"
-                    },
-                    "401": {
-                        "$ref": "#/components/responses/Unauthorized"
-                    },
-                    "500": {
-                        "$ref": "#/components/responses/InternalServerError"
-                    }
-                },
-                "security": [
-                    {
-                        "ApplicationId": []
-                    }
-                ],
-                "operationId": "upload-flex-file",
-                "summary": "upload a new gtfs_flex file",
-                "description": "This call allows a user to upload or create a new gtfs pathways file. The caller must provide metadata about the file. Required metadata includes information about how and when the data was collected and valid dates of the file. Returns the tdei_record_id of the uploaded file."
             }
         },
         "/api/v1/agencies": {
@@ -757,6 +627,136 @@
                 "operationId": "get-osw-file",
                 "summary": "returns a geojson osw file",
                 "description": "returns a specific osw file identified by the record_id"
+            }
+        },
+        "/api/v1/gtfs-flex": {
+            "summary": "Path used to manage gtfs flex files.",
+            "description": "",
+            "get": {
+                "parameters": [
+                    {
+                        "name": "bbox",
+                        "description": "A bounding box which specifies the area to be searched. A bounding box is specified by a string providing the lat/lon coordinates of the corners of the bounding box. Coordinate should be specified as west, south, east, north.",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "in": "query",
+                        "required": false
+                    },
+                    {
+                        "name": "confidence-level",
+                        "description": "Minimum confidence level required by application. Data returned will be at this confidence level or higher.",
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "in": "query"
+                    },
+                    {
+                        "name": "version",
+                        "description": "version name of the flex schema version that the application requests. list of versions can be found with /api/v1.0/gtfs_flex path",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "in": "query"
+                    },
+                    {
+                        "name": "tdei_agency_id",
+                        "description": "tdei-assigned agency id. Necessary to ensure that agency ids are unique. Represented as a UUID.",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "in": "query",
+                        "required": false
+                    },
+                    {
+                        "name": "date_time",
+                        "description": "date-time for which the caller is interested in obtaining files. all files that are valid at the specified date-time and meet the other criteria will be returned.",
+                        "schema": {
+                            "format": "date-time",
+                            "type": "string"
+                        },
+                        "in": "query",
+                        "required": false
+                    },
+                    {
+                        "name": "tdei_record_id",
+                        "description": "if included, returns the metadata for the specified file, all other parameters will be ignored.",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/gtfs_flex_download"
+                                    }
+                                }
+                            }
+                        },
+                        "description": "Successful response - returns an array of `gtfs_flex_download` entities."
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/Unauthorized"
+                    },
+                    "500": {
+                        "$ref": "#/components/responses/InternalServerError"
+                    }
+                },
+                "security": [
+                    {
+                        "ApplicationId": []
+                    }
+                ],
+                "operationId": "list-flex-files",
+                "summary": "List flex files meeting specified criteria.",
+                "description": "This endpoint returns a json list of all gtfs flex files stored in the TDEI system that meet the specified criteria. Criteria that can be specified include: bounding box, minimum confidence level, flex version, date time and agency id.\n\nThis endpoint can be used by an application developer to obtain a list of gtfs flex files in the TDEI system meeting the specified criteria. This endpoint returns a list of file-metadata including the uris of the file, which can be used to fetch the files themselves."
+            },
+            "post": {
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/gtfs_flex_upload"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "202": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "string"
+                                }
+                            }
+                        },
+                        "description": "Successful file creation. returns tdei_record_id of new file."
+                    },
+                    "400": {
+                        "$ref": "#/components/responses/InvalidRequest"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/Unauthorized"
+                    },
+                    "500": {
+                        "$ref": "#/components/responses/InternalServerError"
+                    }
+                },
+                "security": [
+                    {
+                        "ApplicationId": []
+                    }
+                ],
+                "operationId": "upload-flex-file",
+                "summary": "upload a new gtfs_flex file",
+                "description": "This call allows a user to upload or create a new gtfs pathways file. The caller must provide metadata about the file. Required metadata includes information about how and when the data was collected and valid dates of the file. Returns the tdei_record_id of the uploaded file."
             }
         }
     },
