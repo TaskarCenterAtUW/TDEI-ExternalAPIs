@@ -21,7 +21,9 @@
             "summary": "List TDEI API versions.",
             "description": "",
             "get": {
-                "tags": [],
+                "tags": [
+                    "General"
+                ],
                 "responses": {
                     "200": {
                         "content": {
@@ -71,6 +73,9 @@
             "summary": "Path used to retrieve the list of agencies with data in the TDEI system.",
             "description": "",
             "get": {
+                "tags": [
+                    "General"
+                ],
                 "responses": {
                     "200": {
                         "content": {
@@ -106,6 +111,9 @@
             "summary": "Path used to retrieve the list of stations with data in the TDEI system.",
             "description": "",
             "get": {
+                "tags": [
+                    "General"
+                ],
                 "responses": {
                     "200": {
                         "content": {
@@ -141,34 +149,19 @@
             "summary": "List OSW versions supported by TDEI.",
             "description": "",
             "get": {
-                "tags": [],
+                "tags": [
+                    "OSW"
+                ],
                 "responses": {
                     "200": {
                         "content": {
                             "application/json": {
                                 "schema": {
                                     "$ref": "#/components/schemas/versionList"
-                                },
-                                "example": {
-                                    "total": 2,
-                                    "apis": [
-                                        {
-                                            "apiKey": "oa_citations",
-                                            "apiVersionNumber": "v1",
-                                            "apiUrl": "https://developer.uspto.gov/ds-api/oa_citations/v1/fields",
-                                            "apiDocumentationUrl": "https://developer.uspto.gov/ds-api-docs/index.html?url=https://developer.uspto.gov/ds-api/swagger/docs/oa_citations.json"
-                                        },
-                                        {
-                                            "apiKey": "cancer_moonshot",
-                                            "apiVersionNumber": "v1",
-                                            "apiUrl": "https://developer.uspto.gov/ds-api/cancer_moonshot/v1/fields",
-                                            "apiDocumentationUrl": "https://developer.uspto.gov/ds-api-docs/index.html?url=https://developer.uspto.gov/ds-api/swagger/docs/cancer_moonshot.json"
-                                        }
-                                    ]
                                 }
                             }
                         },
-                        "description": "Returns a json list of osw versions supported by TDEI."
+                        "description": "Returns list of OSW versions supported by TDEI."
                     },
                     "401": {
                         "$ref": "#/components/responses/Unauthorized"
@@ -191,6 +184,9 @@
             "summary": "Path used to manage osw files.",
             "description": "",
             "get": {
+                "tags": [
+                    "OSW"
+                ],
                 "parameters": [
                     {
                         "examples": {
@@ -210,14 +206,14 @@
                     },
                     {
                         "name": "confidence_level",
-                        "description": "Minimum confidence level required. Data returned will be at this confidence level or higher.",
+                        "description": "Minimum confidence level required. Data returned will be at this confidence level or higher. Confidence level range is: 0 (very low confidence) to 100 (very high confidence).",
                         "schema": {
                             "type": "integer"
                         },
                         "in": "query"
                     },
                     {
-                        "name": "schema_version",
+                        "name": "osw_schema_version",
                         "description": "A string with the name of the schema version the application requests.",
                         "schema": {
                             "type": "string"
@@ -231,6 +227,22 @@
                             "type": "string"
                         },
                         "in": "query"
+                    },
+                    {
+                        "name": "page_no",
+                        "description": "integer, defaults to 0",
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "in": "query"
+                    },
+                    {
+                        "name": "page_size",
+                        "description": "integer, between 20 and 100, defaults to 20",
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "in": "query"
                     }
                 ],
                 "responses": {
@@ -238,9 +250,10 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/osw_download"
+                                    "$ref": "#/components/schemas/osw_download_md"
                                 }
-                            }
+                            },
+                            "multipart/form-data": {}
                         },
                         "description": "Successful response - returns an array of `osw_download` entities."
                     },
@@ -309,34 +322,19 @@
             "summary": "List GTFS Pathways versions supported by TDEI.",
             "description": "",
             "get": {
-                "tags": [],
+                "tags": [
+                    "GTFS-Pathways"
+                ],
                 "responses": {
                     "200": {
                         "content": {
                             "application/json": {
                                 "schema": {
                                     "$ref": "#/components/schemas/versionList"
-                                },
-                                "example": {
-                                    "total": 2,
-                                    "apis": [
-                                        {
-                                            "apiKey": "oa_citations",
-                                            "apiVersionNumber": "v1",
-                                            "apiUrl": "https://developer.uspto.gov/ds-api/oa_citations/v1/fields",
-                                            "apiDocumentationUrl": "https://developer.uspto.gov/ds-api-docs/index.html?url=https://developer.uspto.gov/ds-api/swagger/docs/oa_citations.json"
-                                        },
-                                        {
-                                            "apiKey": "cancer_moonshot",
-                                            "apiVersionNumber": "v1",
-                                            "apiUrl": "https://developer.uspto.gov/ds-api/cancer_moonshot/v1/fields",
-                                            "apiDocumentationUrl": "https://developer.uspto.gov/ds-api-docs/index.html?url=https://developer.uspto.gov/ds-api/swagger/docs/cancer_moonshot.json"
-                                        }
-                                    ]
                                 }
                             }
                         },
-                        "description": "Returns a list of pathways versions"
+                        "description": "List of GTFS Pathways versions suppored by TDEI."
                     },
                     "401": {
                         "$ref": "#/components/responses/Unauthorized"
@@ -359,6 +357,9 @@
             "summary": "Path used to manage gtfs_pathways files.",
             "description": "",
             "get": {
+                "tags": [
+                    "GTFS-Pathways"
+                ],
                 "parameters": [
                     {
                         "name": "bbox",
@@ -370,14 +371,14 @@
                     },
                     {
                         "name": "confidence_level",
-                        "description": "Minimum confidence level required by application. Data returned will be at this confidence level or higher.",
+                        "description": "Minimum confidence level required by application. Data returned will be at this confidence level or higher. Confidence level range is: 0 (very low confidence) to 100 (very high confidence).",
                         "schema": {
                             "type": "integer"
                         },
                         "in": "query"
                     },
                     {
-                        "name": "version",
+                        "name": "pathways_schema_version",
                         "description": "version name of the pathways schema version that the application requests. list of versions can be found with /api/v1.0/gtfs_pathways path",
                         "schema": {
                             "type": "string"
@@ -409,6 +410,22 @@
                             "type": "string"
                         },
                         "in": "query"
+                    },
+                    {
+                        "name": "page_no",
+                        "description": "Integer, defaults to 0.",
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "in": "query"
+                    },
+                    {
+                        "name": "page_size",
+                        "description": "page size. integer, between 200 to 100, defaults to 20.",
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "in": "query"
                     }
                 ],
                 "responses": {
@@ -418,7 +435,7 @@
                                 "schema": {
                                     "type": "array",
                                     "items": {
-                                        "$ref": "#/components/schemas/gtfs_pathways_download"
+                                        "$ref": "#/components/schemas/gtfs_pathways_download_md"
                                     }
                                 }
                             }
@@ -448,7 +465,8 @@
                             "schema": {
                                 "$ref": "#/components/schemas/gtfs_pathways_upload"
                             }
-                        }
+                        },
+                        "multipart/form-data": {}
                     },
                     "required": true
                 },
@@ -487,30 +505,15 @@
             "summary": "List GTFS flex versions supported by TDEI.",
             "description": "",
             "get": {
-                "tags": [],
+                "tags": [
+                    "GTFS-Flex"
+                ],
                 "responses": {
                     "200": {
                         "content": {
                             "application/json": {
                                 "schema": {
                                     "$ref": "#/components/schemas/versionList"
-                                },
-                                "example": {
-                                    "total": 2,
-                                    "apis": [
-                                        {
-                                            "apiKey": "oa_citations",
-                                            "apiVersionNumber": "v1",
-                                            "apiUrl": "https://developer.uspto.gov/ds-api/oa_citations/v1/fields",
-                                            "apiDocumentationUrl": "https://developer.uspto.gov/ds-api-docs/index.html?url=https://developer.uspto.gov/ds-api/swagger/docs/oa_citations.json"
-                                        },
-                                        {
-                                            "apiKey": "cancer_moonshot",
-                                            "apiVersionNumber": "v1",
-                                            "apiUrl": "https://developer.uspto.gov/ds-api/cancer_moonshot/v1/fields",
-                                            "apiDocumentationUrl": "https://developer.uspto.gov/ds-api-docs/index.html?url=https://developer.uspto.gov/ds-api/swagger/docs/cancer_moonshot.json"
-                                        }
-                                    ]
                                 }
                             }
                         },
@@ -534,12 +537,15 @@
             }
         },
         "/api/v1/gtfs-flex/{tdei_record_id}": {
-            "summary": "Returns a gtfs pathways file",
+            "summary": "Returns a gtfs flex  file",
             "get": {
+                "tags": [
+                    "GTFS-Flex"
+                ],
                 "parameters": [
                     {
                         "name": "tdei_record_id",
-                        "description": "tdei_record_id for a file",
+                        "description": "tdei_record_id for a file, represented as a uuid",
                         "schema": {
                             "type": "string"
                         },
@@ -550,9 +556,62 @@
                 "responses": {
                     "200": {
                         "content": {
-                            "zipfile": {}
+                            "application/octet-stream": {}
                         },
-                        "description": "Returns the gtfs file. I wasn't sure what should be returned here - I set the type zipfile, but was not sure how this is typically done. "
+                        "description": "Success. Returns the file as an octet-stream."
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/Unauthorized"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/FlexFileNotFound"
+                    },
+                    "500": {
+                        "$ref": "#/components/responses/InternalServerError"
+                    }
+                },
+                "security": [
+                    {
+                        "ApplicationId": []
+                    }
+                ],
+                "operationId": "get-flex-file",
+                "summary": "returns a gtfs_pathways file",
+                "description": "returns a specific gtfs_pathways file identified by the record_id"
+            }
+        },
+        "/api/v1/gtfs-pathways/{tdei_record_id}/": {
+            "summary": "Returns a gtfs pathways file",
+            "get": {
+                "tags": [
+                    "GTFS-Pathways"
+                ],
+                "parameters": [
+                    {
+                        "name": "tdei_record_id",
+                        "description": "tdei_record_id for a file, represented as a uuid",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/octet-stream": {}
+                        },
+                        "description": "Success. Returns the file as application/octet-stream."
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/Unauthorized"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/PathwaysFileNotFound"
+                    },
+                    "500": {
+                        "$ref": "#/components/responses/InternalServerError"
                     }
                 },
                 "security": [
@@ -562,48 +621,19 @@
                 ],
                 "operationId": "get-pathways-file",
                 "summary": "returns a gtfs_pathways file",
-                "description": "returns a specific gtfs_pathways file identified by the record_id"
-            }
-        },
-        "/api/v1/gtfs-pathways/{tdei_record_id}/": {
-            "summary": "Returns a gtfs flex file",
-            "get": {
-                "parameters": [
-                    {
-                        "name": "tdei_record_id",
-                        "description": "tdei_record_id for a file",
-                        "schema": {
-                            "type": "string"
-                        },
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "content": {
-                            "zipfile": {}
-                        },
-                        "description": "Returns the gtfs file. I wasn't sure what should be returned here - I set the type zipfile, but was not sure how this is typically done. "
-                    }
-                },
-                "security": [
-                    {
-                        "ApplicationId": []
-                    }
-                ],
-                "operationId": "get-flex-file",
-                "summary": "returns a gtfs_flex file",
                 "description": "returns a specific gtfs_flex file identified by the record_id"
             }
         },
         "/api/v1/osw/{tdei_record_id}/": {
             "summary": "Returns an osw file",
             "get": {
+                "tags": [
+                    "OSW"
+                ],
                 "parameters": [
                     {
                         "name": "tdei_record_id",
-                        "description": "tdei_record_id for a file",
+                        "description": "tdei_record_id for a file, represented as a uuid",
                         "schema": {
                             "type": "string"
                         },
@@ -617,6 +647,15 @@
                             "geojson": {}
                         },
                         "description": "Returns the osw file - will be geojson. I wasn't sure what should be returned here - I set the type geojson, but was not sure how this is typically done. "
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/Unauthorized"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/OSWNotFound"
+                    },
+                    "500": {
+                        "$ref": "#/components/responses/InternalServerError"
                     }
                 },
                 "security": [
@@ -633,6 +672,9 @@
             "summary": "Path used to manage gtfs flex files.",
             "description": "",
             "get": {
+                "tags": [
+                    "GTFS-Flex"
+                ],
                 "parameters": [
                     {
                         "name": "bbox",
@@ -644,15 +686,15 @@
                         "required": false
                     },
                     {
-                        "name": "confidence-level",
-                        "description": "Minimum confidence level required by application. Data returned will be at this confidence level or higher.",
+                        "name": "confidence_level",
+                        "description": "Minimum confidence level required by application. Data returned will be at this confidence level or higher. Confidence level range is: 0 (very low confidence) to 100 (very high confidence).",
                         "schema": {
                             "type": "integer"
                         },
                         "in": "query"
                     },
                     {
-                        "name": "version",
+                        "name": "flex_schema_version",
                         "description": "version name of the flex schema version that the application requests. list of versions can be found with /api/v1.0/gtfs_flex path",
                         "schema": {
                             "type": "string"
@@ -685,6 +727,23 @@
                             "type": "string"
                         },
                         "in": "query"
+                    },
+                    {
+                        "name": "page_no",
+                        "description": "Page number, defaults to 0.",
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "in": "query",
+                        "required": false
+                    },
+                    {
+                        "name": "page_size",
+                        "description": "Integer, between 200 to 100, defaults to 20.",
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "in": "query"
                     }
                 ],
                 "responses": {
@@ -694,7 +753,7 @@
                                 "schema": {
                                     "type": "array",
                                     "items": {
-                                        "$ref": "#/components/schemas/gtfs_flex_download"
+                                        "$ref": "#/components/schemas/gtfs_flex_download_md"
                                     }
                                 }
                             }
@@ -724,7 +783,8 @@
                             "schema": {
                                 "$ref": "#/components/schemas/gtfs_flex_upload"
                             }
-                        }
+                        },
+                        "multipart/form-data": {}
                     },
                     "required": true
                 },
@@ -765,26 +825,18 @@
             "versionList": {
                 "title": "Root Type for VersionList",
                 "description": "List of API Versions.",
+                "required": [
+                    "versions"
+                ],
                 "type": "object",
                 "properties": {
                     "versions": {
+                        "description": "A list of the versions of a data standard (GTFS-Flex, GTFS-Pathways, OSW) supported by TDEI.",
                         "type": "array",
                         "items": {
-                            "type": "string"
+                            "$ref": "#/components/schemas/versionSpec"
                         }
                     }
-                },
-                "example": {
-                    "versions": [
-                        {
-                            "version": "v1.0",
-                            "documentation": "link to v1.0 documentation"
-                        },
-                        {
-                            "version": "v1.1",
-                            "documentation": "link to v1.1 documentation"
-                        }
-                    ]
                 }
             },
             "agency": {
@@ -805,8 +857,8 @@
                     }
                 },
                 "example": {
-                    "tdei_station_id": 37,
-                    "station_name": "King County Metro"
+                    "tdei_agency_id": "45",
+                    "agency_name": "King County Metro"
                 }
             },
             "station": {
@@ -840,8 +892,7 @@
                     "collection_date",
                     "collection_method",
                     "valid_from",
-                    "schema_version",
-                    "uri",
+                    "flex_schema_version",
                     "data_source"
                 ],
                 "type": "object",
@@ -856,7 +907,7 @@
                     },
                     "collection_date": {
                         "format": "date-time",
-                        "description": "date-time that data was collected",
+                        "description": "Date-time that data was collected. If uploader includes time, time should be specified in UTC time. If uploader does not include time, time will be registered as 12:01am UTC time on the date specified.",
                         "type": "string"
                     },
                     "collection_method": {
@@ -873,34 +924,52 @@
                         "description": "date until which this data is valid",
                         "type": "string"
                     },
-                    "schema_version": {
-                        "description": "version of gtfs flex schema this file conforms to",
-                        "type": "string"
-                    },
-                    "uri": {
-                        "description": "uri where the flex file can be retrieved from",
-                        "type": "string"
-                    },
                     "data_source": {
                         "description": "Description of data source or sources from which the data was collected. See Best Practices document for information on how to format this string.",
                         "type": "string"
                     },
                     "polygon": {
-                        "description": "Optional polygon that indicates the boundaries of data included in this file. ",
+                        "$ref": "#/components/schemas/polygon",
+                        "description": "Optional polygon that indicates the boundaries of data included in this file. "
+                    },
+                    "flex_schema_version": {
+                        "description": "version of gtfs flex schema this file conforms to",
                         "type": "string"
                     }
                 },
                 "example": {
-                    "tdei_agency_id": "some text",
-                    "collected_by": "some text",
+                    "tdei_agency_id": "5cfdf0f1-902b-4e2d-9297-b979b2d5d905",
+                    "collected_by": "See best practices document",
                     "collection_date": "2018-02-10T09:30Z",
-                    "collection_method": "some text",
+                    "collection_method": "See best practices document",
                     "valid_from": "2018-02-10T09:30Z",
                     "valid_to": "2018-02-10T09:30Z",
-                    "schema_version": "some text",
-                    "uri": "some text",
-                    "data_source": "some text",
-                    "polygon": "some text"
+                    "flex_schema_version": "v1.1",
+                    "data_source": "See best practices document",
+                    "polygon": {
+                        "type": "FeatureCollection",
+                        "features": [
+                            {
+                                "type": "Feature",
+                                "properties": {},
+                                "geometry": {
+                                    "type": "Polygon",
+                                    "coordinates": [
+                                        [
+                                            [
+                                                -122.20985412597656,
+                                                47.65868172346142
+                                            ],
+                                            [
+                                                -122.24418640136719,
+                                                47.65636923655089
+                                            ]
+                                        ]
+                                    ]
+                                }
+                            }
+                        ]
+                    }
                 }
             },
             "gtfs_pathways_upload": {
@@ -912,8 +981,7 @@
                     "collection_date",
                     "collection_method",
                     "valid_from",
-                    "schema_version",
-                    "uri",
+                    "pathways_schema_version",
                     "data_source",
                     "tdei_station_id"
                 ],
@@ -929,7 +997,7 @@
                     },
                     "collection_date": {
                         "format": "date-time",
-                        "description": "date-time that data was collected",
+                        "description": "Date-time that data was collected. If uploader includes time, time should be specified in UTC time. If uploader does not include time, time will be registered as 12:01am UTC time on the date specified.",
                         "type": "string"
                     },
                     "collection_method": {
@@ -944,14 +1012,6 @@
                     "valid_to": {
                         "format": "date-time",
                         "description": "date until which this data is valid",
-                        "type": "string"
-                    },
-                    "schema_version": {
-                        "description": "version of gtfs pathways schema this file conforms to",
-                        "type": "string"
-                    },
-                    "uri": {
-                        "description": "uri where the pathways file can be retrieved from",
                         "type": "string"
                     },
                     "data_source": {
@@ -961,177 +1021,22 @@
                     "tdei_station_id": {
                         "description": "tdei-assigned station id. Represented as UUID. Station ids can be retrieved using the /api/v1.0/stations path.",
                         "type": "string"
-                    }
-                },
-                "example": {
-                    "tdei_agency_id": "some text",
-                    "collected_by": "some text",
-                    "collection_date": "2018-02-10T09:30Z",
-                    "collection_method": "some text",
-                    "valid_from": "2018-02-10T09:30Z",
-                    "valid_to": "2018-02-10T09:30Z",
-                    "schema_version": "some text",
-                    "uri": "some text",
-                    "data_source": "some text",
-                    "tdei_station_id": "some text"
-                }
-            },
-            "gtfs_flex_download": {
-                "title": "Root Type for gtfs_flex",
-                "description": "represents a gtfs_flex data file. same as in consumer api, ",
-                "required": [
-                    "tdei_agency_id",
-                    "collected_by",
-                    "collection_date",
-                    "collection_method",
-                    "valid_from",
-                    "schema_version",
-                    "confidence_level",
-                    "tdei_record_id",
-                    "data_source",
-                    "polygon"
-                ],
-                "type": "object",
-                "properties": {
-                    "tdei_agency_id": {
-                        "description": "tdei-assigned agency id. Represented as UUID. Agency ids can be retrieved using the /api/v1.0/agencies path.",
-                        "type": "string"
                     },
-                    "collected_by": {
-                        "description": "Description of who data was collected by. See Best Practices document for information on how to format this string.",
-                        "type": "string"
-                    },
-                    "collection_date": {
-                        "format": "date-time",
-                        "description": "date-time that data was collected",
-                        "type": "string"
-                    },
-                    "collection_method": {
-                        "description": "Method by which the data was collected. See Best Practices document for information on how to format this string.",
-                        "type": "string"
-                    },
-                    "valid_from": {
-                        "format": "date-time",
-                        "description": "date from which this file is valid",
-                        "type": "string"
-                    },
-                    "valid_to": {
-                        "format": "date-time",
-                        "description": "date until which this data is valid",
-                        "type": "string"
-                    },
-                    "schema_version": {
-                        "description": "version of gtfs flex schema this file conforms to",
-                        "type": "string"
-                    },
-                    "confidence_level": {
-                        "description": "tdei-generated confidence level",
-                        "type": "integer"
-                    },
-                    "data_source": {
-                        "description": "Description of data source or sources from which the data was collected. See Best Practices document for information on how to format this string.",
-                        "type": "string"
-                    },
-                    "polygon": {
-                        "description": "Polygon that indicates the boundaries of data included in this file. ",
-                        "type": "string"
-                    },
-                    "tdei_record_id": {
-                        "description": "unique id identifying the file in the tdei system, can be used to retrieve the file itself.",
-                        "type": "string"
-                    }
-                },
-                "example": {
-                    "tdei_agency_id": "some text",
-                    "collected_by": "some text",
-                    "collection_date": "2018-02-10T09:30Z",
-                    "collection_method": "some text",
-                    "valid_from": "2018-02-10T09:30Z",
-                    "valid_to": "2018-02-10T09:30Z",
-                    "schema_version": "some text",
-                    "confidence_level": 84,
-                    "data_source": "some text",
-                    "polygon": "some text",
-                    "tdei_record_id": "some text"
-                }
-            },
-            "gtfs_pathways_download": {
-                "title": "Root Type for gtfs_flex",
-                "description": "represents a gtfs_flex data file. same as in consumer api, ",
-                "required": [
-                    "tdei_agency_id",
-                    "collected_by",
-                    "collection_date",
-                    "collection_method",
-                    "valid_from",
-                    "schema_version",
-                    "confidence_level",
-                    "tdei_record_id",
-                    "data_source",
-                    "tdei_station_id"
-                ],
-                "type": "object",
-                "properties": {
-                    "tdei_agency_id": {
-                        "description": "tdei-assigned agency id. Represented as UUID. Agency ids can be retrieved using the /api/v1.0/agencies path.",
-                        "type": "string"
-                    },
-                    "collected_by": {
-                        "description": "Description of who data was collected by. See Best Practices document for information on how to format this string.",
-                        "type": "string"
-                    },
-                    "collection_date": {
-                        "format": "date-time",
-                        "description": "date-time that data was collected",
-                        "type": "string"
-                    },
-                    "collection_method": {
-                        "description": "Method by which the data was collected. See Best Practices document for information on how to format this string.",
-                        "type": "string"
-                    },
-                    "valid_from": {
-                        "format": "date-time",
-                        "description": "date from which this file is valid",
-                        "type": "string"
-                    },
-                    "valid_to": {
-                        "format": "date-time",
-                        "description": "date until which this data is valid",
-                        "type": "string"
-                    },
-                    "schema_version": {
+                    "pathways_schema_version": {
                         "description": "version of gtfs pathways schema this file conforms to",
                         "type": "string"
-                    },
-                    "confidence_level": {
-                        "description": "tdei-generated confidence level",
-                        "type": "integer"
-                    },
-                    "data_source": {
-                        "description": "Description of data source or sources from which the data was collected. See Best Practices document for information on how to format this string.",
-                        "type": "string"
-                    },
-                    "tdei_station_id": {
-                        "description": "tdei-assigned station id. Represented as UUID. Station ids can be retrieved using the /api/v1.0/stations path.",
-                        "type": "string"
-                    },
-                    "tdei_record_id": {
-                        "description": "unique id identifying the file in the tdei system, can be used to retrieve the file itself.",
-                        "type": "string"
                     }
                 },
                 "example": {
-                    "tdei_agency_id": "some text",
-                    "collected_by": "some text",
+                    "tdei_agency_id": "5cfdf0f1-902b-4e2d-9297-b979b2d5d905",
+                    "tdei_station_id": "29dd4f2e-981a-46dc-b00d-0dc1937b2e53",
+                    "collected_by": "See best practices document",
                     "collection_date": "2018-02-10T09:30Z",
-                    "collection_method": "some text",
+                    "collection_method": "See best practices document",
                     "valid_from": "2018-02-10T09:30Z",
                     "valid_to": "2018-02-10T09:30Z",
-                    "schema_version": "some text",
-                    "confidence_level": 32,
-                    "data_source": "some text",
-                    "tdei_station_id": "some text",
-                    "tdei_record_id": "some text"
+                    "pathways_schema_version": "v1.1",
+                    "data_source": "See best practices document"
                 }
             },
             "osw_upload": {
@@ -1142,8 +1047,7 @@
                     "collection_date",
                     "collection_method",
                     "valid_from",
-                    "schema_version",
-                    "uri",
+                    "osw_schema_version",
                     "data_source",
                     "polygon"
                 ],
@@ -1155,6 +1059,161 @@
                     },
                     "collection_date": {
                         "format": "date-time",
+                        "description": "Date-time that data was collected. If uploader includes time, time should be specified in UTC time. If uploader does not include time, time will be registered as 12:01am UTC time on the date specified.",
+                        "type": "string"
+                    },
+                    "collection_method": {
+                        "description": "Method by which the data was collected. See Best Practices document for information on how to format this string.",
+                        "type": "string"
+                    },
+                    "valid_from": {
+                        "format": "date-time",
+                        "description": "date from which this file is valid",
+                        "type": "string"
+                    },
+                    "valid_to": {
+                        "format": "date-time",
+                        "description": "date until which this data is valid",
+                        "type": "string"
+                    },
+                    "data_source": {
+                        "description": "Description of data source or sources from which the data was collected. See Best Practices document for information on how to format this string.",
+                        "type": "string"
+                    },
+                    "polygon": {
+                        "description": "Optional polygon that indicates the boundaries of data included in this file. ",
+                        "type": "string"
+                    },
+                    "osw_schema_version": {
+                        "description": "version of gtfs flex schema this file conforms to",
+                        "type": "string"
+                    }
+                },
+                "example": {
+                    "collected_by": "See best practices document",
+                    "collection_date": "2018-02-10T09:30Z",
+                    "collection_method": "See best practices document",
+                    "valid_from": "2018-02-10T09:30Z",
+                    "valid_to": "2018-02-10T09:30Z",
+                    "osw_schema_version": "v1.1",
+                    "data_source": "See best practices document",
+                    "polygon": {
+                        "type": "FeatureCollection",
+                        "features": [
+                            {
+                                "type": "Feature",
+                                "properties": {},
+                                "geometry": {
+                                    "type": "Polygon",
+                                    "coordinates": [
+                                        [
+                                            [
+                                                -122.20985412597656,
+                                                47.65868172346142
+                                            ],
+                                            [
+                                                -122.24418640136719,
+                                                47.65636923655089
+                                            ]
+                                        ]
+                                    ]
+                                }
+                            }
+                        ]
+                    }
+                }
+            },
+            "versionSpec": {
+                "title": "Root Type for versionSpec",
+                "description": "Specification for a data standards (GTFS-Flex, GTFS-Pathways, OSW) versions.",
+                "required": [
+                    "specification",
+                    "version",
+                    "documentation"
+                ],
+                "type": "object",
+                "properties": {
+                    "version": {
+                        "description": "version string",
+                        "type": "string"
+                    },
+                    "documentation": {
+                        "description": "link to the documentation",
+                        "type": "string"
+                    },
+                    "specification": {
+                        "description": "link to the specification for the data standard",
+                        "type": "string"
+                    }
+                },
+                "example": {
+                    "version": "v1.0",
+                    "documentation": "link to v1.0 documentation",
+                    "specification": "link to the v1.0 specification"
+                }
+            },
+            "pageable": {
+                "description": "provides information about pageability.",
+                "required": [
+                    "total_pages",
+                    "current_page",
+                    "total_items",
+                    "num_pages"
+                ],
+                "type": "object",
+                "properties": {
+                    "total_pages": {
+                        "description": "total number of pages in the response",
+                        "type": "integer"
+                    },
+                    "current_page": {
+                        "description": "the start page of the current response",
+                        "type": "integer"
+                    },
+                    "total_items": {
+                        "description": "The total number of items in this response.",
+                        "type": "integer"
+                    },
+                    "num_pages": {
+                        "description": "the number of pages provided in this response.",
+                        "type": "integer"
+                    }
+                },
+                "example": {
+                    "total_pages": 2,
+                    "current_page": 0,
+                    "total_items": 30,
+                    "num_pages": 20
+                }
+            },
+            "gtfs_flex_download_md": {
+                "title": "Root Type for gtfs_flex",
+                "description": "represents a gtfs_flex data file. same as in consumer api, ",
+                "required": [
+                    "tdei_agency_id",
+                    "collected_by",
+                    "collection_date",
+                    "collection_method",
+                    "valid_from",
+                    "flex_schema_version",
+                    "confidence_level",
+                    "tdei_record_id",
+                    "data_source",
+                    "polygon",
+                    "download_url"
+                ],
+                "type": "object",
+                "properties": {
+                    "tdei_agency_id": {
+                        "description": "tdei-assigned agency id. Represented as UUID. Agency ids can be retrieved using the /api/v1.0/agencies path.",
+                        "type": "string"
+                    },
+                    "collected_by": {
+                        "description": "Description of who data was collected by. See Best Practices document for information on how to format this string.",
+                        "type": "string"
+                    },
+                    "collection_date": {
+                        "format": "date-time",
                         "description": "date-time that data was collected",
                         "type": "string"
                     },
@@ -1172,36 +1231,184 @@
                         "description": "date until which this data is valid",
                         "type": "string"
                     },
-                    "schema_version": {
-                        "description": "version of gtfs flex schema this file conforms to",
-                        "type": "string"
-                    },
-                    "uri": {
-                        "description": "uri where the flex file can be retrieved from",
-                        "type": "string"
+                    "confidence_level": {
+                        "description": "tdei-generated confidence level. Confidence level range is: 0 (very low confidence) to 100 (very high confidence).",
+                        "type": "integer"
                     },
                     "data_source": {
                         "description": "Description of data source or sources from which the data was collected. See Best Practices document for information on how to format this string.",
                         "type": "string"
                     },
                     "polygon": {
-                        "description": "Optional polygon that indicates the boundaries of data included in this file. ",
+                        "$ref": "#/components/schemas/polygon",
+                        "description": "Polygon that indicates the boundaries of data included in this file. "
+                    },
+                    "tdei_record_id": {
+                        "description": "unique id identifying the file in the tdei system, can be used to retrieve the file itself.",
+                        "type": "string"
+                    },
+                    "flex_schema_version": {
+                        "description": "version of gtfs flex schema this file conforms to",
+                        "type": "string"
+                    },
+                    "download_url": {
+                        "description": "The url from which this file can be downloaded.",
                         "type": "string"
                     }
                 },
                 "example": {
-                    "collected_by": "some text",
+                    "tdei_agency_id": "5cfdf0f1-902b-4e2d-9297-b979b2d5d905",
+                    "collected_by": "See best practices document",
                     "collection_date": "2018-02-10T09:30Z",
-                    "collection_method": "some text",
+                    "collection_method": "See best practices document",
                     "valid_from": "2018-02-10T09:30Z",
                     "valid_to": "2018-02-10T09:30Z",
-                    "schema_version": "some text",
-                    "uri": "some text",
-                    "data_source": "some text",
-                    "polygon": "some text"
+                    "flex_schema_version": "v1.1",
+                    "confidence_level": 41,
+                    "data_source": "See best practices document",
+                    "polygon": {
+                        "type": "FeatureCollection",
+                        "features": [
+                            {
+                                "type": "Feature",
+                                "properties": {},
+                                "geometry": {
+                                    "type": "Polygon",
+                                    "coordinates": [
+                                        [
+                                            [
+                                                -122.20985412597656,
+                                                47.65868172346142
+                                            ],
+                                            [
+                                                -122.24418640136719,
+                                                47.65636923655089
+                                            ]
+                                        ]
+                                    ]
+                                }
+                            }
+                        ]
+                    },
+                    "tdei_record_id": "4e991e7a-5c16-4ebf-ad31-3a3625bcca10",
+                    "download_url": "/api/v1/gtfs-flex/{tdei_record_id}"
                 }
             },
-            "osw_download": {
+            "gtfs_flex_download": {
+                "description": "information included when providing a list of gtfs flex files.",
+                "required": [
+                    "pageable",
+                    "gtfs_flex_metadata"
+                ],
+                "type": "object",
+                "properties": {
+                    "pageable": {
+                        "$ref": "#/components/schemas/pageable",
+                        "description": "pageability information"
+                    },
+                    "gtfs_flex_metadata": {
+                        "description": "metadata about gtfs flex files",
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/gtfs_pathways_download_md"
+                        }
+                    }
+                }
+            },
+            "gtfs_pathways_download_md": {
+                "title": "Root Type for gtfs_flex",
+                "description": "represents a gtfs_flex data file. same as in consumer api, ",
+                "required": [
+                    "tdei_agency_id",
+                    "collected_by",
+                    "collection_date",
+                    "collection_method",
+                    "valid_from",
+                    "pathways_schema_version",
+                    "confidence_level",
+                    "tdei_record_id",
+                    "data_source",
+                    "tdei_station_id",
+                    "download_url"
+                ],
+                "type": "object",
+                "properties": {
+                    "tdei_agency_id": {
+                        "description": "tdei-assigned agency id. Represented as UUID. Agency ids can be retrieved using the /api/v1.0/agencies path.",
+                        "type": "string"
+                    },
+                    "collected_by": {
+                        "description": "Description of who data was collected by. See Best Practices document for information on how to format this string.",
+                        "type": "string"
+                    },
+                    "collection_date": {
+                        "format": "date-time",
+                        "description": "date-time that data was collected",
+                        "type": "string"
+                    },
+                    "collection_method": {
+                        "description": "Method by which the data was collected. See Best Practices document for information on how to format this string.",
+                        "type": "string"
+                    },
+                    "valid_from": {
+                        "format": "date-time",
+                        "description": "date from which this file is valid",
+                        "type": "string"
+                    },
+                    "valid_to": {
+                        "format": "date-time",
+                        "description": "date until which this data is valid",
+                        "type": "string"
+                    },
+                    "confidence_level": {
+                        "description": "tdei-generated confidence level. Confidence level range is: 0 (very low confidence) to 100 (very high confidence).",
+                        "type": "integer"
+                    },
+                    "data_source": {
+                        "description": "Description of data source or sources from which the data was collected. See Best Practices document for information on how to format this string.",
+                        "type": "string"
+                    },
+                    "tdei_station_id": {
+                        "description": "tdei-assigned station id. Represented as UUID. Station ids can be retrieved using the /api/v1.0/stations path.",
+                        "type": "string"
+                    },
+                    "tdei_record_id": {
+                        "description": "unique id identifying the file in the tdei system, can be used to retrieve the file itself.",
+                        "type": "string"
+                    },
+                    "pathways_schema_version": {
+                        "description": "version of gtfs pathways schema this file conforms to",
+                        "type": "string"
+                    },
+                    "download_url": {
+                        "description": "The url from which this file can be downloaded.",
+                        "type": "string"
+                    }
+                },
+                "example": "{\n    \"collected_by\": \"See best practices document\",\n    \"collection_date\": \"2018-02-10T09:30Z\",\n    \"collection_method\": \"See best practices document\",\n    \"confidence_level\": 41,\n    \"data_source\": \"See best practices document\",\n    \"download_url\": \"/api/v1/gtfs-pathways/{tdei_record_id}\",\n    \"pathways_schema_version\": \"v1.1\",\n    \"tdei_agency_id\": \"5cfdf0f1-902b-4e2d-9297-b979b2d5d905\",\n    \"tdei_station_id\": \"29dd4f2e-981a-46dc-b00d-0dc1937b2e53\",\n    \"valid_from\": \"2018-02-10T09:30Z\",\n    \"valid_to\": \"2018-02-10T09:30Z\",\n    \"tdei_record_id\": \"4e991e7a-5c16-4ebf-ad31-3a3625bcca10\",\n}"
+            },
+            "gtfs_pathways_download": {
+                "description": "information to be provided along with a list of pathways files",
+                "required": [
+                    "pageable",
+                    "gtfs_pathways_metadata"
+                ],
+                "type": "object",
+                "properties": {
+                    "pageable": {
+                        "$ref": "#/components/schemas/pageable",
+                        "description": "pageability information"
+                    },
+                    "gtfs_pathways_metadata": {
+                        "description": "metadata about gtfs pathways files",
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/gtfs_pathways_download_md"
+                        }
+                    }
+                }
+            },
+            "osw_download_md": {
                 "title": "Root Type for gtfs_flex",
                 "description": "represents a gtfs_flex data file. same as in consumer api, ",
                 "required": [
@@ -1209,11 +1416,12 @@
                     "collection_date",
                     "collection_method",
                     "valid_from",
-                    "schema_version",
+                    "osw_schema_version",
                     "tdei_record_id",
                     "data_source",
                     "polygon",
-                    "confidence_level"
+                    "confidence_level",
+                    "download_url"
                 ],
                 "type": "object",
                 "properties": {
@@ -1240,38 +1448,157 @@
                         "description": "date until which this data is valid",
                         "type": "string"
                     },
-                    "schema_version": {
-                        "description": "version of gtfs flex schema this file conforms to",
-                        "type": "string"
-                    },
                     "data_source": {
                         "description": "Description of data source or sources from which the data was collected. See Best Practices document for information on how to format this string.",
                         "type": "string"
                     },
                     "polygon": {
+                        "$ref": "#/components/schemas/polygon",
                         "description": "Optional polygon that indicates the boundaries of data included in this file. ",
-                        "type": "string"
+                        "example": ""
                     },
                     "confidence_level": {
-                        "description": "tdei-generated confidence level",
+                        "description": "tdei-generated confidence level. Confidence level range is: 0 (very low confidence) to 100 (very high confidence).",
                         "type": "integer"
                     },
                     "tdei_record_id": {
                         "description": "unique id identifying the file in the tdei system, can be used to retrieve the file itself.",
                         "type": "string"
+                    },
+                    "osw_schema_version": {
+                        "description": "version of gtfs flex schema this file conforms to",
+                        "type": "string"
+                    },
+                    "download_url": {
+                        "description": "The url from which this file can be downloaded.",
+                        "type": "string"
                     }
                 },
                 "example": {
-                    "collected_by": "some text",
+                    "collected_by": "See best practices document",
                     "collection_date": "2018-02-10T09:30Z",
-                    "collection_method": "some text",
+                    "collection_method": "See best practices document",
                     "valid_from": "2018-02-10T09:30Z",
                     "valid_to": "2018-02-10T09:30Z",
-                    "schema_version": "some text",
-                    "data_source": "some text",
-                    "polygon": "some text",
-                    "confidence_level": 81,
-                    "tdei_record_id": "some text"
+                    "osw_schema_version": "v1.1",
+                    "confidence_level": 41,
+                    "data_source": "See best practices document",
+                    "tdei_record_id": "4e991e7a-5c16-4ebf-ad31-3a3625bcca10",
+                    "download_url": "/api/v1/osw/{tdei_record_id}",
+                    "polygon": {
+                        "type": "FeatureCollection",
+                        "features": [
+                            {
+                                "type": "Feature",
+                                "properties": {},
+                                "geometry": {
+                                    "type": "Polygon",
+                                    "coordinates": [
+                                        [
+                                            [
+                                                -122.20985412597656,
+                                                47.65868172346142
+                                            ],
+                                            [
+                                                -122.24418640136719,
+                                                47.65636923655089
+                                            ]
+                                        ]
+                                    ]
+                                }
+                            }
+                        ]
+                    }
+                }
+            },
+            "osw_download": {
+                "description": "information provided with a list of osw files to be downloaded",
+                "required": [
+                    "pageable",
+                    "osw_metadata"
+                ],
+                "type": "object",
+                "properties": {
+                    "pageable": {
+                        "$ref": "#/components/schemas/pageable",
+                        "description": "pageability information"
+                    },
+                    "osw_metadata": {
+                        "description": "metadata about the osw files",
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/osw_download_md"
+                        }
+                    }
+                }
+            },
+            "polygon": {
+                "title": "Root Type for polygon",
+                "description": "geo-json polygon",
+                "type": "object",
+                "properties": {
+                    "type": {
+                        "type": "string"
+                    },
+                    "features": {
+                        "type": "array",
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "type": {
+                                    "type": "string"
+                                },
+                                "properties": {
+                                    "type": "object"
+                                },
+                                "geometry": {
+                                    "type": "object",
+                                    "properties": {
+                                        "type": {
+                                            "type": "string"
+                                        },
+                                        "coordinates": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "array",
+                                                "items": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "format": "double",
+                                                        "type": "number"
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "example": {
+                    "type": "FeatureCollection",
+                    "features": [
+                        {
+                            "type": "Feature",
+                            "properties": {},
+                            "geometry": {
+                                "type": "Polygon",
+                                "coordinates": [
+                                    [
+                                        [
+                                            -122.20985412597656,
+                                            47.65868172346142
+                                        ],
+                                        [
+                                            -122.24418640136719,
+                                            47.65636923655089
+                                        ]
+                                    ]
+                                ]
+                            }
+                        }
+                    ]
                 }
             }
         },
