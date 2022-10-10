@@ -3,7 +3,7 @@
     "info": {
         "title": "TDEI API",
         "version": "1.0",
-        "description": "This is an API for applications consuming data from and publishing data to the Transportation Data Equity Initiative (TDEI) data system. This API supports consuming and publishing of GTFS-Pathways, GTFS-Flex v2 and OpenSidewalks data from and to the TDEI.",
+        "description": "This is an API for publishing data to the Transportation Data Equity Initiative (TDEI) data system. This API is intended for applications producing data for and consuming data from the TDEI system. This API supports publishing of GTFS-Pathways, GTFS-Flex v2 and OpenSidewalks data to the TDEI. ",
         "contact": {
             "name": "TDEI Support",
             "url": "https://placeholder.transequity.cs.washington.edu/support",
@@ -67,82 +67,6 @@
                 "operationId": "list-api-versions",
                 "summary": "List available API versions",
                 "description": "Returns a json list of the versions of the TDEI API which are available."
-            }
-        },
-        "/api/v1/agencies": {
-            "summary": "Path used to retrieve the list of agencies with data in the TDEI system.",
-            "description": "",
-            "get": {
-                "tags": [
-                    "General"
-                ],
-                "responses": {
-                    "200": {
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "array",
-                                    "items": {
-                                        "$ref": "#/components/schemas/agency"
-                                    }
-                                }
-                            }
-                        },
-                        "description": "Successful response - returns an array of `Agency` entities."
-                    },
-                    "401": {
-                        "$ref": "#/components/responses/Unauthorized"
-                    },
-                    "500": {
-                        "$ref": "#/components/responses/InternalServerError"
-                    }
-                },
-                "security": [
-                    {
-                        "ApplicationId": []
-                    }
-                ],
-                "operationId": "list-agencies",
-                "summary": "List Agencies",
-                "description": "Path used to retrieve the list of agencies with data in the TDEI system. Allows callers to get the tdei_agency_id id for an agency.\n\nReturns the tdei_agency_id and agency information for all agencies with data in the TDEI system. "
-            }
-        },
-        "/api/v1/stations": {
-            "summary": "Path used to retrieve the list of stations with data in the TDEI system.",
-            "description": "",
-            "get": {
-                "tags": [
-                    "General"
-                ],
-                "responses": {
-                    "200": {
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "array",
-                                    "items": {
-                                        "$ref": "#/components/schemas/station"
-                                    }
-                                }
-                            }
-                        },
-                        "description": "Returns an array of `Station` entities. "
-                    },
-                    "401": {
-                        "$ref": "#/components/responses/Unauthorized"
-                    },
-                    "500": {
-                        "$ref": "#/components/responses/InternalServerError"
-                    }
-                },
-                "security": [
-                    {
-                        "ApplicationId": []
-                    }
-                ],
-                "operationId": "list-stations",
-                "summary": "List Stations",
-                "description": "Path used to retrieve the list of stations with data in the TDEI system. Allows callers to get the tdei_station_id id for a station.\n\nReturns the tdei_station_id and station information for all stations with data in the TDEI system. "
             }
         },
         "/api/v1/osw/versions": {
@@ -396,7 +320,7 @@
                         "required": false
                     },
                     {
-                        "name": "tdei_agency_id",
+                        "name": "tdei_org_id",
                         "description": "tdei-assigned agency id. Necessary to ensure that agency ids are unique. Represented as a UUID.",
                         "schema": {
                             "type": "string"
@@ -702,7 +626,7 @@
                         "in": "query"
                     },
                     {
-                        "name": "tdei_agency_id",
+                        "name": "tdei_org_id",
                         "description": "tdei-assigned agency id. Necessary to ensure that agency ids are unique. Represented as a UUID.",
                         "schema": {
                             "type": "string"
@@ -818,6 +742,140 @@
                 "summary": "upload a new gtfs_flex file",
                 "description": "This call allows a user to upload or create a new gtfs pathways file. The caller must provide metadata about the file. Required metadata includes information about how and when the data was collected and valid dates of the file. Returns the tdei_record_id of the uploaded file."
             }
+        },
+        "/api/v1/organizations": {
+            "summary": "Path used to retrieve the list of agencies with data in the TDEI system.",
+            "description": "",
+            "get": {
+                "tags": [
+                    "General"
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/organization"
+                                    }
+                                }
+                            }
+                        },
+                        "description": "Successful response - returns an array of `Agency` entities."
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/Unauthorized"
+                    },
+                    "500": {
+                        "$ref": "#/components/responses/InternalServerError"
+                    }
+                },
+                "security": [
+                    {
+                        "ApplicationId": []
+                    }
+                ],
+                "operationId": "list-agencies",
+                "summary": "List Agencies",
+                "description": "Path used to retrieve the list of agencies with data in the TDEI system. Allows callers to get the tdei_agency_id id for an agency.\n\nReturns the tdei_agency_id and agency information for all agencies with data in the TDEI system. "
+            }
+        },
+        "/api/v1/gtfs-pathways/stations": {
+            "summary": "Path used to retrieve the list of stations with data in the TDEI system.",
+            "description": "",
+            "get": {
+                "tags": [
+                    "GTFS-Pathways"
+                ],
+                "parameters": [
+                    {
+                        "name": "tdei_org_id",
+                        "description": "TDEI organization id.",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/station"
+                                    }
+                                }
+                            }
+                        },
+                        "description": "Returns an array of `Station` entities. "
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/Unauthorized"
+                    },
+                    "500": {
+                        "$ref": "#/components/responses/InternalServerError"
+                    }
+                },
+                "security": [
+                    {
+                        "ApplicationId": []
+                    }
+                ],
+                "operationId": "list-stations",
+                "summary": "List Stations",
+                "description": "Path used to retrieve the list of stations with data in the TDEI system. Allows callers to get the tdei_station_id id for a station.\n\nReturns the tdei_station_id and station information for all stations with data in the TDEI system. \n\nIf tdei_org_id param is specified, will return stations for that organization."
+            }
+        },
+        "/api/v1/gtfs-flex/feeds/": {
+            "summary": "Path used to retrieve the list of gtfs-flex feeds in the TDEI system.",
+            "description": "",
+            "get": {
+                "tags": [
+                    "GTFS-Flex"
+                ],
+                "parameters": [
+                    {
+                        "name": "tdei_org_id",
+                        "description": "organization id",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/feed"
+                                    }
+                                }
+                            }
+                        },
+                        "description": "Returns an array of `Feed` entities. "
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/Unauthorized"
+                    },
+                    "500": {
+                        "$ref": "#/components/responses/InternalServerError"
+                    }
+                },
+                "security": [
+                    {
+                        "ApplicationId": []
+                    }
+                ],
+                "operationId": "list-feeds",
+                "summary": "List GTFS Flex Feeds",
+                "description": "Path used to retrieve the list of GTFS Flex feeds in the TDEI system. Allows callers to get the tdei_feed_id id for a feed.\n\nReturns the tdei_feed_id and feed for all feeds in the TDEI system. \n\nIf tdei_org_id param is used, will return feed for that organization."
+            }
         }
     },
     "components": {
@@ -837,28 +895,6 @@
                             "$ref": "#/components/schemas/versionSpec"
                         }
                     }
-                }
-            },
-            "agency": {
-                "description": "Includes gtfs agency information and a tdei agency id. Necessary as gtfs agency id may not be unique across agencies.",
-                "required": [
-                    "tdei_agency_id",
-                    "agency_name"
-                ],
-                "type": "object",
-                "properties": {
-                    "tdei_agency_id": {
-                        "description": "tdei-assigned agency id. Necessary to ensure that agency ids are unique. Represented as a UUID.",
-                        "type": "string"
-                    },
-                    "agency_name": {
-                        "description": "Agency name. Typically the agency name used in GTFS releases.",
-                        "type": "string"
-                    }
-                },
-                "example": {
-                    "tdei_agency_id": "45",
-                    "agency_name": "King County Metro"
                 }
             },
             "station": {
@@ -887,20 +923,17 @@
                 "title": "Root Type for gtfs_flex",
                 "description": "represents a gtfs_flex data file. same as in consumer api, ",
                 "required": [
-                    "tdei_agency_id",
+                    "tdei_org_id",
                     "collected_by",
                     "collection_date",
                     "collection_method",
                     "valid_from",
                     "flex_schema_version",
-                    "data_source"
+                    "data_source",
+                    "tdei_feed_id"
                 ],
                 "type": "object",
                 "properties": {
-                    "tdei_agency_id": {
-                        "description": "tdei-assigned agency id. Represented as UUID. Agency ids can be retrieved using the /api/v1.0/agencies path.",
-                        "type": "string"
-                    },
                     "collected_by": {
                         "description": "Description of who data was collected by. See Best Practices document for information on how to format this string.",
                         "type": "string"
@@ -935,48 +968,23 @@
                     "flex_schema_version": {
                         "description": "version of gtfs flex schema this file conforms to",
                         "type": "string"
+                    },
+                    "tdei_org_id": {
+                        "description": "tdei-assigned agency id. Represented as UUID. Agency ids can be retrieved using the /api/v1.0/agencies path.",
+                        "type": "string"
+                    },
+                    "tdei_feed_id": {
+                        "description": "TDEI id of a GTFS Flex feed",
+                        "type": "string"
                     }
                 },
-                "example": {
-                    "tdei_agency_id": "5cfdf0f1-902b-4e2d-9297-b979b2d5d905",
-                    "collected_by": "See best practices document",
-                    "collection_date": "2018-02-10T09:30Z",
-                    "collection_method": "See best practices document",
-                    "valid_from": "2018-02-10T09:30Z",
-                    "valid_to": "2018-02-10T09:30Z",
-                    "flex_schema_version": "v1.1",
-                    "data_source": "See best practices document",
-                    "polygon": {
-                        "type": "FeatureCollection",
-                        "features": [
-                            {
-                                "type": "Feature",
-                                "properties": {},
-                                "geometry": {
-                                    "type": "Polygon",
-                                    "coordinates": [
-                                        [
-                                            [
-                                                -122.20985412597656,
-                                                47.65868172346142
-                                            ],
-                                            [
-                                                -122.24418640136719,
-                                                47.65636923655089
-                                            ]
-                                        ]
-                                    ]
-                                }
-                            }
-                        ]
-                    }
-                }
+                "example": "{\n    \"tdei_org_id\": \"5cfdf0f1-902b-4e2d-9297-b979b2d5d905\",\n    \"tdei_feed_id\": \"\"29dd4f2e-981a-46dc-b00d-0dc1937b2e53,\n    \"collected_by\": \"See best practices document\",\n    \"collection_date\": \"2018-02-10T09:30Z\",\n    \"collection_method\": \"See best practices document\",\n    \"valid_from\": \"2018-02-10T09:30Z\",\n    \"valid_to\": \"2018-02-10T09:30Z\",\n    \"flex_schema_version\": \"v1.1\",\n    \"data_source\": \"See best practices document\",\n    \"polygon\": {\n        \"type\": \"FeatureCollection\",\n        \"features\": [\n            {\n                \"type\": \"Feature\",\n                \"properties\": {},\n                \"geometry\": {\n                    \"type\": \"Polygon\",\n                    \"coordinates\": [\n                        [\n                            [\n                                -122.20985412597656,\n                                47.65868172346142\n                            ],\n                            [\n                                -122.24418640136719,\n                                47.65636923655089\n                            ]\n                        ]\n                    ]\n                }\n            }\n        ]\n    }\n}"
             },
             "gtfs_pathways_upload": {
                 "title": "Root Type for gtfs_flex",
                 "description": "represents a gtfs_flex data file. same as in consumer api, ",
                 "required": [
-                    "tdei_agency_id",
+                    "tdei_org_id",
                     "collected_by",
                     "collection_date",
                     "collection_method",
@@ -987,10 +995,6 @@
                 ],
                 "type": "object",
                 "properties": {
-                    "tdei_agency_id": {
-                        "description": "tdei-assigned agency id. Represented as UUID. Agency ids can be retrieved using the /api/v1.0/agencies path.",
-                        "type": "string"
-                    },
                     "collected_by": {
                         "description": "Description of who data was collected by. See Best Practices document for information on how to format this string.",
                         "type": "string"
@@ -1025,10 +1029,14 @@
                     "pathways_schema_version": {
                         "description": "version of gtfs pathways schema this file conforms to",
                         "type": "string"
+                    },
+                    "tdei_org_id": {
+                        "description": "tdei-assigned agency id. Represented as UUID. Agency ids can be retrieved using the /api/v1.0/agencies path.",
+                        "type": "string"
                     }
                 },
                 "example": {
-                    "tdei_agency_id": "5cfdf0f1-902b-4e2d-9297-b979b2d5d905",
+                    "tdei_org_id": "5cfdf0f1-902b-4e2d-9297-b979b2d5d905",
                     "tdei_station_id": "29dd4f2e-981a-46dc-b00d-0dc1937b2e53",
                     "collected_by": "See best practices document",
                     "collection_date": "2018-02-10T09:30Z",
@@ -1190,7 +1198,7 @@
                 "title": "Root Type for gtfs_flex",
                 "description": "represents a gtfs_flex data file. same as in consumer api, ",
                 "required": [
-                    "tdei_agency_id",
+                    "tdei_org_id",
                     "collected_by",
                     "collection_date",
                     "collection_method",
@@ -1200,14 +1208,11 @@
                     "tdei_record_id",
                     "data_source",
                     "polygon",
-                    "download_url"
+                    "download_url",
+                    "tdei_feed_id"
                 ],
                 "type": "object",
                 "properties": {
-                    "tdei_agency_id": {
-                        "description": "tdei-assigned agency id. Represented as UUID. Agency ids can be retrieved using the /api/v1.0/agencies path.",
-                        "type": "string"
-                    },
                     "collected_by": {
                         "description": "Description of who data was collected by. See Best Practices document for information on how to format this string.",
                         "type": "string"
@@ -1254,10 +1259,19 @@
                     "download_url": {
                         "description": "The url from which this file can be downloaded.",
                         "type": "string"
+                    },
+                    "tdei_org_id": {
+                        "description": "tdei-assigned agency id. Represented as UUID. Agency ids can be retrieved using the /api/v1.0/agencies path.",
+                        "type": "string"
+                    },
+                    "tdei_feed_id": {
+                        "description": "the id of the data feed being downloaded from",
+                        "type": "string"
                     }
                 },
                 "example": {
-                    "tdei_agency_id": "5cfdf0f1-902b-4e2d-9297-b979b2d5d905",
+                    "tdei_org_id": "5cfdf0f1-902b-4e2d-9297-b979b2d5d905",
+                    "tdei_feed_id": "29dd4f2e-981a-46dc-b00d-0dc1937b2e53",
                     "collected_by": "See best practices document",
                     "collection_date": "2018-02-10T09:30Z",
                     "collection_method": "See best practices document",
@@ -1319,7 +1333,7 @@
                 "title": "Root Type for gtfs_flex",
                 "description": "represents a gtfs_flex data file. same as in consumer api, ",
                 "required": [
-                    "tdei_agency_id",
+                    "tdei_org_id",
                     "collected_by",
                     "collection_date",
                     "collection_method",
@@ -1333,10 +1347,6 @@
                 ],
                 "type": "object",
                 "properties": {
-                    "tdei_agency_id": {
-                        "description": "tdei-assigned agency id. Represented as UUID. Agency ids can be retrieved using the /api/v1.0/agencies path.",
-                        "type": "string"
-                    },
                     "collected_by": {
                         "description": "Description of who data was collected by. See Best Practices document for information on how to format this string.",
                         "type": "string"
@@ -1383,9 +1393,13 @@
                     "download_url": {
                         "description": "The url from which this file can be downloaded.",
                         "type": "string"
+                    },
+                    "tdei_org_id": {
+                        "description": "tdei-assigned agency id. Represented as UUID. Agency ids can be retrieved using the /api/v1.0/agencies path.",
+                        "type": "string"
                     }
                 },
-                "example": "{\n    \"collected_by\": \"See best practices document\",\n    \"collection_date\": \"2018-02-10T09:30Z\",\n    \"collection_method\": \"See best practices document\",\n    \"confidence_level\": 41,\n    \"data_source\": \"See best practices document\",\n    \"download_url\": \"/api/v1/gtfs-pathways/{tdei_record_id}\",\n    \"pathways_schema_version\": \"v1.1\",\n    \"tdei_agency_id\": \"5cfdf0f1-902b-4e2d-9297-b979b2d5d905\",\n    \"tdei_station_id\": \"29dd4f2e-981a-46dc-b00d-0dc1937b2e53\",\n    \"valid_from\": \"2018-02-10T09:30Z\",\n    \"valid_to\": \"2018-02-10T09:30Z\",\n    \"tdei_record_id\": \"4e991e7a-5c16-4ebf-ad31-3a3625bcca10\",\n}"
+                "example": "{\n    \"collected_by\": \"See best practices document\",\n    \"collection_date\": \"2018-02-10T09:30Z\",\n    \"collection_method\": \"See best practices document\",\n    \"confidence_level\": 41,\n    \"data_source\": \"See best practices document\",\n    \"download_url\": \"/api/v1/gtfs-pathways/{tdei_record_id}\",\n    \"pathways_schema_version\": \"v1.1\",\n    \"tdei_org_id\": \"5cfdf0f1-902b-4e2d-9297-b979b2d5d905\",\n    \"tdei_station_id\": \"29dd4f2e-981a-46dc-b00d-0dc1937b2e53\",\n    \"valid_from\": \"2018-02-10T09:30Z\",\n    \"valid_to\": \"2018-02-10T09:30Z\",\n    \"tdei_record_id\": \"4e991e7a-5c16-4ebf-ad31-3a3625bcca10\",\n}"
             },
             "gtfs_pathways_download": {
                 "description": "information to be provided along with a list of pathways files",
@@ -1599,6 +1613,50 @@
                             }
                         }
                     ]
+                }
+            },
+            "organization": {
+                "description": "Includes gtfs agency information and a tdei agency id. Necessary as gtfs agency id may not be unique across agencies.",
+                "required": [
+                    "tdei_org_id",
+                    "org_name"
+                ],
+                "type": "object",
+                "properties": {
+                    "org_name": {
+                        "description": "Agency name. Typically the agency name used in GTFS releases.",
+                        "type": "string"
+                    },
+                    "tdei_org_id": {
+                        "description": "tdei-assigned agency id. Necessary to ensure that agency ids are unique. Represented as a UUID.",
+                        "type": "string"
+                    }
+                },
+                "example": {
+                    "tdei_org_id": "29dd4f2e-981a-46dc-b00d-0dc1937b2e53",
+                    "org_name": "King County Metro"
+                }
+            },
+            "feed": {
+                "description": "Includes gtfs station information and a tdei agency id. Necessary as gtfs station id may not be unique across agencies.",
+                "required": [
+                    "tdei_feed_id",
+                    "feed_name"
+                ],
+                "type": "object",
+                "properties": {
+                    "feed_name": {
+                        "description": "station_name used in GTFS files",
+                        "type": "string"
+                    },
+                    "tdei_feed_id": {
+                        "description": "tdei assigned station id. Necessary to ensure that station ids are unique.",
+                        "type": "integer"
+                    }
+                },
+                "example": {
+                    "tdei_feed_id": "29dd4f2e-981a-46dc-b00d-0dc1937b2e53",
+                    "feed_name": "Hyde Shuttle"
                 }
             }
         },
