@@ -167,6 +167,14 @@
                             "type": "integer"
                         },
                         "in": "query"
+                    },
+                    {
+                        "name": "tdei_org_id",
+                        "description": "tdei organization id.",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "in": "query"
                     }
                 ],
                 "responses": {
@@ -211,6 +219,9 @@
                     },
                     "required": true
                 },
+                "tags": [
+                    "OSW"
+                ],
                 "responses": {
                     "202": {
                         "content": {
@@ -350,6 +361,14 @@
                             "type": "integer"
                         },
                         "in": "query"
+                    },
+                    {
+                        "name": "tdei_station_id",
+                        "description": "id of a station in the tdei system. gtfs station ids may not be unique",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "in": "query"
                     }
                 ],
                 "responses": {
@@ -394,6 +413,9 @@
                     },
                     "required": true
                 },
+                "tags": [
+                    "GTFS-pathways"
+                ],
                 "responses": {
                     "202": {
                         "content": {
@@ -668,6 +690,14 @@
                             "type": "integer"
                         },
                         "in": "query"
+                    },
+                    {
+                        "name": "tdei_service_id",
+                        "description": "Id of the flex service.",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "in": "query"
                     }
                 ],
                 "responses": {
@@ -698,7 +728,7 @@
                 ],
                 "operationId": "list-flex-files",
                 "summary": "List flex files meeting specified criteria.",
-                "description": "This endpoint returns a json list of all gtfs flex files stored in the TDEI system that meet the specified criteria. Criteria that can be specified include: bounding box, minimum confidence level, flex version, date time and agency id.\n\nThis endpoint can be used by an application developer to obtain a list of gtfs flex files in the TDEI system meeting the specified criteria. This endpoint returns a list of file-metadata including the uris of the file, which can be used to fetch the files themselves."
+                "description": "This endpoint returns a json list of all gtfs flex files stored in the TDEI system that meet the specified criteria. Criteria that can be specified include: bounding box, minimum confidence level, flex version, date time and organization id.\n\nThis endpoint can be used by an application developer to obtain a list of gtfs flex files in the TDEI system meeting the specified criteria. This endpoint returns a list of file-metadata including the uris of the file, which can be used to fetch the files themselves."
             },
             "post": {
                 "requestBody": {
@@ -712,6 +742,9 @@
                     },
                     "required": true
                 },
+                "tags": [
+                    "GTFS-Flex"
+                ],
                 "responses": {
                     "202": {
                         "content": {
@@ -829,7 +862,7 @@
                 "description": "Path used to retrieve the list of stations with data in the TDEI system. Allows callers to get the tdei_station_id id for a station.\n\nReturns the tdei_station_id and station information for all stations with data in the TDEI system. \n\nIf tdei_org_id param is specified, will return stations for that organization."
             }
         },
-        "/api/v1/gtfs-flex/feeds/": {
+        "/api/v1/gtfs-flex/services": {
             "summary": "Path used to retrieve the list of gtfs-flex feeds in the TDEI system.",
             "description": "",
             "get": {
@@ -853,12 +886,12 @@
                                 "schema": {
                                     "type": "array",
                                     "items": {
-                                        "$ref": "#/components/schemas/feed"
+                                        "$ref": "#/components/schemas/service"
                                     }
                                 }
                             }
                         },
-                        "description": "Returns an array of `Feed` entities. "
+                        "description": "Returns an array of `Service` entities. "
                     },
                     "401": {
                         "$ref": "#/components/responses/Unauthorized"
@@ -872,9 +905,9 @@
                         "ApplicationId": []
                     }
                 ],
-                "operationId": "list-feeds",
+                "operationId": "list-flex-feeds",
                 "summary": "List GTFS Flex Feeds",
-                "description": "Path used to retrieve the list of GTFS Flex feeds in the TDEI system. Allows callers to get the tdei_feed_id id for a feed.\n\nReturns the tdei_feed_id and feed for all feeds in the TDEI system. \n\nIf tdei_org_id param is used, will return feed for that organization."
+                "description": "Path used to retrieve the list of GTFS Services in the TDEI system. Allows callers to get the tdei_service_id id for a service.\n\nReturns the tdei_service_id and service name for all services in the TDEI system. \n\nIf tdei_org_id param is used, will return services for that organization."
             }
         }
     },
@@ -930,7 +963,7 @@
                     "valid_from",
                     "flex_schema_version",
                     "data_source",
-                    "tdei_feed_id"
+                    "tdei_service_id"
                 ],
                 "type": "object",
                 "properties": {
@@ -973,8 +1006,8 @@
                         "description": "tdei-assigned agency id. Represented as UUID. Agency ids can be retrieved using the /api/v1.0/agencies path.",
                         "type": "string"
                     },
-                    "tdei_feed_id": {
-                        "description": "TDEI id of a GTFS Flex feed",
+                    "tdei_service_id": {
+                        "description": "TDEI id of a GTFS Flex service",
                         "type": "string"
                     }
                 },
@@ -1057,7 +1090,8 @@
                     "valid_from",
                     "osw_schema_version",
                     "data_source",
-                    "polygon"
+                    "polygon",
+                    "tdei_org_id"
                 ],
                 "type": "object",
                 "properties": {
@@ -1095,6 +1129,10 @@
                     "osw_schema_version": {
                         "description": "version of gtfs flex schema this file conforms to",
                         "type": "string"
+                    },
+                    "tdei_org_id": {
+                        "description": "id of the organization which this file is for.",
+                        "type": "string"
                     }
                 },
                 "example": {
@@ -1105,6 +1143,7 @@
                     "valid_to": "2018-02-10T09:30Z",
                     "osw_schema_version": "v1.1",
                     "data_source": "See best practices document",
+                    "tdei_org_id": "4e991e7a-5c16-4ebf-ad31-3a3625bcca10",
                     "polygon": {
                         "type": "FeatureCollection",
                         "features": [
@@ -1209,7 +1248,7 @@
                     "data_source",
                     "polygon",
                     "download_url",
-                    "tdei_feed_id"
+                    "tdei_service_id"
                 ],
                 "type": "object",
                 "properties": {
@@ -1264,8 +1303,8 @@
                         "description": "tdei-assigned agency id. Represented as UUID. Agency ids can be retrieved using the /api/v1.0/agencies path.",
                         "type": "string"
                     },
-                    "tdei_feed_id": {
-                        "description": "the id of the data feed being downloaded from",
+                    "tdei_service_id": {
+                        "description": "the id of the data service being downloaded from",
                         "type": "string"
                     }
                 },
@@ -1486,6 +1525,10 @@
                     "download_url": {
                         "description": "The url from which this file can be downloaded.",
                         "type": "string"
+                    },
+                    "tdei_org_id": {
+                        "description": "id of the organizatoin with which this file is associated",
+                        "type": "string"
                     }
                 },
                 "example": {
@@ -1497,6 +1540,7 @@
                     "osw_schema_version": "v1.1",
                     "confidence_level": 41,
                     "data_source": "See best practices document",
+                    "tdei_org_id": "4e991e7a-5c16-4ebf-ad31-3a3625bcca10",
                     "tdei_record_id": "4e991e7a-5c16-4ebf-ad31-3a3625bcca10",
                     "download_url": "/api/v1/osw/{tdei_record_id}",
                     "polygon": {
@@ -1637,26 +1681,26 @@
                     "org_name": "King County Metro"
                 }
             },
-            "feed": {
-                "description": "Includes gtfs station information and a tdei agency id. Necessary as gtfs station id may not be unique across agencies.",
+            "service": {
+                "description": "Includes name and tdei id of a gtfs flex service. ",
                 "required": [
-                    "tdei_feed_id",
-                    "feed_name"
+                    "tdei_service_id",
+                    "service_name"
                 ],
                 "type": "object",
                 "properties": {
-                    "feed_name": {
+                    "service_name": {
                         "description": "station_name used in GTFS files",
                         "type": "string"
                     },
-                    "tdei_feed_id": {
+                    "tdei_service_id": {
                         "description": "tdei assigned station id. Necessary to ensure that station ids are unique.",
                         "type": "integer"
                     }
                 },
                 "example": {
-                    "tdei_feed_id": "29dd4f2e-981a-46dc-b00d-0dc1937b2e53",
-                    "feed_name": "Hyde Shuttle"
+                    "tdei_service_id": "29dd4f2e-981a-46dc-b00d-0dc1937b2e53",
+                    "service_name": "Hyde Shuttle"
                 }
             }
         },
