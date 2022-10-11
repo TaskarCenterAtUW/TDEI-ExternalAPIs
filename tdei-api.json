@@ -414,7 +414,7 @@
                     "required": true
                 },
                 "tags": [
-                    "GTFS-pathways"
+                    "GTFS-Pathways"
                 ],
                 "responses": {
                     "202": {
