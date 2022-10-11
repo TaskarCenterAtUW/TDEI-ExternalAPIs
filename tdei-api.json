@@ -905,8 +905,8 @@
                         "ApplicationId": []
                     }
                 ],
-                "operationId": "list-flex-feeds",
-                "summary": "List GTFS Flex Feeds",
+                "operationId": "list-flex-services",
+                "summary": "List GTFS Flex Services",
                 "description": "Path used to retrieve the list of GTFS Services in the TDEI system. Allows callers to get the tdei_service_id id for a service.\n\nReturns the tdei_service_id and service name for all services in the TDEI system. \n\nIf tdei_org_id param is used, will return services for that organization."
             }
         }
