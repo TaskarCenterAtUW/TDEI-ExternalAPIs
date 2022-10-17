@@ -649,7 +649,7 @@
                     },
                     {
                         "name": "tdei_org_id",
-                        "description": "tdei-assigned agency id. Necessary to ensure that agency ids are unique. Represented as a UUID.",
+                        "description": "tdei-assigned organization id. Necessary to ensure that organization ids are unique. Represented as a UUID.",
                         "schema": {
                             "type": "string"
                         },
@@ -795,7 +795,7 @@
                                 }
                             }
                         },
-                        "description": "Successful response - returns an array of `Agency` entities."
+                        "description": "Successful response - returns an array of `organization` entities."
                     },
                     "401": {
                         "$ref": "#/components/responses/Unauthorized"
@@ -905,8 +905,8 @@
                         "ApplicationId": []
                     }
                 ],
-                "operationId": "list-flex-services",
-                "summary": "List GTFS Flex Services",
+                "operationId": "list-flex-feeds",
+                "summary": "List GTFS Flex Feeds",
                 "description": "Path used to retrieve the list of GTFS Services in the TDEI system. Allows callers to get the tdei_service_id id for a service.\n\nReturns the tdei_service_id and service name for all services in the TDEI system. \n\nIf tdei_org_id param is used, will return services for that organization."
             }
         }
@@ -943,7 +943,7 @@
                         "type": "integer"
                     },
                     "station_name": {
-                        "description": "station_name used in GTFS files",
+                        "description": "typically the station_name used in GTFS files",
                         "type": "string"
                     }
                 },
@@ -1003,7 +1003,7 @@
                         "type": "string"
                     },
                     "tdei_org_id": {
-                        "description": "tdei-assigned agency id. Represented as UUID. Agency ids can be retrieved using the /api/v1.0/agencies path.",
+                        "description": "tdei-assigned organization id. Represented as UUID. Organization ids can be retrieved using the /api/v1.0/organizations path.",
                         "type": "string"
                     },
                     "tdei_service_id": {
@@ -1064,7 +1064,7 @@
                         "type": "string"
                     },
                     "tdei_org_id": {
-                        "description": "tdei-assigned agency id. Represented as UUID. Agency ids can be retrieved using the /api/v1.0/agencies path.",
+                        "description": "tdei-assigned organization id. Represented as UUID. Organization ids can be retrieved using the /api/v1.0/organizations path.",
                         "type": "string"
                     }
                 },
@@ -1300,7 +1300,7 @@
                         "type": "string"
                     },
                     "tdei_org_id": {
-                        "description": "tdei-assigned agency id. Represented as UUID. Agency ids can be retrieved using the /api/v1.0/agencies path.",
+                        "description": "tdei-assigned organization id. Represented as UUID. Organization ids can be retrieved using the /api/v1.0/organizations path.",
                         "type": "string"
                     },
                     "tdei_service_id": {
@@ -1434,7 +1434,7 @@
                         "type": "string"
                     },
                     "tdei_org_id": {
-                        "description": "tdei-assigned agency id. Represented as UUID. Agency ids can be retrieved using the /api/v1.0/agencies path.",
+                        "description": "tdei-assigned organization id. Represented as UUID. Organization ids can be retrieved using the /api/v1.0/organizations path.",
                         "type": "string"
                     }
                 },
@@ -1527,7 +1527,7 @@
                         "type": "string"
                     },
                     "tdei_org_id": {
-                        "description": "id of the organizatoin with which this file is associated",
+                        "description": "id of the organization with which this file is associated",
                         "type": "string"
                     }
                 },
@@ -1668,11 +1668,11 @@
                 "type": "object",
                 "properties": {
                     "org_name": {
-                        "description": "Agency name. Typically the agency name used in GTFS releases.",
+                        "description": "Organization name. For transit agencies, typically the agency name used in GTFS releases.",
                         "type": "string"
                     },
                     "tdei_org_id": {
-                        "description": "tdei-assigned agency id. Necessary to ensure that agency ids are unique. Represented as a UUID.",
+                        "description": "tdei-assigned organization id. Necessary to ensure that organization ids are unique. Represented as a UUID.",
                         "type": "string"
                     }
                 },
@@ -1690,11 +1690,11 @@
                 "type": "object",
                 "properties": {
                     "service_name": {
-                        "description": "station_name used in GTFS files",
+                        "description": "name of the gtfs-flex service",
                         "type": "string"
                     },
                     "tdei_service_id": {
-                        "description": "tdei assigned station id. Necessary to ensure that station ids are unique.",
+                        "description": "tdei assigned service id. Necessary to ensure that service ids are unique.",
                         "type": "integer"
                     }
                 },
