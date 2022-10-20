@@ -120,8 +120,8 @@
                                 }
                             }
                         },
-                        "name": "bounding_box",
-                        "description": "A bounding box which specifies the area to be searched. A bounding box is specified by a string providing the lat/lon coordinates of the corners of the bounding box. Coordinate should be specified as west, south, east, north.",
+                        "name": "polygon",
+                        "description": "A polygon (bounding box) which specifies the area to be searched. A polygon is specified by a string providing the lat/lon coordinates of the corners of the polygon. Coordinate should be specified as west, south, east, north.",
                         "schema": {
                             "type": "string"
                         },
@@ -297,8 +297,8 @@
                 ],
                 "parameters": [
                     {
-                        "name": "bbox",
-                        "description": "A bounding box which specifies the area to be searched. A bounding box is specified by a string providing the lat/lon coordinates of the corners of the bounding box. Coordinate should be specified as west, south, east, north.",
+                        "name": "polygon",
+                        "description": "A polygon (bounding box) which specifies the area to be searched. A polygon (bounding box) is specified by a string providing the lat/lon coordinates of the corners of the polygon (bounding box). Coordinate should be specified as west, south, east, north.",
                         "schema": {
                             "type": "string"
                         },
@@ -332,7 +332,7 @@
                     },
                     {
                         "name": "tdei_org_id",
-                        "description": "tdei-assigned agency id. Necessary to ensure that agency ids are unique. Represented as a UUID.",
+                        "description": "tdei-assigned organization id. Necessary to ensure that organization ids are unique. Represented as a UUID.",
                         "schema": {
                             "type": "string"
                         },
@@ -399,7 +399,7 @@
                 ],
                 "operationId": "list-pathways-files",
                 "summary": "List pathways files meeting criteria.",
-                "description": "This endpoint returns a json list of all gtfs pathways files stored in the TDEI system that meet the specified criteria. Criteria that can be specified include: bounding box, minimum confidence level, pathways version, date time and agency id.\n\nThis endpoint can be used by an application developer to obtain a list of gtfs pathways files in the TDEI system meeting the specified criteria. This endpoint returns a list of file-metadata including the uris of the file, which can be used to fetch the files themselves."
+                "description": "This endpoint returns a json list of all gtfs pathways files stored in the TDEI system that meet the specified criteria. Criteria that can be specified include: polygon (bounding box), minimum confidence level, pathways version, date time and agency id.\n\nThis endpoint can be used by an application developer to obtain a list of gtfs pathways files in the TDEI system meeting the specified criteria. This endpoint returns a list of file-metadata including the uris of the file, which can be used to fetch the files themselves."
             },
             "post": {
                 "requestBody": {
@@ -522,8 +522,8 @@
                     }
                 ],
                 "operationId": "get-flex-file",
-                "summary": "returns a gtfs_pathways file",
-                "description": "returns a specific gtfs_pathways file identified by the record_id"
+                "summary": "returns a gtfs_flex file",
+                "description": "returns a specific gtfs_flex file identified by the record_id"
             }
         },
         "/api/v1/gtfs-pathways/{tdei_record_id}/": {
@@ -567,7 +567,7 @@
                 ],
                 "operationId": "get-pathways-file",
                 "summary": "returns a gtfs_pathways file",
-                "description": "returns a specific gtfs_flex file identified by the record_id"
+                "description": "returns a specific gtfs_pathways file identified by the tdei_record_id"
             }
         },
         "/api/v1/osw/{tdei_record_id}/": {
@@ -592,7 +592,7 @@
                         "content": {
                             "geojson": {}
                         },
-                        "description": "Returns the osw file - will be geojson. I wasn't sure what should be returned here - I set the type geojson, but was not sure how this is typically done. "
+                        "description": "Returns the osw file - will be geojson."
                     },
                     "401": {
                         "$ref": "#/components/responses/Unauthorized"
@@ -623,8 +623,8 @@
                 ],
                 "parameters": [
                     {
-                        "name": "bbox",
-                        "description": "A bounding box which specifies the area to be searched. A bounding box is specified by a string providing the lat/lon coordinates of the corners of the bounding box. Coordinate should be specified as west, south, east, north.",
+                        "name": "polygon",
+                        "description": "A polygon (bounding box) which specifies the area to be searched. A polygon is specified by a string providing the lat/lon coordinates of the corners of the polygon. Coordinate should be specified as west, south, east, north.",
                         "schema": {
                             "type": "string"
                         },
@@ -728,7 +728,7 @@
                 ],
                 "operationId": "list-flex-files",
                 "summary": "List flex files meeting specified criteria.",
-                "description": "This endpoint returns a json list of all gtfs flex files stored in the TDEI system that meet the specified criteria. Criteria that can be specified include: bounding box, minimum confidence level, flex version, date time and organization id.\n\nThis endpoint can be used by an application developer to obtain a list of gtfs flex files in the TDEI system meeting the specified criteria. This endpoint returns a list of file-metadata including the uris of the file, which can be used to fetch the files themselves."
+                "description": "This endpoint returns a json list of all gtfs flex files stored in the TDEI system that meet the specified criteria. Criteria that can be specified include: polygon (bounding box), minimum confidence level, flex version, date time and organization id.\n\nThis endpoint can be used by an application developer to obtain a list of gtfs flex files in the TDEI system meeting the specified criteria. This endpoint returns a list of file-metadata including the uris of the file, which can be used to fetch the files themselves."
             },
             "post": {
                 "requestBody": {
@@ -773,11 +773,11 @@
                 ],
                 "operationId": "upload-flex-file",
                 "summary": "upload a new gtfs_flex file",
-                "description": "This call allows a user to upload or create a new gtfs pathways file. The caller must provide metadata about the file. Required metadata includes information about how and when the data was collected and valid dates of the file. Returns the tdei_record_id of the uploaded file."
+                "description": "This call allows a user to upload or create a new gtfs flex file. The caller must provide metadata about the file. Required metadata includes information about how and when the data was collected and valid dates of the file. Returns the tdei_record_id of the uploaded file."
             }
         },
         "/api/v1/organizations": {
-            "summary": "Path used to retrieve the list of agencies with data in the TDEI system.",
+            "summary": "Path used to retrieve the list of organizations with data in the TDEI system.",
             "description": "",
             "get": {
                 "tags": [
@@ -809,9 +809,9 @@
                         "ApplicationId": []
                     }
                 ],
-                "operationId": "list-agencies",
-                "summary": "List Agencies",
-                "description": "Path used to retrieve the list of agencies with data in the TDEI system. Allows callers to get the tdei_agency_id id for an agency.\n\nReturns the tdei_agency_id and agency information for all agencies with data in the TDEI system. "
+                "operationId": "list-organizations",
+                "summary": "List Organizations",
+                "description": "Path used to retrieve the list of organizations with data in the TDEI system. Allows callers to get the tdei_org_id id for an organization.\n\nReturns the tdei_org_id and organization information for all organizations with data in the TDEI system. "
             }
         },
         "/api/v1/gtfs-pathways/stations": {
@@ -872,7 +872,7 @@
                 "parameters": [
                     {
                         "name": "tdei_org_id",
-                        "description": "organization id",
+                        "description": "tdei_org_id - a tdei-assigned id for an organization. org_ids can be retrieved using the path /api/v1/organizations.",
                         "schema": {
                             "type": "string"
                         },
@@ -905,8 +905,8 @@
                         "ApplicationId": []
                     }
                 ],
-                "operationId": "list-flex-feeds",
-                "summary": "List GTFS Flex Feeds",
+                "operationId": "list-flex-services",
+                "summary": "List GTFS Flex Services",
                 "description": "Path used to retrieve the list of GTFS Services in the TDEI system. Allows callers to get the tdei_service_id id for a service.\n\nReturns the tdei_service_id and service name for all services in the TDEI system. \n\nIf tdei_org_id param is used, will return services for that organization."
             }
         }
@@ -1011,7 +1011,7 @@
                         "type": "string"
                     }
                 },
-                "example": "{\n    \"tdei_org_id\": \"5cfdf0f1-902b-4e2d-9297-b979b2d5d905\",\n    \"tdei_feed_id\": \"\"29dd4f2e-981a-46dc-b00d-0dc1937b2e53,\n    \"collected_by\": \"See best practices document\",\n    \"collection_date\": \"2018-02-10T09:30Z\",\n    \"collection_method\": \"See best practices document\",\n    \"valid_from\": \"2018-02-10T09:30Z\",\n    \"valid_to\": \"2018-02-10T09:30Z\",\n    \"flex_schema_version\": \"v1.1\",\n    \"data_source\": \"See best practices document\",\n    \"polygon\": {\n        \"type\": \"FeatureCollection\",\n        \"features\": [\n            {\n                \"type\": \"Feature\",\n                \"properties\": {},\n                \"geometry\": {\n                    \"type\": \"Polygon\",\n                    \"coordinates\": [\n                        [\n                            [\n                                -122.20985412597656,\n                                47.65868172346142\n                            ],\n                            [\n                                -122.24418640136719,\n                                47.65636923655089\n                            ]\n                        ]\n                    ]\n                }\n            }\n        ]\n    }\n}"
+                "example": "{\n    \"tdei_org_id\": \"5cfdf0f1-902b-4e2d-9297-b979b2d5d905\",\n    \"tdei_service_id\": \"\"29dd4f2e-981a-46dc-b00d-0dc1937b2e53,\n    \"collected_by\": \"See best practices document\",\n    \"collection_date\": \"2018-02-10T09:30Z\",\n    \"collection_method\": \"See best practices document\",\n    \"valid_from\": \"2018-02-10T09:30Z\",\n    \"valid_to\": \"2018-02-10T09:30Z\",\n    \"flex_schema_version\": \"v1.1\",\n    \"data_source\": \"See best practices document\",\n    \"polygon\": {\n        \"type\": \"FeatureCollection\",\n        \"features\": [\n            {\n                \"type\": \"Feature\",\n                \"properties\": {},\n                \"geometry\": {\n                    \"type\": \"Polygon\",\n                    \"coordinates\": [\n                        [\n                            [\n                                -122.20985412597656,\n                                47.65868172346142\n                            ],\n                            [\n                                -122.24418640136719,\n                                47.65636923655089\n                            ]\n                        ]\n                    ]\n                }\n            }\n        ]\n    }\n}"
             },
             "gtfs_pathways_upload": {
                 "title": "Root Type for gtfs_flex",
@@ -1123,7 +1123,7 @@
                         "type": "string"
                     },
                     "polygon": {
-                        "description": "Optional polygon that indicates the boundaries of data included in this file. ",
+                        "description": "Polygon that indicates the boundaries of data included in this file. ",
                         "type": "string"
                     },
                     "osw_schema_version": {
@@ -1507,7 +1507,7 @@
                     },
                     "polygon": {
                         "$ref": "#/components/schemas/polygon",
-                        "description": "Optional polygon that indicates the boundaries of data included in this file. ",
+                        "description": "Polygon that indicates the boundaries of data included in this file. ",
                         "example": ""
                     },
                     "confidence_level": {
