@@ -1,7 +1,7 @@
 {
     "openapi": "3.0.2",
     "info": {
-        "title": "TDEI API - v1 - final",
+        "title": "TDEI API - v1 - POR",
         "version": "1.0",
         "description": "This is an API for publishing data to the Transportation Data Equity Initiative (TDEI) data system. This API is intended for applications producing data for and consuming data from the TDEI system. This API supports publishing of GTFS-Pathways, GTFS-Flex v2 and OpenSidewalks data to the TDEI. ",
         "contact": {
@@ -1706,10 +1706,10 @@
         },
         "responses": {
             "Unauthorized": {
-                "description": "This request is unauthorized. The API Key or Authorization Token provided is not authorized to perform this request."
+                "description": "This request is unauthorized. The API key or Authorization token provided is not valid."
             },
             "InternalServerError": {
-                "description": "An server error occurred."
+                "description": "A server error occurred."
             },
             "PathwaysFileNotFound": {
                 "description": "A GTFS pathways file that matches the specified parameters (combination of agencyid, stationid, confidence level, and version) was not found."
@@ -1724,7 +1724,7 @@
                 "description": "OSW data meeting the specifications (version and bounding box) was not found.Data is expected to be available for King and Snohomish counties in Washington, Multnomah and Columbia counties in Oregon, and Baltimore and Harford counties in Maryland."
             },
             "InvalidRequest": {
-                "description": "The request was invalid. The metadata may be invalid. "
+                "description": "The request was invalid. For example, the meta-data may not be valid."
             }
         },
         "securitySchemes": {
