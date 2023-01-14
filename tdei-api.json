@@ -1706,7 +1706,7 @@
         },
         "responses": {
             "Unauthorized": {
-                "description": "This request is unauthorized. The AppID or Authorization Token provided is not authorized to perform this request."
+                "description": "This request is unauthorized. The API Key or Authorization Token provided is not authorized to perform this request."
             },
             "InternalServerError": {
                 "description": "An server error occurred."
