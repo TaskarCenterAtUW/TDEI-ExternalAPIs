@@ -191,7 +191,24 @@
             "post": {
                 "requestBody": {
                     "content": {
-                        "multipart/form-data": {}
+                        "multipart/form-data": {
+                            "schema": {
+                                "required": [
+                                    "file",
+                                    "Meta"
+                                ],
+                                "type": "object",
+                                "properties": {
+                                    "meta": {
+                                        "$ref": "#/components/schemas/osw_upload"
+ 			                        },
+                                    "file": {
+                                        "type": "string",
+                                        "format": "binary"
+                                    }
+                                }
+                            }
+                        }
                     },
                     "required": true
                 },
@@ -375,7 +392,24 @@
             "post": {
                 "requestBody": {
                     "content": {
-                        "multipart/form-data": {}
+                        "multipart/form-data": {
+                            "schema": {
+                                "required": [
+                                    "file",
+                                    "Meta"
+                                ],
+                                "type": "object",
+                                "properties": {
+                                    "meta": {
+                                        "$ref": "#/components/schemas/gtfs_pathways_upload"
+ 			                        },
+                                    "file": {
+                                        "type": "string",
+                                        "format": "binary"
+                                    }
+                                }
+                            }                        
+                        }
                     },
                     "required": true
                 },
@@ -697,7 +731,24 @@
             "post": {
                 "requestBody": {
                     "content": {
-                        "multipart/form-data": {}
+                        "multipart/form-data": {
+                            "schema": {
+                                "required": [
+                                    "file",
+                                    "Meta"
+                                ],
+                                "type": "object",
+                                "properties": {
+                                    "meta": {
+                                        "$ref": "#/components/schemas/gtfs_flex_upload"
+ 			                        },
+                                    "file": {
+                                        "type": "string",
+                                        "format": "binary"
+                                    }
+                                }
+                            } 
+                        }
                     },
                     "required": true
                 },
