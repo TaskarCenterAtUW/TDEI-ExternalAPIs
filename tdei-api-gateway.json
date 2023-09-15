@@ -944,8 +944,7 @@
 "/api/v1/gtfs-pathways/stations": {
 "get": {
 "tags": [
-"GTFS-Pathways",
-"General"
+"GTFS-Pathways"
 ],
 "summary": "List Stations",
 "description": "Path used to retrieve the list of stations with data in the TDEI system. Allows callers to get the tdei_station_id id for a station.\n\nReturns the tdei_station_id and station information for all stations with data in the TDEI system.\n\nIf tdei_org_id param is specified, will return stations for that organization. ",
