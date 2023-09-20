@@ -103,7 +103,7 @@
 }
 },
 {
-"name": " tdei_org_id",
+"name": "tdei_org_id",
 "in": "query",
 "description": "tdei-assigned organization id. Represented as a UUID.",
 "required": false,
@@ -481,7 +481,7 @@
 }
 },
 {
-"name": " tdei_org_id",
+"name": "tdei_org_id",
 "in": "query",
 "description": "tdei-assigned organization id. Represented as a UUID.",
 "required": false,
