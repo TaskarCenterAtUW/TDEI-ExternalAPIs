@@ -793,7 +793,7 @@
                 ]
             }
         },
-        "/api/v1/project-groups": {
+        "/api/v1/project-group": {
             "get": {
                 "tags": [
                     "General"
@@ -1110,7 +1110,7 @@
                     {
                         "name": "tdei_project_group_id",
                         "in": "query",
-                        "description": "A tdei-assigned id for an project group. project_group_ids can be retrieved using the path /api/v1/project-groups.",
+                        "description": "A tdei-assigned id for an project group. project_group_ids can be retrieved using the path /api/v1/project-group.",
                         "required": false,
                         "schema": {
                             "type": "string"
@@ -1302,7 +1302,7 @@
                 "properties": {
                     "tdei_project_group_id": {
                         "type": "string",
-                        "description": "tdei-assigned project group id. Represented as UUID. Project Group ids can be retrieved using the /api/v1/project-groups path.",
+                        "description": "tdei-assigned project group id. Represented as UUID. Project Group ids can be retrieved using the /api/v1/project-group path.",
                         "example": "4e991e7a-5c16-4ebf-ad31-3a3625bcca10"
                     },
                     "collected_by": {
@@ -1366,7 +1366,7 @@
                 "properties": {
                     "tdei_project_group_id": {
                         "type": "string",
-                        "description": "tdei-assigned project group id. Represented as UUID. Project Group ids can be retrieved using the /api/v1/project-groups path.",
+                        "description": "tdei-assigned project group id. Represented as UUID. Project Group ids can be retrieved using the /api/v1/project-group path.",
                         "example": "4e991e7a-5c16-4ebf-ad31-3a3625bcca10"
                     },
                     "tdei_station_id": {
@@ -1440,7 +1440,7 @@
                 "properties": {
                     "tdei_project_group_id": {
                         "type": "string",
-                        "description": "tdei-assigned project group id. Represented as UUID. Project Group ids can be retrieved using the /api/v1.0/project-groups path.",
+                        "description": "tdei-assigned project group id. Represented as UUID. Project Group ids can be retrieved using the /api/v1.0/project-group path.",
                         "example": "4e991e7a-5c16-4ebf-ad31-3a3625bcca10"
                     },
                     "tdei_service_id": {
@@ -1551,7 +1551,7 @@
                 "properties": {
                     "tdei_project_group_id": {
                         "type": "string",
-                        "description": "tdei-assigned project group id. Represented as UUID. Project Group ids can be retrieved using the /api/v1/project-groups path.",
+                        "description": "tdei-assigned project group id. Represented as UUID. Project Group ids can be retrieved using the /api/v1/project-group path.",
                         "example": "4e991e7a-5c16-4ebf-ad31-3a3625bcca10"
                     },
                     "collected_by": {
@@ -1692,7 +1692,7 @@
                 "properties": {
                     "tdei_project_group_id": {
                         "type": "string",
-                        "description": "tdei-assigned project group id. Represented as UUID. Project Group ids can be retrieved using the /api/v1/project-groups path.",
+                        "description": "tdei-assigned project group id. Represented as UUID. Project Group ids can be retrieved using the /api/v1/project-group path.",
                         "example": "4e991e7a-5c16-4ebf-ad31-3a3625bcca10"
                     },
                     "tdei_station_id": {
@@ -1808,7 +1808,7 @@
                 "properties": {
                     "tdei_project_group_id": {
                         "type": "string",
-                        "description": "tdei-assigned project group id. Represented as UUID. Project Group ids can be retrieved using the /api/v1/project-groups path.",
+                        "description": "tdei-assigned project group id. Represented as UUID. Project Group ids can be retrieved using the /api/v1/project-group path.",
                         "example": "4e991e7a-5c16-4ebf-ad31-3a3625bcca10"
                     },
                     "tdei_service_id": {
