@@ -12,7 +12,7 @@
     },
     "servers": [
         {
-            "url": "https://tdei-gateway-dev.azurewebsites.net",
+            "url": "https://tdei-gateway-stage.azurewebsites.net",
             "description": "Generated server url"
         }
     ],
