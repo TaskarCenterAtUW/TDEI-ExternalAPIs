@@ -713,7 +713,7 @@
                 "tags": [
                     "OSW"
                 ],
-                "summary": "returns a geojson osw file",
+                "summary": "returns a geojson osw file by default, can request for different format using 'format' querystring",
                 "description": "returns a specific osw file identified by the tdei_record_id",
                 "operationId": "getOswFile",
                 "parameters": [
@@ -724,6 +724,19 @@
                         "required": true,
                         "schema": {
                             "type": "string"
+                        }
+                    },
+                    {
+                        "name": "format",
+                        "in": "query",
+                        "description": "File format to download.",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "osm",
+                                "xml"
+                            ]
                         }
                     }
                 ],
