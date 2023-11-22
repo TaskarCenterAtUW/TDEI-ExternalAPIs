@@ -778,6 +778,7 @@
                 "summary": "List available OSW versions",
                 "description": "Lists the versions of OSW data which are supported by TDEI.",
                 "operationId": "listOswVersions",
+               
                 "responses": {
                     "200": {
                         "description": "Returns list of OSW versions supported by TDEI.",
@@ -805,6 +806,97 @@
                     }
                 ]
             }
+        },
+        "/api/v1/osw/confidence/status/{jobId}": {
+            "get": {
+                "tags": [
+                    "OSW"
+                ],
+                "summary": "Get the status of confidence request",
+                "description": "Fetches the status of confidence request job.",
+                "operationId": "getOSWConfidenceStatus",
+                 "parameters":[
+                  {
+                        "name": "jobId",
+                        "in": "path",
+                        "description": "jobId for confidence request",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Returns the status of Confidence request.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/OSWConfidenceStatus"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "This request is unauthenticated."
+                    },
+                    "404": {
+                      "description":"JobId is not found"
+                    },
+                    "500": {
+                        "description": "An server error occurred."
+                    }
+                },
+                "security": [
+                    {
+                        "ApiKey": []
+                    },
+                    {
+                        "AuthorizationToken": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/osw/confidence/calculate":{
+          "post":{
+            "tags":[
+              "OSW"
+            ],
+            "summary":"Initiate Confidence calculation for a dataset",
+            "description":"Initiates the confidence calculation of a tdeiRecordId as mentioned in the body",
+            "operationId": "oswConfidenceCalculate",
+            "requestBody":{
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                 "$ref": "#/components/schemas/OSWConfidenceRequest"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+              "responses":{
+                "200":{
+                  "description":" Created confidence jobId ",
+                  "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/OSWConfidenceResponse"
+                                }
+                            }
+                        }
+                },
+                "401": {
+                        "description": "This request is unauthenticated."
+                    },
+                    "500": {
+                        "description": "An server error occurred."
+                    },
+                    "404":{
+                      "description":"tdeiRecordId is not found"
+                    }
+              }
+          }
         },
         "/api/v1/project-group": {
             "get": {
@@ -1917,6 +2009,67 @@
                         "example": "5e991e7a-5c16-4ebf-ad31-3a3625bcca10"
                     }
                 }
+            },
+            "OSWConfidenceRequest":{
+              "type":"object",
+              "required":[
+                "tdeiRecordId"
+              ],
+              "properties":{
+                "tdeiRecordId":{
+                  "type":"string",
+                  "description":"TDEI record ID of the dataset to calculate confidence metric",
+                  "example":"5e991e7a-5c16-4ebf-ad31-3a3625bcca10"
+                }
+              }
+            },
+            "OSWConfidenceResponse":{
+              "type":"object",
+              "properties":{
+                "tdeiRecordId":{
+                  "type":"string",
+                   "description":"TDEI record ID of the dataset to calculate confidence metric",
+                  "example":"5e991e7a-5c16-4ebf-ad31-3a3625bcca10"
+                },
+                "jobId":{
+                  "type":"integer",
+                  "description":"jobId of the confidence request",
+                  "example":1
+                }
+              }
+            },
+            "OSWConfidenceStatus":{
+              "type":"object",
+              "properties":{
+                 "jobId":{
+                  "type":"integer",
+                  "description":"jobId of the confidence request",
+                  "example":1
+                },
+                 "confidenceValue":{
+                  "type":"number",
+                  "description":"Confidence of the record",
+                  "example":90.23
+                },
+                "updatedAt":{
+                  "type":"string",
+                  "description":"Date time of the last update on status",
+                  "example": "2018-02-10T09:30Z"
+                },
+                "status":{
+                  "type":"string",
+                  "description":"status of the job",
+                  "enum":[
+                    "started",
+                    "calculated",
+                    "failed"
+                  ]
+                },
+                "message":{
+                  "type":"string",
+                  "description":"Error message or status information"
+                }
+              }
             }
         },
         "securitySchemes": {
