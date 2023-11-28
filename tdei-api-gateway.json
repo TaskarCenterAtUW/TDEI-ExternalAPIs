@@ -898,7 +898,7 @@
               }
           }
         },
-        "/api/v1/osw/format/status{jobId}":{
+        "/api/v1/osw/format/status/{jobId}":{
             "get":{
                 "tags":[
                     "OSW"
