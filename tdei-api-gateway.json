@@ -898,6 +898,110 @@
               }
           }
         },
+        "/api/v1/osw/format/status{jobId}":{
+            "get":{
+                "tags":[
+                    "OSW"
+                ],
+                "summary":"Fetch status of format request",
+                "description":"Summary of the formatting request",
+                "operationId":"oswFormatStatus",
+                 "parameters":[
+                  {
+                        "name": "jobId",
+                        "in": "path",
+                        "description": "jobId for format request",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses":{
+                "200":{
+                  "description":" Status of the formatting Job ",
+                  "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/OSWFormatStatusResponse"
+                                }
+                            }
+                        }
+                },
+                "401": {
+                        "description": "This request is unauthenticated."
+                    },
+                    "500": {
+                        "description": "An server error occurred."
+                    },
+                    "404":{
+                      "description":"jobId is not found"
+                    }
+              }
+            }
+        },
+        "/api/v1/osw/format/upload":{
+            "post":{
+                "tags":[
+                    "OSW"
+                ],
+                "summary":"Request osw format on demand",
+                "description":"Upload a file and request for formatting on demand",
+                "operationId":"oswOnDemandFormat",
+                "requestBody": {
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "required": [
+                                    "file",
+                                    "source",
+                                    "target"
+                                ],
+                                "type": "object",
+                                "properties": {
+                                    "source":{
+                                        "type":"string",
+                                        "description":"Source format",
+                                        "example":"osm"
+                                    },
+                                    "target":{
+                                        "type":"string",
+                                        "description":"Target format",
+                                        "example":"osw"
+                                    },
+                                    "file": {
+                                        "type": "string",
+                                        "format": "binary"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                 "responses":{
+                "200":{
+                  "description":" Created formatting jobId ",
+                  "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/OSWFormatResponse"
+                                }
+                            }
+                        }
+                },
+                "401": {
+                        "description": "This request is unauthenticated."
+                    },
+                    "500": {
+                        "description": "An server error occurred."
+                    },
+                    "400":{
+                      "description":"Bad request"
+                    }
+              }
+            }
+        },
         "/api/v1/project-group": {
             "get": {
                 "tags": [
@@ -2070,6 +2174,57 @@
                   "description":"Error message or status information"
                 }
               }
+            },
+            "OSWFormatResponse":{
+                "type":"object",
+                "properties":{
+                    "jobId":{
+                        "type":"string",
+                        "description":"jobId of the format request"
+                    },
+                    "statusUrl":{
+                        "type":"string",
+                        "description":"the url to fetch the status of the job"
+                    }
+                }
+            },
+            "OSWFormatStatusResponse" : {
+                "type":"object",
+                "required":[
+                    "jobId"
+                ],
+                "properties":{
+                    "jobId":{
+                        "type":"string",
+                        "description":"jobId of the format request"
+                    },
+                    "status":{
+                        "type":"string",
+                        "description":"Status of the format request",
+                        "enum":[
+                            "started",
+                            "completed",
+                            "failed"
+                        ]
+                    },
+                    "message":{
+                        "type":"string",
+                        "description":"Any error message during failure"
+                    },
+                    "sourceUrl":{
+                        "type":"string",
+                        "description":"URL of the source file"
+                    },
+                    "targetUrl":{
+                        "type":"string",
+                        "description":"URL of the target file"
+                    },
+                    "conversion":{
+                        "type":"string",
+                        "description":"type of conversion",
+                        "example":"osw-osm"
+                    }
+                }
             }
         },
         "securitySchemes": {
