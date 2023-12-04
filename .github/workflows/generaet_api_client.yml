@@ -1,0 +1,32 @@
+name: ExternalAPI
+on:
+  workflow_dispatch:
+    inputs:
+      generate_api_client:
+        description: 'ًWorkflow to be triggered'
+        required: true
+        default: 'generate_api_client'
+
+      api_client_github_account:
+        description: 'GitHub Account Owner'
+        required: true
+        default: 'TaskarCenterAtUW'
+
+      api_client_repo_github:
+        description: 'repo-name'
+        required: true
+        default: 'TDEI-api-client'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - name: Test
+        run: |
+          curl -X POST https://api.github.com/repos/:userName/:repoName/tree/feature-466/dispatches \
+          -H 'Accept: application/vnd.github.everest-preview+json' \
+          -u ${{ secrets.ACTIONS_KEY }} \
+          --data '{"event_type": "Trigger Workflow", "client_payload": { "repository": "'"$GITHUB_REPOSITORY"'" }}'
+      - uses: actions/checkout@v3
