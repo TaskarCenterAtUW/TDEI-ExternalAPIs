@@ -919,9 +919,9 @@
                 "operationId": "getUploadStatus",
                 "parameters": [
                     {
-                        "name": "tdeiRecordId",
+                        "name": "tdei_record_id",
                         "in": "path",
-                        "description": "tdeiRecordId received during upload",
+                        "description": "tdei_record_id received during upload",
                         "required": true,
                         "schema": {
                             "type": "string"
