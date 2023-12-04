@@ -3,11 +3,6 @@ on:
   push:
     branches:
       - "feature-466"
-    inputs:
-      trigger_workflow:
-        description: 'ًWorkflow to be triggered'
-        required: true
-        default: 'generate_api_client'
 
 jobs:
   build:
@@ -20,5 +15,5 @@ jobs:
           curl -X POST https://api.github.com/repos/TaskarCenterAtUW/TDEI-api-client/dispatches \
           -H 'Accept: application/vnd.github.everest-preview+json' \
           -u ${{ secrets.ACTIONS_KEY }} \
-          --data '{"event_type": $ {{ github.event.inputs.trigger_workflow }}, "client_payload": { "repository": "'"$GITHUB_REPOSITORY"'" }}'
+          --data '{"event_type": "generate_api_client", "client_payload": { "repository": "'"$GITHUB_REPOSITORY"'" }}'
       - uses: actions/checkout@v3
