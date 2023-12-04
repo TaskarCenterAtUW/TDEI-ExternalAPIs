@@ -1,6 +1,8 @@
 name: ExternalAPI
 on:
-  workflow_dispatch:
+  push:
+    branches:
+      - "feature-466"
     inputs:
       generate_api_client:
         description: 'ًWorkflow to be triggered'
