@@ -2321,11 +2321,11 @@
             },
             "RecordUploadStatus": {
                 "required": [
-                    "tdeiRecordId"
+                    "tdei_record_id"
                 ],
                 "type": "object",
                 "properties": {
-                    "tdeiRecordId": {
+                    "tdei_record_id": {
                         "type": "string",
                         "description": "Record ID of the file generated"
                     },
