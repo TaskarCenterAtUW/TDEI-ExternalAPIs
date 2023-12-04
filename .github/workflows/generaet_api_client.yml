@@ -1,5 +1,8 @@
 name: ExternalAPI
 on:
+  push:
+    branches:
+      - "feature-466"
   workflow_dispatch:
     inputs:
       generate_api_client:
