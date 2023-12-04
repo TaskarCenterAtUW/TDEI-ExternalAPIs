@@ -1,0 +1,20 @@
+name: ExternalAPI
+on:
+  pull_request:
+    branches: [ dev, stage, gs-api-gateway-implementation ]
+    types:
+      - closed
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    if: github.event.pull_request.merged == true
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - name: Test
+        run: |
+          curl -X POST https://api.github.com/repos/TaskarCenterAtUW/TDEI-api-client/dispatches \
+          -H 'Accept: application/vnd.github.everest-preview+json' \
+          -u ${{ secrets.ACTIONS_KEY }} \
+          --data '{"event_type": "auto_generate_api_client"}'
+      - uses: actions/checkout@v3
