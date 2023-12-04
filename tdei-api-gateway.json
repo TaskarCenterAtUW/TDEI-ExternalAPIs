@@ -69,29 +69,26 @@
                     "OSW"
                 ],
                 "summary": "List osw files meeting criteria.",
-                "description": "This endpoint returns a list of url to gzip'd geojson files with osw data that meet the specified criteria. Criteria that can be specified include: a polygon (bounding box), minimum confidence level and osw version. This endpoint can be used by an application developer to obtain a list of osw files in the TDEI system meeting the specified criteria.",
+                "description": "This endpoint returns a list of url to gzip'd geojson files with osw data that meet the specified criteria. Criteria that can be specified include: a dataset area (polygon), minimum confidence level and osw version. This endpoint can be used by an application developer to obtain a list of osw files in the TDEI system meeting the specified criteria.",
                 "operationId": "listOswFiles",
                 "parameters": [
                     {
-                        "name": "bbox",
+                        "name": "pre-release",
                         "in": "query",
-                        "description": "A bounding box which specifies the area to be searched. A bounding box is specified by a string providing the lat/lon coordinates of the corners of the bounding box. Coordinate should be specified as west, south, east, north.",
+                        "description": "Request for pre-release files. The default setting is false, limiting the list to release files only. When set to true, it includes pre-release files for users within the project groups. ",
                         "required": false,
                         "schema": {
-                            "maxItems": 4,
-                            "minItems": 4,
-                            "type": "array",
-                            "items": {
-                                "type": "number",
-                                "format": "double"
-                            }
-                        },
-                        "example": [
-                            23.5,
-                            34.65,
-                            89.5,
-                            65.98
-                        ]
+                            "type": "boolean"
+                        }
+                    },
+                    {
+                        "name": "dataset_area",
+                        "in": "query",
+                        "description": "A geojson polygon which specifies the area to be searched. Ex. https://geojson.io/ one of the tool to mark polygon on the map",
+                        "required": false,
+                        "schema": {
+                            "$ref": "#/components/schemas/GeoJsonObject"
+                        }
                     },
                     {
                         "name": "osw_schema_version",
@@ -194,15 +191,20 @@
                         "multipart/form-data": {
                             "schema": {
                                 "required": [
-                                    "file",
-                                    "meta"
+                                    "dataset",
+                                    "metadata"
                                 ],
                                 "type": "object",
                                 "properties": {
-                                    "meta": {
-                                        "$ref": "#/components/schemas/OswUpload"
+                                    "dataset": {
+                                        "type": "string",
+                                        "format": "binary"
                                     },
-                                    "file": {
+                                    "metadata": {
+                                        "type": "string",
+                                        "format": "binary"
+                                    },
+                                    "changeset": {
                                         "type": "string",
                                         "format": "binary"
                                     }
@@ -220,6 +222,85 @@
                                 "schema": {
                                     "type": "string"
                                 }
+                            }
+                        },
+                        "headers": {
+                            "Location": {
+                                "schema": {
+                                    "type": "string"
+                                },
+                                "description": "Location api to find the status of request processing"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "The request was invalid."
+                    },
+                    "401": {
+                        "description": "This request is unauthenticated."
+                    },
+                    "403": {
+                        "description": "This request is unauthorized."
+                    },
+                    "500": {
+                        "description": "An server error occurred."
+                    }
+                },
+                "security": [
+                    {
+                        "AuthorizationToken": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/osw/validate": {
+            "post": {
+                "tags": [
+                    "OSW"
+                ],
+                "summary": "Validates the osw dataset.",
+                "description": "Allows a user to validate osw dataset to check the correctness of data. The caller must provide metadata about the file - includes information about how and when the data was collected and valid dates of the file. Returns the jobId associated with validation job.",
+                "operationId": "validateOswFile",
+                "requestBody": {
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "required": [
+                                    "dataset",
+                                    "metadata"
+                                ],
+                                "type": "object",
+                                "properties": {
+                                    "dataset": {
+                                        "type": "string",
+                                        "format": "binary"
+                                    },
+                                    "metadata": {
+                                        "type": "string",
+                                        "format": "binary"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "202": {
+                        "description": "The request has been accepted for processing. returns the jobId, unique identifier for validation job request.",
+                        "content": {
+                            "application/text": {
+                                "schema": {
+                                    "type": "string"
+                                }
+                            }
+                        },
+                        "headers": {
+                            "Location": {
+                                "schema": {
+                                    "type": "string"
+                                },
+                                "description": "Location api to find the status of request processing"
                             }
                         }
                     },
@@ -249,34 +330,31 @@
                     "GTFS-Pathways"
                 ],
                 "summary": "List pathways files meeting criteria.",
-                "description": "This endpoint returns a json list of all gtfs pathways files stored in the TDEI system that meet the specified criteria. Criteria that can be specified include: polygon (bounding box), minimum confidence level, pathways version, date time and agency id.\n\nThis endpoint can be used by an application developer to obtain a list of gtfs pathways files in the TDEI system meeting the specified criteria. This endpoint returns a list of file-metadata including the uris of the file, which can be used to fetch the files themselves.",
+                "description": "This endpoint returns a json list of all gtfs pathways files stored in the TDEI system that meet the specified criteria. Criteria that can be specified include: dataset area (polygon), minimum confidence level, pathways version, date time and agency id.\n\nThis endpoint can be used by an application developer to obtain a list of gtfs pathways files in the TDEI system meeting the specified criteria. This endpoint returns a list of file-metadata including the uris of the file, which can be used to fetch the files themselves.",
                 "operationId": "listPathwaysFiles",
                 "parameters": [
                     {
-                        "name": "bbox",
+                        "name": "pre-release",
                         "in": "query",
-                        "description": "A bounding box which specifies the area to be searched. A bounding box is specified by a string providing the lat/lon coordinates of the corners of the bounding box. Coordinate should be specified as west, south, east, north.",
+                        "description": "Request for pre-release files. The default setting is false, limiting the list to release files only. When set to true, it includes pre-release files for users within the project groups. ",
                         "required": false,
                         "schema": {
-                            "maxItems": 4,
-                            "minItems": 4,
-                            "type": "array",
-                            "items": {
-                                "type": "number",
-                                "format": "double"
-                            }
-                        },
-                        "example": [
-                            23.5,
-                            34.65,
-                            89.5,
-                            65.98
-                        ]
+                            "type": "boolean"
+                        }
+                    },
+                    {
+                        "name": "dataset_area",
+                        "in": "query",
+                        "description": "A geojson polygon which specifies the area to be searched. Ex. https://geojson.io/ one of the tool to mark polygon on the map",
+                        "required": false,
+                        "schema": {
+                            "$ref": "#/components/schemas/GeoJsonObject"
+                        }
                     },
                     {
                         "name": "tdei_station_id",
                         "in": "query",
-                        "description": "Id of a station in the tdei system. gtfs station ids may not be unique.",
+                        "description": "Id of a station in the tdei system.",
                         "required": false,
                         "schema": {
                             "type": "string"
@@ -383,15 +461,20 @@
                         "multipart/form-data": {
                             "schema": {
                                 "required": [
-                                    "file",
-                                    "meta"
+                                    "dataset",
+                                    "metadata"
                                 ],
                                 "type": "object",
                                 "properties": {
-                                    "meta": {
-                                        "$ref": "#/components/schemas/GtfsPathwaysUpload"
+                                    "dataset": {
+                                        "type": "string",
+                                        "format": "binary"
                                     },
-                                    "file": {
+                                    "metadata": {
+                                        "type": "string",
+                                        "format": "binary"
+                                    },
+                                    "changeset": {
                                         "type": "string",
                                         "format": "binary"
                                     }
@@ -409,6 +492,14 @@
                                 "schema": {
                                     "type": "string"
                                 }
+                            }
+                        },
+                        "headers": {
+                            "Location": {
+                                "schema": {
+                                    "type": "string"
+                                },
+                                "description": "Location api to find the status of request processing"
                             }
                         }
                     },
@@ -432,15 +523,95 @@
                 ]
             }
         },
+        "/api/v1/gtfs-pathways/validate": {
+            "post": {
+                "tags": [
+                    "GTFS-Pathways"
+                ],
+                "summary": "Validates the gtfs pathways dataset.",
+                "description": "Allows a user to validate gtfs pathways dataset to check the correctness of data. The caller must provide metadata about the file - includes information about how and when the data was collected and valid dates of the file. Returns the jobId associated with validation job.",
+                "operationId": "validateGtfsPathwaysFile",
+                "requestBody": {
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "required": [
+                                    "dataset",
+                                    "metadata"
+                                ],
+                                "type": "object",
+                                "properties": {
+                                    "dataset": {
+                                        "type": "string",
+                                        "format": "binary"
+                                    },
+                                    "metadata": {
+                                        "type": "string",
+                                        "format": "binary"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "202": {
+                        "description": "The request has been accepted for processing. returns the jobId, unique identifier for validation job request.",
+                        "content": {
+                            "application/text": {
+                                "schema": {
+                                    "type": "string"
+                                }
+                            }
+                        },
+                        "headers": {
+                            "Location": {
+                                "schema": {
+                                    "type": "string"
+                                },
+                                "description": "Location api to find the status of request processing"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "The request was invalid."
+                    },
+                    "401": {
+                        "description": "This request is unauthenticated."
+                    },
+                    "403": {
+                        "description": "This request is unauthorized."
+                    },
+                    "500": {
+                        "description": "An server error occurred."
+                    }
+                },
+                "security": [
+                    {
+                        "AuthorizationToken": []
+                    }
+                ]
+            }
+        },
         "/api/v1/gtfs-flex": {
             "get": {
                 "tags": [
                     "GTFS-Flex"
                 ],
                 "summary": "List flex files meeting specified criteria.",
-                "description": "This endpoint returns a json list of all gtfs flex files stored in the TDEI system that meet the specified criteria. Criteria that can be specified include: polygon (bounding box), minimum confidence level, flex version, date time and project group id.\n\nThis endpoint can be used by an application developer to obtain a list of gtfs flex files in the TDEI system meeting the specified criteria. This endpoint returns a list of file-metadata including the uris of the file, which can be used to fetch the files themselves.",
+                "description": "This endpoint returns a json list of all gtfs flex files stored in the TDEI system that meet the specified criteria. Criteria that can be specified include: dataset area (polygon), minimum confidence level, flex version, date time and project group id.\n\nThis endpoint can be used by an application developer to obtain a list of gtfs flex files in the TDEI system meeting the specified criteria. This endpoint returns a list of file-metadata including the uris of the file, which can be used to fetch the files themselves.",
                 "operationId": "listFlexFiles",
                 "parameters": [
+                    {
+                        "name": "pre-release",
+                        "in": "query",
+                        "description": "Request for pre-release files. The default setting is false, limiting the list to release files only. When set to true, it includes pre-release files for users within the project groups. ",
+                        "required": false,
+                        "schema": {
+                            "type": "boolean"
+                        }
+                    },
                     {
                         "name": "tdei_service_id",
                         "in": "query",
@@ -451,25 +622,13 @@
                         }
                     },
                     {
-                        "name": "bbox",
+                        "name": "dataset_area",
                         "in": "query",
-                        "description": "A bounding box which specifies the area to be searched. A bounding box is specified by a string providing the lat/lon coordinates of the corners of the bounding box. Coordinate should be specified as west, south, east, north.",
+                        "description": "A geojson polygon which specifies the area to be searched. Ex. https://geojson.io/ one of the tool to mark polygon on the map",
                         "required": false,
                         "schema": {
-                            "maxItems": 4,
-                            "minItems": 4,
-                            "type": "array",
-                            "items": {
-                                "type": "number",
-                                "format": "double"
-                            }
-                        },
-                        "example": [
-                            23.5,
-                            34.65,
-                            89.5,
-                            65.98
-                        ]
+                            "$ref": "#/components/schemas/GeoJsonObject"
+                        }
                     },
                     {
                         "name": "flex_schema_version",
@@ -572,15 +731,20 @@
                         "multipart/form-data": {
                             "schema": {
                                 "required": [
-                                    "file",
-                                    "meta"
+                                    "dataset",
+                                    "metadata"
                                 ],
                                 "type": "object",
                                 "properties": {
-                                    "meta": {
-                                        "$ref": "#/components/schemas/GtfsFlexUpload"
+                                    "dataset": {
+                                        "type": "string",
+                                        "format": "binary"
                                     },
-                                    "file": {
+                                    "metadata": {
+                                        "type": "string",
+                                        "format": "binary"
+                                    },
+                                    "changeset": {
                                         "type": "string",
                                         "format": "binary"
                                     }
@@ -599,6 +763,14 @@
                                     "type": "string"
                                 }
                             }
+                        },
+                        "headers": {
+                            "Location": {
+                                "schema": {
+                                    "type": "string"
+                                },
+                                "description": "Location api to find the status of request processing"
+                            }
                         }
                     },
                     "400": {
@@ -610,6 +782,77 @@
                                 }
                             }
                         }
+                    },
+                    "401": {
+                        "description": "This request is unauthenticated."
+                    },
+                    "403": {
+                        "description": "This request is unauthorized."
+                    },
+                    "500": {
+                        "description": "An server error occurred."
+                    }
+                },
+                "security": [
+                    {
+                        "AuthorizationToken": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/gtfs-flex/validate": {
+            "post": {
+                "tags": [
+                    "GTFS-Flex"
+                ],
+                "summary": "Validates the gtfs flex dataset.",
+                "description": "Allows a user to validate gtfs flex dataset to check the correctness of data. The caller must provide metadata about the file - includes information about how and when the data was collected and valid dates of the file. Returns the jobId associated with validation job.",
+                "operationId": "validateGtfsFlexFile",
+                "requestBody": {
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "required": [
+                                    "dataset",
+                                    "metadata"
+                                ],
+                                "type": "object",
+                                "properties": {
+                                    "dataset": {
+                                        "type": "string",
+                                        "format": "binary"
+                                    },
+                                    "metadata": {
+                                        "type": "string",
+                                        "format": "binary"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "202": {
+                        "description": "The request has been accepted for processing. returns the jobId, unique identifier for validation job request.",
+                        "content": {
+                            "application/text": {
+                                "schema": {
+                                    "type": "string"
+                                }
+                            }
+                        },
+                        "headers": {
+                            "Location": {
+                                "schema": {
+                                    "type": "string"
+                                },
+                                "description": "Location api to find the status of request processing"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "The request was invalid."
                     },
                     "401": {
                         "description": "This request is unauthenticated."
@@ -666,18 +909,18 @@
                 }
             }
         },
-        "/api/v1/status": {
+        "/api/v1/upload/status/{tdei_record_id}": {
             "get": {
                 "tags": [
                     "General"
                 ],
-                "summary": "Get status",
+                "summary": "Get the upload status",
                 "description": "Fetches the status of an uploaded record",
-                "operationId": "getStatus",
+                "operationId": "getUploadStatus",
                 "parameters": [
                     {
                         "name": "tdeiRecordId",
-                        "in": "query",
+                        "in": "path",
                         "description": "tdeiRecordId received during upload",
                         "required": true,
                         "schema": {
@@ -691,7 +934,49 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/RecordStatus"
+                                    "$ref": "#/components/schemas/RecordUploadStatus"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Record not found"
+                    },
+                    "401": {
+                        "description": "This request is unauthenticated."
+                    },
+                    "500": {
+                        "description": "An server error occurred."
+                    }
+                }
+            }
+        },
+        "/api/v1/publish/status/{jobId}": {
+            "get": {
+                "tags": [
+                    "General"
+                ],
+                "summary": "Get the publish status",
+                "description": "Fetches the status of an published record",
+                "operationId": "getPublishStatus",
+                "parameters": [
+                    {
+                        "name": "jobId",
+                        "in": "path",
+                        "description": "jobId received during upload",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Returns status of record",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/RecordPublishStatus"
                                 }
                             }
                         }
@@ -714,7 +999,7 @@
                     "OSW"
                 ],
                 "summary": "returns a geojson osw file by default, can request for different format using 'format' querystring",
-                "description": "returns a specific osw file identified by the tdei_record_id",
+                "description": "returns a specific osw file as zip containing metadata, dataset, and changeset identified by the tdei_record_id",
                 "operationId": "getOswFile",
                 "parameters": [
                     {
@@ -729,7 +1014,7 @@
                     {
                         "name": "format",
                         "in": "query",
-                        "description": "File format to download.",
+                        "description": "File format to download. Default to osw",
                         "required": false,
                         "schema": {
                             "type": "string",
@@ -742,7 +1027,7 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "Returns the osw file - will be geojson.",
+                        "description": "Returns the single zip file containing dataset.zip, metadata.json, changeset.txt (optional).",
                         "content": {
                             "application/octet-stream": {}
                         }
@@ -770,6 +1055,123 @@
                 ]
             }
         },
+        "/api/v1/osw/publish/{tdei_record_id}": {
+            "post": {
+                "tags": [
+                    "OSW"
+                ],
+                "summary": "Publishes the OSW dataset for the tdei_record_id",
+                "description": "Publishes an OSW dataset that has undergone prior uploading and editing via the [POST] /osw endpoint, marking it as an official release for the uploaded mobility service. This official release status ensures visibility to all TDEI data consumers.",
+                "operationId": "publishOswFile",
+                "parameters": [
+                    {
+                        "name": "tdei_record_id",
+                        "in": "path",
+                        "description": "tdei_record_id for a file, represented as a uuid",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "202": {
+                        "description": "The request has been accepted for processing. returns the jobId, unique identifier for publish request.",
+                        "content": {
+                            "application/text": {
+                                "schema": {
+                                    "type": "string"
+                                }
+                            }
+                        },
+                        "headers": {
+                            "Location": {
+                                "schema": {
+                                    "type": "string"
+                                },
+                                "description": "Location api to find the status of request processing"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "The request was invalid."
+                    },
+                    "401": {
+                        "description": "This request is unauthenticated."
+                    },
+                    "403": {
+                        "description": "This request is unauthorized."
+                    },
+                    "404": {
+                        "description": "A file with the specified tdei_record_id was not found. Use the [GET] /api/v1/osw endpoint to find valid file ids.",
+                        "content": {
+                            "text/plain": {}
+                        }
+                    },
+                    "500": {
+                        "description": "An server error occurred."
+                    }
+                },
+                "security": [
+                    {
+                        "ApiKey": []
+                    },
+                    {
+                        "AuthorizationToken": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/validate/status/{jobId}": {
+            "get": {
+                "tags": [
+                    "General"
+                ],
+                "summary": "Get the status of the validation request.",
+                "description": "Fetches the status of the validation request job.",
+                "operationId": "getValidateStatus",
+                "parameters": [
+                    {
+                        "name": "jobId",
+                        "in": "path",
+                        "description": "jobId for the validation request",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Returns the status of the validation request.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ValidationStatus"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "This request is unauthenticated."
+                    },
+                    "404": {
+                        "description": "JobId is not found"
+                    },
+                    "500": {
+                        "description": "An server error occurred."
+                    }
+                },
+                "security": [
+                    {
+                        "ApiKey": []
+                    },
+                    {
+                        "AuthorizationToken": []
+                    }
+                ]
+            }
+        },
         "/api/v1/osw/versions": {
             "get": {
                 "tags": [
@@ -778,7 +1180,6 @@
                 "summary": "List available OSW versions",
                 "description": "Lists the versions of OSW data which are supported by TDEI.",
                 "operationId": "listOswVersions",
-               
                 "responses": {
                     "200": {
                         "description": "Returns list of OSW versions supported by TDEI.",
@@ -815,8 +1216,8 @@
                 "summary": "Get the status of confidence request",
                 "description": "Fetches the status of confidence request job.",
                 "operationId": "getOSWConfidenceStatus",
-                 "parameters":[
-                  {
+                "parameters": [
+                    {
                         "name": "jobId",
                         "in": "path",
                         "description": "jobId for confidence request",
@@ -841,7 +1242,7 @@
                         "description": "This request is unauthenticated."
                     },
                     "404": {
-                      "description":"JobId is not found"
+                        "description": "JobId is not found"
                     },
                     "500": {
                         "description": "An server error occurred."
@@ -857,57 +1258,57 @@
                 ]
             }
         },
-        "/api/v1/osw/confidence/calculate":{
-          "post":{
-            "tags":[
-              "OSW"
-            ],
-            "summary":"Initiate Confidence calculation for a dataset",
-            "description":"Initiates the confidence calculation of a tdeiRecordId as mentioned in the body",
-            "operationId": "oswConfidenceCalculate",
-            "requestBody":{
+        "/api/v1/osw/confidence/calculate": {
+            "post": {
+                "tags": [
+                    "OSW"
+                ],
+                "summary": "Initiate Confidence calculation for a dataset",
+                "description": "Initiates the confidence calculation of a tdeiRecordId as mentioned in the body",
+                "operationId": "oswConfidenceCalculate",
+                "requestBody": {
                     "content": {
                         "application/json": {
                             "schema": {
-                                 "$ref": "#/components/schemas/OSWConfidenceRequest"
+                                "$ref": "#/components/schemas/OSWConfidenceRequest"
                             }
                         }
                     },
                     "required": true
                 },
-              "responses":{
-                "200":{
-                  "description":" Created confidence jobId ",
-                  "content": {
+                "responses": {
+                    "200": {
+                        "description": " Created confidence jobId ",
+                        "content": {
                             "application/json": {
                                 "schema": {
                                     "$ref": "#/components/schemas/OSWConfidenceResponse"
                                 }
                             }
                         }
-                },
-                "401": {
+                    },
+                    "401": {
                         "description": "This request is unauthenticated."
+                    },
+                    "404": {
+                        "description": "tdeiRecordId is not found"
                     },
                     "500": {
                         "description": "An server error occurred."
-                    },
-                    "404":{
-                      "description":"tdeiRecordId is not found"
                     }
-              }
-          }
+                }
+            }
         },
-        "/api/v1/osw/format/status/{jobId}":{
-            "get":{
-                "tags":[
+        "/api/v1/osw/format/status/{jobId}": {
+            "get": {
+                "tags": [
                     "OSW"
                 ],
-                "summary":"Fetch status of format request",
-                "description":"Summary of the formatting request",
-                "operationId":"oswFormatStatus",
-                 "parameters":[
-                  {
+                "summary": "Fetch status of format request",
+                "description": "Summary of the formatting request",
+                "operationId": "oswFormatStatus",
+                "parameters": [
+                    {
                         "name": "jobId",
                         "in": "path",
                         "description": "jobId for format request",
@@ -917,37 +1318,37 @@
                         }
                     }
                 ],
-                "responses":{
-                "200":{
-                  "description":" Status of the formatting Job ",
-                  "content": {
+                "responses": {
+                    "200": {
+                        "description": " Status of the formatting Job ",
+                        "content": {
                             "application/json": {
                                 "schema": {
                                     "$ref": "#/components/schemas/OSWFormatStatusResponse"
                                 }
                             }
                         }
-                },
-                "401": {
+                    },
+                    "401": {
                         "description": "This request is unauthenticated."
+                    },
+                    "404": {
+                        "description": "jobId is not found"
                     },
                     "500": {
                         "description": "An server error occurred."
-                    },
-                    "404":{
-                      "description":"jobId is not found"
                     }
-              }
+                }
             }
         },
-        "/api/v1/osw/format/upload":{
-            "post":{
-                "tags":[
+        "/api/v1/osw/format/upload": {
+            "post": {
+                "tags": [
                     "OSW"
                 ],
-                "summary":"Request osw format on demand",
-                "description":"Upload a file and request for formatting on demand",
-                "operationId":"oswOnDemandFormat",
+                "summary": "Request osw format on demand",
+                "description": "Upload a file and request for formatting on demand",
+                "operationId": "oswOnDemandFormat",
                 "requestBody": {
                     "content": {
                         "multipart/form-data": {
@@ -959,15 +1360,15 @@
                                 ],
                                 "type": "object",
                                 "properties": {
-                                    "source":{
-                                        "type":"string",
-                                        "description":"Source format",
-                                        "example":"osm"
+                                    "source": {
+                                        "type": "string",
+                                        "description": "Source format",
+                                        "example": "osm"
                                     },
-                                    "target":{
-                                        "type":"string",
-                                        "description":"Target format",
-                                        "example":"osw"
+                                    "target": {
+                                        "type": "string",
+                                        "description": "Target format",
+                                        "example": "osw"
                                     },
                                     "file": {
                                         "type": "string",
@@ -979,27 +1380,27 @@
                     },
                     "required": true
                 },
-                 "responses":{
-                "200":{
-                  "description":" Created formatting jobId ",
-                  "content": {
+                "responses": {
+                    "200": {
+                        "description": " Created formatting jobId ",
+                        "content": {
                             "application/json": {
                                 "schema": {
                                     "$ref": "#/components/schemas/OSWFormatResponse"
                                 }
                             }
                         }
-                },
-                "401": {
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    },
+                    "401": {
                         "description": "This request is unauthenticated."
                     },
                     "500": {
                         "description": "An server error occurred."
-                    },
-                    "400":{
-                      "description":"Bad request"
                     }
-              }
+                }
             }
         },
         "/api/v1/project-group": {
@@ -1071,7 +1472,7 @@
                     "GTFS-Pathways"
                 ],
                 "summary": "returns a gtfs_pathways file",
-                "description": "returns a specific gtfs_pathways file identified by the tdei_record_id",
+                "description": "returns a specific gtfs_pathways file as zip containing metadata, dataset, and changeset identified by the tdei_record_id",
                 "operationId": "getPathwaysFile",
                 "parameters": [
                     {
@@ -1086,7 +1487,7 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "Success. Returns the file as application/octet-stream.",
+                        "description": "Returns the single zip file containing dataset.zip, metadata.json, changeset.txt (optional).",
                         "content": {
                             "application/octet-stream": {}
                         }
@@ -1098,6 +1499,73 @@
                         "description": "A file with the specified tdei_record_id was not found. Use the /api/v1/gtfs-pathways endpoints to find valid file ids.",
                         "content": {
                             "application/json": {}
+                        }
+                    },
+                    "500": {
+                        "description": "An server error occurred."
+                    }
+                },
+                "security": [
+                    {
+                        "ApiKey": []
+                    },
+                    {
+                        "AuthorizationToken": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/gtfs-pathways/publish/{tdei_record_id}": {
+            "post": {
+                "tags": [
+                    "GTFS-Pathways"
+                ],
+                "summary": "Publishes the GTFS Pathways dataset for the tdei_record_id",
+                "description": "Publishes an GTFS Pathways dataset that has undergone prior uploading and editing via the [POST] /gtfs-pathways endpoint, marking it as an official release for the uploaded mobility service. This official release status ensures visibility to all TDEI data consumers.",
+                "operationId": "publishGTFSPathwaysFile",
+                "parameters": [
+                    {
+                        "name": "tdei_record_id",
+                        "in": "path",
+                        "description": "tdei_record_id for a file, represented as a uuid",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "202": {
+                        "description": "The request has been accepted for processing. returns the jobId, unique identifier for publish request.",
+                        "content": {
+                            "application/text": {
+                                "schema": {
+                                    "type": "string"
+                                }
+                            }
+                        },
+                        "headers": {
+                            "Location": {
+                                "schema": {
+                                    "type": "string"
+                                },
+                                "description": "Location api to find the status of request processing"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "The request was invalid."
+                    },
+                    "401": {
+                        "description": "This request is unauthenticated."
+                    },
+                    "403": {
+                        "description": "This request is unauthorized."
+                    },
+                    "404": {
+                        "description": "A file with the specified tdei_record_id was not found. Use the [GET] /api/v1/gtfs-pathways endpoint to find valid file ids.",
+                        "content": {
+                            "text/plain": {}
                         }
                     },
                     "500": {
@@ -1228,7 +1696,7 @@
                     "GTFS-Flex"
                 ],
                 "summary": "returns a gtfs_flex file",
-                "description": "returns a specific gtfs_flex file identified by the tdei_record_id",
+                "description": "returns a specific gtfs_flex file as zip containing metadata, dataset, and changeset identified by the tdei_record_id",
                 "operationId": "getFlexFile",
                 "parameters": [
                     {
@@ -1243,7 +1711,7 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "Success. Returns the file as an octet-stream.",
+                        "description": "Returns the single zip file containing dataset.zip, metadata.json, changeset.txt (optional).",
                         "content": {
                             "application/octet-stream": {}
                         }
@@ -1255,6 +1723,73 @@
                         "description": "A file with the specified tdei_record_id was not found. Use the /api/v1/gtfs-flex endpoints to find valid file ids.",
                         "content": {
                             "application/json": {}
+                        }
+                    },
+                    "500": {
+                        "description": "An server error occurred."
+                    }
+                },
+                "security": [
+                    {
+                        "ApiKey": []
+                    },
+                    {
+                        "AuthorizationToken": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/gtfs-flex/publish/{tdei_record_id}": {
+            "post": {
+                "tags": [
+                    "GTFS-Flex"
+                ],
+                "summary": "Publishes the GTFS Flex dataset for the tdei_record_id",
+                "description": "Publishes an GTFS Flex dataset that has undergone prior uploading and editing via the [POST] /gtfs-flex endpoint, marking it as an official release for the uploaded mobility service. This official release status ensures visibility to all TDEI data consumers.",
+                "operationId": "publishGTFSFlexFile",
+                "parameters": [
+                    {
+                        "name": "tdei_record_id",
+                        "in": "path",
+                        "description": "tdei_record_id for a file, represented as a uuid",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "202": {
+                        "description": "The request has been accepted for processing. returns the jobId, unique identifier for publish request.",
+                        "content": {
+                            "application/text": {
+                                "schema": {
+                                    "type": "string"
+                                }
+                            }
+                        },
+                        "headers": {
+                            "Location": {
+                                "schema": {
+                                    "type": "string"
+                                },
+                                "description": "Location api to find the status of request processing"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "The request was invalid."
+                    },
+                    "401": {
+                        "description": "This request is unauthenticated."
+                    },
+                    "403": {
+                        "description": "This request is unauthorized."
+                    },
+                    "404": {
+                        "description": "A file with the specified tdei_record_id was not found. Use the [GET] /api/v1/gtfs-flex endpoint to find valid file ids.",
+                        "content": {
+                            "text/plain": {}
                         }
                     },
                     "500": {
@@ -1499,16 +2034,38 @@
             },
             "OswUpload": {
                 "required": [
+                    "name",
+                    "version",
                     "collected_by",
                     "collection_date",
                     "collection_method",
                     "data_source",
                     "osw_schema_version",
-                    "polygon",
+                    "dataset_area",
                     "tdei_project_group_id"
                 ],
                 "type": "object",
                 "properties": {
+                    "name": {
+                        "type": "string",
+                        "description": "Dataset name or Title that this data is known by"
+                    },
+                    "description": {
+                        "type": "string",
+                        "description": "Free text description of the data"
+                    },
+                    "version": {
+                        "type": "string",
+                        "description": "Dataset version"
+                    },
+                    "derived_from_dataset_id": {
+                        "type": "string",
+                        "description": "Dataset id from which this dataset was derived"
+                    },
+                    "custom_metadata": {
+                        "type": "object",
+                        "description": "Custom structured JSON metadata"
+                    },
                     "tdei_project_group_id": {
                         "type": "string",
                         "description": "tdei-assigned project group id. Represented as UUID. Project Group ids can be retrieved using the /api/v1/project-group path.",
@@ -1548,7 +2105,7 @@
                             "InHouse"
                         ]
                     },
-                    "polygon": {
+                    "dataset_area": {
                         "$ref": "#/components/schemas/GeoJsonObject"
                     },
                     "osw_schema_version": {
@@ -1561,18 +2118,40 @@
             },
             "GtfsPathwaysUpload": {
                 "required": [
+                    "name",
+                    "version",
                     "collected_by",
                     "collection_date",
                     "collection_method",
                     "data_source",
                     "pathways_schema_version",
-                    "polygon",
+                    "dataset_area",
                     "tdei_project_group_id",
                     "tdei_station_id",
                     "valid_from"
                 ],
                 "type": "object",
                 "properties": {
+                    "name": {
+                        "type": "string",
+                        "description": "Dataset name or Title that this data is known by"
+                    },
+                    "description": {
+                        "type": "string",
+                        "description": "Free text description of the data"
+                    },
+                    "version": {
+                        "type": "string",
+                        "description": "Dataset version"
+                    },
+                    "derived_from_dataset_id": {
+                        "type": "string",
+                        "description": "Dataset id from which this dataset was derived"
+                    },
+                    "custom_metadata": {
+                        "type": "object",
+                        "description": "Custom structured JSON metadata"
+                    },
                     "tdei_project_group_id": {
                         "type": "string",
                         "description": "tdei-assigned project group id. Represented as UUID. Project Group ids can be retrieved using the /api/v1/project-group path.",
@@ -1622,7 +2201,7 @@
                             "InHouse"
                         ]
                     },
-                    "polygon": {
+                    "dataset_area": {
                         "$ref": "#/components/schemas/GeoJsonObject"
                     },
                     "pathways_schema_version": {
@@ -1635,18 +2214,40 @@
             },
             "GtfsFlexUpload": {
                 "required": [
+                    "name",
+                    "version",
                     "collected_by",
                     "collection_date",
                     "collection_method",
                     "data_source",
                     "flex_schema_version",
-                    "polygon",
+                    "dataset_area",
                     "tdei_project_group_id",
                     "tdei_service_id",
                     "valid_from"
                 ],
                 "type": "object",
                 "properties": {
+                    "name": {
+                        "type": "string",
+                        "description": "Dataset name or Title that this data is known by"
+                    },
+                    "description": {
+                        "type": "string",
+                        "description": "Free text description of the data"
+                    },
+                    "version": {
+                        "type": "string",
+                        "description": "Dataset version"
+                    },
+                    "derived_from_dataset_id": {
+                        "type": "string",
+                        "description": "Dataset id from which this dataset was derived"
+                    },
+                    "custom_metadata": {
+                        "type": "object",
+                        "description": "Custom structured JSON metadata"
+                    },
                     "tdei_project_group_id": {
                         "type": "string",
                         "description": "tdei-assigned project group id. Represented as UUID. Project Group ids can be retrieved using the /api/v1.0/project-group path.",
@@ -1696,7 +2297,7 @@
                             "InHouse"
                         ]
                     },
-                    "polygon": {
+                    "dataset_area": {
                         "$ref": "#/components/schemas/GeoJsonObject"
                     },
                     "flex_schema_version": {
@@ -1718,7 +2319,7 @@
                     }
                 }
             },
-            "RecordStatus": {
+            "RecordUploadStatus": {
                 "required": [
                     "tdeiRecordId"
                 ],
@@ -1743,8 +2344,35 @@
                 },
                 "description": "Describes the status of an uploaded record"
             },
+            "RecordPublishStatus": {
+                "required": [
+                    "jobId"
+                ],
+                "type": "object",
+                "properties": {
+                    "jobId": {
+                        "type": "string",
+                        "description": "Job ID of the publish record"
+                    },
+                    "stage": {
+                        "type": "string",
+                        "description": "Current stage of the file processing"
+                    },
+                    "status": {
+                        "type": "string",
+                        "description": "Current status of processing. (failed, in progress or complete). If failed, shows the failure reason"
+                    },
+                    "isComplete": {
+                        "type": "boolean",
+                        "description": "Whether processing is complete. (will be true if any stage fails)"
+                    }
+                },
+                "description": "Describes the status of an publish record"
+            },
             "OswDownload": {
                 "required": [
+                    "name",
+                    "version",
                     "collected_by",
                     "collection_date",
                     "collection_method",
@@ -1752,12 +2380,37 @@
                     "data_source",
                     "download_url",
                     "osw_schema_version",
-                    "polygon",
+                    "dataset_area",
                     "tdei_project_group_id",
-                    "tdei_record_id"
+                    "tdei_record_id",
+                    "uploaded_timestamp"
                 ],
                 "type": "object",
                 "properties": {
+                    "name": {
+                        "type": "string",
+                        "description": "Dataset name or Title that this data is known by"
+                    },
+                    "description": {
+                        "type": "string",
+                        "description": "Free text description of the data"
+                    },
+                    "version": {
+                        "type": "string",
+                        "description": "Dataset version"
+                    },
+                    "derived_from_dataset_id": {
+                        "type": "string",
+                        "description": "Dataset id from which this dataset was derived"
+                    },
+                    "custom_metadata": {
+                        "type": "object",
+                        "description": "Custom structured JSON metadata"
+                    },
+                    "uploaded_timestamp": {
+                        "type": "string",
+                        "description": "Uploaded timestamp of the dataset"
+                    },
                     "tdei_project_group_id": {
                         "type": "string",
                         "description": "tdei-assigned project group id. Represented as UUID. Project Group ids can be retrieved using the /api/v1/project-group path.",
@@ -1803,7 +2456,7 @@
                             "InHouse"
                         ]
                     },
-                    "polygon": {
+                    "dataset_area": {
                         "$ref": "#/components/schemas/GeoJsonObject"
                     },
                     "tdei_record_id": {
@@ -1880,10 +2533,12 @@
                         "description": "project_group_name name. For transit agencies, typically the agency name used in GTFS releases."
                     }
                 },
-                "description": "Includes gtfs agency information and a tdei agency id. Necessary as gtfs agency id may not be unique across agencies."
+                "description": "Includes gtfs project group information and a tdei project group id."
             },
             "GtfsPathwaysDownload": {
                 "required": [
+                    "name",
+                    "version",
                     "collected_by",
                     "collection_date",
                     "collection_method",
@@ -1891,14 +2546,39 @@
                     "data_source",
                     "download_url",
                     "pathways_schema_version",
-                    "polygon",
+                    "dataset_area",
                     "tdei_project_group_id",
                     "tdei_record_id",
                     "tdei_station_id",
-                    "valid_from"
+                    "valid_from",
+                    "uploaded_timestamp"
                 ],
                 "type": "object",
                 "properties": {
+                    "name": {
+                        "type": "string",
+                        "description": "Dataset name or Title that this data is known by"
+                    },
+                    "description": {
+                        "type": "string",
+                        "description": "Free text description of the data"
+                    },
+                    "version": {
+                        "type": "string",
+                        "description": "Dataset version"
+                    },
+                    "derived_from_dataset_id": {
+                        "type": "string",
+                        "description": "Dataset id from which this dataset was derived"
+                    },
+                    "custom_metadata": {
+                        "type": "object",
+                        "description": "Custom structured JSON metadata"
+                    },
+                    "uploaded_timestamp": {
+                        "type": "string",
+                        "description": "Uploaded timestamp of the dataset"
+                    },
                     "tdei_project_group_id": {
                         "type": "string",
                         "description": "tdei-assigned project group id. Represented as UUID. Project Group ids can be retrieved using the /api/v1/project-group path.",
@@ -1954,7 +2634,7 @@
                             "InHouse"
                         ]
                     },
-                    "polygon": {
+                    "dataset_area": {
                         "$ref": "#/components/schemas/GeoJsonObject"
                     },
                     "tdei_record_id": {
@@ -2000,6 +2680,8 @@
             },
             "GtfsFlexDownload": {
                 "required": [
+                    "name",
+                    "version",
                     "collected_by",
                     "collection_date",
                     "collection_method",
@@ -2007,14 +2689,39 @@
                     "data_source",
                     "download_url",
                     "flex_schema_version",
-                    "polygon",
+                    "dataset_area",
                     "tdei_project_group_id",
                     "tdei_record_id",
                     "tdei_service_id",
-                    "valid_from"
+                    "valid_from",
+                    "uploaded_timestamp"
                 ],
                 "type": "object",
                 "properties": {
+                    "name": {
+                        "type": "string",
+                        "description": "Dataset name or Title that this data is known by"
+                    },
+                    "description": {
+                        "type": "string",
+                        "description": "Free text description of the data"
+                    },
+                    "version": {
+                        "type": "string",
+                        "description": "Dataset version"
+                    },
+                    "derived_from_dataset_id": {
+                        "type": "string",
+                        "description": "Dataset id from which this dataset was derived"
+                    },
+                    "custom_metadata": {
+                        "type": "object",
+                        "description": "Custom structured JSON metadata"
+                    },
+                    "uploaded_timestamp": {
+                        "type": "string",
+                        "description": "Uploaded timestamp of the dataset"
+                    },
                     "tdei_project_group_id": {
                         "type": "string",
                         "description": "tdei-assigned project group id. Represented as UUID. Project Group ids can be retrieved using the /api/v1/project-group path.",
@@ -2070,7 +2777,7 @@
                             "InHouse"
                         ]
                     },
-                    "polygon": {
+                    "dataset_area": {
                         "$ref": "#/components/schemas/GeoJsonObject"
                     },
                     "tdei_record_id": {
@@ -2114,115 +2821,142 @@
                     }
                 }
             },
-            "OSWConfidenceRequest":{
-              "type":"object",
-              "required":[
-                "tdeiRecordId"
-              ],
-              "properties":{
-                "tdeiRecordId":{
-                  "type":"string",
-                  "description":"TDEI record ID of the dataset to calculate confidence metric",
-                  "example":"5e991e7a-5c16-4ebf-ad31-3a3625bcca10"
-                }
-              }
-            },
-            "OSWConfidenceResponse":{
-              "type":"object",
-              "properties":{
-                "tdeiRecordId":{
-                  "type":"string",
-                   "description":"TDEI record ID of the dataset to calculate confidence metric",
-                  "example":"5e991e7a-5c16-4ebf-ad31-3a3625bcca10"
-                },
-                "jobId":{
-                  "type":"integer",
-                  "description":"jobId of the confidence request",
-                  "example":1
-                }
-              }
-            },
-            "OSWConfidenceStatus":{
-              "type":"object",
-              "properties":{
-                 "jobId":{
-                  "type":"integer",
-                  "description":"jobId of the confidence request",
-                  "example":1
-                },
-                 "confidenceValue":{
-                  "type":"number",
-                  "description":"Confidence of the record",
-                  "example":90.23
-                },
-                "updatedAt":{
-                  "type":"string",
-                  "description":"Date time of the last update on status",
-                  "example": "2018-02-10T09:30Z"
-                },
-                "status":{
-                  "type":"string",
-                  "description":"status of the job",
-                  "enum":[
-                    "started",
-                    "calculated",
-                    "failed"
-                  ]
-                },
-                "message":{
-                  "type":"string",
-                  "description":"Error message or status information"
-                }
-              }
-            },
-            "OSWFormatResponse":{
-                "type":"object",
-                "properties":{
-                    "jobId":{
-                        "type":"string",
-                        "description":"jobId of the format request"
-                    },
-                    "statusUrl":{
-                        "type":"string",
-                        "description":"the url to fetch the status of the job"
+            "OSWConfidenceRequest": {
+                "type": "object",
+                "required": [
+                    "tdeiRecordId"
+                ],
+                "properties": {
+                    "tdeiRecordId": {
+                        "type": "string",
+                        "description": "TDEI record ID of the dataset to calculate confidence metric",
+                        "example": "5e991e7a-5c16-4ebf-ad31-3a3625bcca10"
                     }
                 }
             },
-            "OSWFormatStatusResponse" : {
-                "type":"object",
-                "required":[
+            "OSWConfidenceResponse": {
+                "type": "object",
+                "properties": {
+                    "tdeiRecordId": {
+                        "type": "string",
+                        "description": "TDEI record ID of the dataset to calculate confidence metric",
+                        "example": "5e991e7a-5c16-4ebf-ad31-3a3625bcca10"
+                    },
+                    "jobId": {
+                        "type": "integer",
+                        "description": "jobId of the confidence request",
+                        "example": 1
+                    }
+                }
+            },
+            "OSWConfidenceStatus": {
+                "type": "object",
+                "properties": {
+                    "jobId": {
+                        "type": "integer",
+                        "description": "jobId of the confidence request",
+                        "example": 1
+                    },
+                    "confidenceValue": {
+                        "type": "number",
+                        "description": "Confidence of the record",
+                        "example": 90.23
+                    },
+                    "updatedAt": {
+                        "type": "string",
+                        "description": "Date time of the last update on status",
+                        "example": "2018-02-10T09:30Z"
+                    },
+                    "status": {
+                        "type": "string",
+                        "description": "status of the job",
+                        "enum": [
+                            "started",
+                            "calculated",
+                            "failed"
+                        ]
+                    },
+                    "message": {
+                        "type": "string",
+                        "description": "Error message or status information"
+                    }
+                }
+            },
+            "ValidationStatus": {
+                "type": "object",
+                "properties": {
+                    "jobId": {
+                        "type": "integer",
+                        "description": "jobId of the Validation request",
+                        "example": 1
+                    },
+                    "ValidationResult": {
+                        "type": "string",
+                        "description": "Validation result"
+                    },
+                    "updatedAt": {
+                        "type": "string",
+                        "description": "Date time of the last update on status",
+                        "example": "2018-02-10T09:30Z"
+                    },
+                    "status": {
+                        "type": "string",
+                        "description": "status of the job",
+                        "enum": [
+                            "in-progress",
+                            "completed"
+                        ]
+                    }
+                }
+            },
+            "OSWFormatResponse": {
+                "type": "object",
+                "properties": {
+                    "jobId": {
+                        "type": "string",
+                        "description": "jobId of the format request"
+                    },
+                    "statusUrl": {
+                        "type": "string",
+                        "description": "the url to fetch the status of the job"
+                    }
+                }
+            },
+            "OSWFormatStatusResponse": {
+                "type": "object",
+                "required": [
                     "jobId"
                 ],
-                "properties":{
-                    "jobId":{
-                        "type":"string",
-                        "description":"jobId of the format request"
+                "properties": {
+                    "jobId": {
+                        "type": "string",
+                        "description": "jobId of the format request"
                     },
-                    "status":{
-                        "type":"string",
-                        "description":"Status of the format request",
-                        "enum":[
+                    "status": {
+                        "type": "string",
+                        "description": "Status of the format request",
+                        "enum": [
                             "started",
                             "completed",
                             "failed"
                         ]
                     },
-                    "message":{
-                        "type":"string",
-                        "description":"Any error message during failure"
+                    "message": {
+                        "type": "string",
+                        "description": "Any error message during failure"
                     },
-                    "sourceUrl":{
-                        "type":"string",
-                        "description":"URL of the source file"
+                    "sourceUrl": {
+                        "type": "string",
+                        "description": "URL of the source file"
                     },
-                    "targetUrl":{
-                        "type":"string",
-                        "description":"URL of the target file"
+                    "targetUrl": {
+                        "type": "string",
+                        "description": "URL of the target file"
                     },
-                    "conversion":{
-                        "type":"string",
-                        "description":"type of conversion",
-                        "example":"osw-osm"
+                    "conversion": {
+                        "type": "string",
+                        "description": "type of conversion",
+                        "example": "osw-osm"
                     }
                 }
             }
