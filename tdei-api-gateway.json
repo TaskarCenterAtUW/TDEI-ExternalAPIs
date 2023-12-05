@@ -2433,7 +2433,8 @@
                         "enum": [
                             "pre-release",
                             "published"
-                        ]
+                        ],
+                        "default": "published"
                     },
                     "name": {
                         "type": "string",
@@ -2610,7 +2611,8 @@
                         "enum": [
                             "pre-release",
                             "published"
-                        ]
+                        ],
+                        "default": "published"
                     },
                     "name": {
                         "type": "string",
@@ -2762,7 +2764,8 @@
                         "enum": [
                             "pre-release",
                             "published"
-                        ]
+                        ],
+                        "default": "published"
                     },
                     "name": {
                         "type": "string",
