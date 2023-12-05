@@ -82,12 +82,16 @@
                         }
                     },
                     {
-                        "name": "pre-release",
+                        "name": "status",
                         "in": "query",
-                        "description": "Request for pre-release files. The default setting is false, limiting the list to release files only. When set to true, it includes pre-release files for users within the project groups. ",
+                        "description": "Request for files based on status. The default setting is 'published', limiting the list to published files only. When set to 'pre-release', it includes pre-release files for the project groups user belongs. ",
                         "required": false,
                         "schema": {
-                            "type": "boolean"
+                            "type": "boolean",
+                            "enum": [
+                                "pre-release",
+                                "published"
+                            ]
                         }
                     },
                     {
@@ -352,12 +356,16 @@
                         }
                     },
                     {
-                        "name": "pre-release",
+                        "name": "status",
                         "in": "query",
-                        "description": "Request for pre-release files. The default setting is false, limiting the list to release files only. When set to true, it includes pre-release files for users within the project groups. ",
+                        "description": "Request for files based on status. The default setting is 'published', limiting the list to published files only. When set to 'pre-release', it includes pre-release files for the project groups user belongs. ",
                         "required": false,
                         "schema": {
-                            "type": "boolean"
+                            "type": "boolean",
+                            "enum": [
+                                "pre-release",
+                                "published"
+                            ]
                         }
                     },
                     {
@@ -631,12 +639,16 @@
                         }
                     },
                     {
-                        "name": "pre-release",
+                        "name": "status",
                         "in": "query",
-                        "description": "Request for pre-release files. The default setting is false, limiting the list to release files only. When set to true, it includes pre-release files for users within the project groups. ",
+                        "description": "Request for files based on status. The default setting is 'published', limiting the list to published files only. When set to 'pre-release', it includes pre-release files for the project groups user belongs. ",
                         "required": false,
                         "schema": {
-                            "type": "boolean"
+                            "type": "boolean",
+                            "enum": [
+                                "pre-release",
+                                "published"
+                            ]
                         }
                     },
                     {
@@ -2410,10 +2422,19 @@
                     "dataset_area",
                     "tdei_project_group_id",
                     "tdei_record_id",
-                    "uploaded_timestamp"
+                    "uploaded_timestamp",
+                    "status"
                 ],
                 "type": "object",
                 "properties": {
+                    "status": {
+                        "type": "string",
+                        "description": "Status of the dataset release",
+                        "enum": [
+                            "pre-release",
+                            "published"
+                        ]
+                    },
                     "name": {
                         "type": "string",
                         "description": "Dataset name or Title that this data is known by"
@@ -2578,10 +2599,19 @@
                     "tdei_record_id",
                     "tdei_station_id",
                     "valid_from",
-                    "uploaded_timestamp"
+                    "uploaded_timestamp",
+                    "status"
                 ],
                 "type": "object",
                 "properties": {
+                    "status": {
+                        "type": "string",
+                        "description": "Status of the dataset release",
+                        "enum": [
+                            "pre-release",
+                            "published"
+                        ]
+                    },
                     "name": {
                         "type": "string",
                         "description": "Dataset name or Title that this data is known by"
@@ -2721,10 +2751,19 @@
                     "tdei_record_id",
                     "tdei_service_id",
                     "valid_from",
-                    "uploaded_timestamp"
+                    "uploaded_timestamp",
+                    "status"
                 ],
                 "type": "object",
                 "properties": {
+                    "status": {
+                        "type": "string",
+                        "description": "Status of the dataset release",
+                        "enum": [
+                            "pre-release",
+                            "published"
+                        ]
+                    },
                     "name": {
                         "type": "string",
                         "description": "Dataset name or Title that this data is known by"
