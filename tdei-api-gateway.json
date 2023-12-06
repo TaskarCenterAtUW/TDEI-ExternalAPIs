@@ -628,7 +628,7 @@
                 "tags": [
                     "OSW"
                 ],
-                "summary": "returns a geojson osw file by default, can request for different format using 'format' querystring",
+                "summary": "downloads the OSW files as zip",
                 "description": "returns a specific osw file as zip containing metadata, dataset, and changeset identified by the tdei_record_id",
                 "operationId": "getOswFile",
                 "parameters": [
@@ -1064,7 +1064,7 @@
                 "tags": [
                     "GTFS-Pathways"
                 ],
-                "summary": "returns a gtfs_pathways file",
+                "summary": "downloads the GTFS pathways files as zip",
                 "description": "returns a specific gtfs_pathways file as zip containing metadata, dataset, and changeset identified by the tdei_record_id",
                 "operationId": "getPathwaysFile",
                 "parameters": [
@@ -1602,7 +1602,7 @@
                 "tags": [
                     "GTFS-Flex"
                 ],
-                "summary": "returns a gtfs_flex file",
+                "summary": "downloads the GTFS flex files as zip",
                 "description": "returns a specific gtfs_flex file as zip containing metadata, dataset, and changeset identified by the tdei_record_id",
                 "operationId": "getFlexFile",
                 "parameters": [
