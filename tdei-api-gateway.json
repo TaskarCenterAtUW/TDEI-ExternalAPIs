@@ -89,8 +89,9 @@
                         "schema": {
                             "type": "boolean",
                             "enum": [
+                                "published",
                                 "pre-release",
-                                "published"
+                                "all"
                             ]
                         }
                     },
@@ -191,14 +192,36 @@
                         "AuthorizationToken": []
                     }
                 ]
-            },
+            }
+        },
+        "/api/v1/osw/upload/{tdei_project_group_id}": {
             "post": {
                 "tags": [
                     "OSW"
                 ],
-                "summary": "Path used to upload/create a new osw data file.",
+                "summary": "upload/create a new osw data file.",
                 "description": "This path allows a user to upload or create a new osw file. The caller must provide metadata about the file - includes information about how and when the data was collected and valid dates of the file. Returns the tdei_record_id of the uploaded file.",
                 "operationId": "uploadOswFile",
+                "parameters": [
+                    {
+                        "name": "tdei_project_group_id",
+                        "in": "path",
+                        "description": "tdei assigned project group id. Represented as UUID. Project Group ids can be retrieved using the /api/v1/project-group path.",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "derived_from_dataset_id",
+                        "in": "query",
+                        "description": "Dataset id from which this dataset was derived",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
                 "requestBody": {
                     "content": {
                         "multipart/form-data": {
@@ -231,11 +254,7 @@
                     "202": {
                         "description": "The request has been accepted for processing. returns the tdei_record_id, unique identifier for uploaded file.",
                         "content": {
-                            "application/text": {
-                                "schema": {
-                                    "type": "string"
-                                }
-                            }
+                            "application/text": {}
                         },
                         "headers": {
                             "Location": {
@@ -272,23 +291,18 @@
                     "OSW"
                 ],
                 "summary": "Validates the osw dataset.",
-                "description": "Allows a user to validate osw dataset to check the correctness of data. The caller must provide metadata about the file - includes information about how and when the data was collected and valid dates of the file. Returns the jobId associated with validation job.",
+                "description": "Allows a user to validate osw dataset to check the correctness of data. The caller must provide metadata about the file - includes information about how and when the data was collected and valid dates of the file. Returns the job_id associated with validation job.",
                 "operationId": "validateOswFile",
                 "requestBody": {
                     "content": {
                         "multipart/form-data": {
                             "schema": {
                                 "required": [
-                                    "dataset",
-                                    "metadata"
+                                    "dataset"
                                 ],
                                 "type": "object",
                                 "properties": {
                                     "dataset": {
-                                        "type": "string",
-                                        "format": "binary"
-                                    },
-                                    "metadata": {
                                         "type": "string",
                                         "format": "binary"
                                     }
@@ -300,7 +314,7 @@
                 },
                 "responses": {
                     "202": {
-                        "description": "The request has been accepted for processing. returns the jobId, unique identifier for validation job request.",
+                        "description": "The request has been accepted for processing. returns the job_id, unique identifier for validation job request.",
                         "content": {
                             "application/text": {
                                 "schema": {
@@ -363,8 +377,9 @@
                         "schema": {
                             "type": "boolean",
                             "enum": [
+                                "published",
                                 "pre-release",
-                                "published"
+                                "all"
                             ]
                         }
                     },
@@ -474,7 +489,9 @@
                         "AuthorizationToken": []
                     }
                 ]
-            },
+            }
+        },
+        "/api/v1/gtfs-pathways/upload/{tdei_project_group_id}/{tdei_service_id}": {
             "post": {
                 "tags": [
                     "GTFS-Pathways"
@@ -482,6 +499,35 @@
                 "summary": "create pathways file",
                 "description": "This call allows a user to upload or create a new gtfs pathways file. The caller must provide metadata about the file. Required metadata includes information about how and when the data was collected and valid dates of the file. Returns the tdei_record_id of the uploaded file.",
                 "operationId": "uploadPathwaysFile",
+                "parameters": [
+                    {
+                        "name": "tdei_project_group_id",
+                        "in": "path",
+                        "description": "tdei assigned project group id. Represented as UUID. Project Group ids can be retrieved using the /api/v1/project-group path.",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "tdei_station_id",
+                        "in": "query",
+                        "description": "tdei assigned station id. Represented as UUID. Station ids can be retrieved using the /api/v1/gtfs-pathways/stations path.",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "derived_from_dataset_id",
+                        "in": "query",
+                        "description": "Dataset id from which this dataset was derived",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
                 "requestBody": {
                     "content": {
                         "multipart/form-data": {
@@ -514,11 +560,7 @@
                     "202": {
                         "description": "The request has been accepted for processing.  returns the tdei_record_id, unique identifier for uploaded file.",
                         "content": {
-                            "application/text": {
-                                "schema": {
-                                    "type": "string"
-                                }
-                            }
+                            "application/text": {}
                         },
                         "headers": {
                             "Location": {
@@ -555,23 +597,18 @@
                     "GTFS-Pathways"
                 ],
                 "summary": "Validates the gtfs pathways dataset.",
-                "description": "Allows a user to validate gtfs pathways dataset to check the correctness of data. The caller must provide metadata about the file - includes information about how and when the data was collected and valid dates of the file. Returns the jobId associated with validation job.",
+                "description": "Allows a user to validate gtfs pathways dataset to check the correctness of data. The caller must provide metadata about the file - includes information about how and when the data was collected and valid dates of the file. Returns the job_id associated with validation job.",
                 "operationId": "validateGtfsPathwaysFile",
                 "requestBody": {
                     "content": {
                         "multipart/form-data": {
                             "schema": {
                                 "required": [
-                                    "dataset",
-                                    "metadata"
+                                    "dataset"
                                 ],
                                 "type": "object",
                                 "properties": {
                                     "dataset": {
-                                        "type": "string",
-                                        "format": "binary"
-                                    },
-                                    "metadata": {
                                         "type": "string",
                                         "format": "binary"
                                     }
@@ -583,7 +620,7 @@
                 },
                 "responses": {
                     "202": {
-                        "description": "The request has been accepted for processing. returns the jobId, unique identifier for validation job request.",
+                        "description": "The request has been accepted for processing. returns the job_id, unique identifier for validation job request.",
                         "content": {
                             "application/text": {
                                 "schema": {
@@ -646,8 +683,9 @@
                         "schema": {
                             "type": "boolean",
                             "enum": [
+                                "published",
                                 "pre-release",
-                                "published"
+                                "all"
                             ]
                         }
                     },
@@ -757,7 +795,9 @@
                         "AuthorizationToken": []
                     }
                 ]
-            },
+            }
+        },
+        "/api/v1/gtfs-flex/upload/{tdei_project_group_id}/{tdei_service_id}": {
             "post": {
                 "tags": [
                     "GTFS-Flex"
@@ -765,6 +805,35 @@
                 "summary": "upload a new gtfs_flex file",
                 "description": "This call allows a user to upload or create a new gtfs flex file. The caller must provide metadata about the file. Required metadata includes information about how and when the data was collected and valid dates of the file. Returns the tdei_record_id of the uploaded file.",
                 "operationId": "uploadGtfsFlexFile",
+                "parameters": [
+                    {
+                        "name": "tdei_project_group_id",
+                        "in": "path",
+                        "description": "tdei assigned project group id. Represented as UUID. Project Group ids can be retrieved using the /api/v1/project-group path.",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "tdei_service_id",
+                        "in": "query",
+                        "description": "tdei assigned service id. Represented as UUID. Service ids can be retrieved using the /api/v1/gtfs-flex/services path.",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "derived_from_dataset_id",
+                        "in": "query",
+                        "description": "Dataset id from which this dataset was derived",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
                 "requestBody": {
                     "content": {
                         "multipart/form-data": {
@@ -797,11 +866,7 @@
                     "202": {
                         "description": "The request has been accepted for processing.  returns the tdei_record_id, unique identifier for uploaded file.",
                         "content": {
-                            "application/text": {
-                                "schema": {
-                                    "type": "string"
-                                }
-                            }
+                            "application/text": {}
                         },
                         "headers": {
                             "Location": {
@@ -845,23 +910,18 @@
                     "GTFS-Flex"
                 ],
                 "summary": "Validates the gtfs flex dataset.",
-                "description": "Allows a user to validate gtfs flex dataset to check the correctness of data. The caller must provide metadata about the file - includes information about how and when the data was collected and valid dates of the file. Returns the jobId associated with validation job.",
+                "description": "Allows a user to validate gtfs flex dataset to check the correctness of data. The caller must provide metadata about the file - includes information about how and when the data was collected and valid dates of the file. Returns the job_id associated with validation job.",
                 "operationId": "validateGtfsFlexFile",
                 "requestBody": {
                     "content": {
                         "multipart/form-data": {
                             "schema": {
                                 "required": [
-                                    "dataset",
-                                    "metadata"
+                                    "dataset"
                                 ],
                                 "type": "object",
                                 "properties": {
                                     "dataset": {
-                                        "type": "string",
-                                        "format": "binary"
-                                    },
-                                    "metadata": {
                                         "type": "string",
                                         "format": "binary"
                                     }
@@ -873,7 +933,7 @@
                 },
                 "responses": {
                     "202": {
-                        "description": "The request has been accepted for processing. returns the jobId, unique identifier for validation job request.",
+                        "description": "The request has been accepted for processing. returns the job_id, unique identifier for validation job request.",
                         "content": {
                             "application/text": {
                                 "schema": {
@@ -990,7 +1050,7 @@
                 }
             }
         },
-        "/api/v1/publish/status/{jobId}": {
+        "/api/v1/publish/status/{job_id}": {
             "get": {
                 "tags": [
                     "General"
@@ -1000,9 +1060,9 @@
                 "operationId": "getPublishStatus",
                 "parameters": [
                     {
-                        "name": "jobId",
+                        "name": "job_id",
                         "in": "path",
-                        "description": "jobId received during upload",
+                        "description": "job_id received during upload",
                         "required": true,
                         "schema": {
                             "type": "string"
@@ -1161,7 +1221,7 @@
                 ]
             }
         },
-        "/api/v1/validate/status/{jobId}": {
+        "/api/v1/validate/status/{job_id}": {
             "get": {
                 "tags": [
                     "General"
@@ -1171,9 +1231,9 @@
                 "operationId": "getValidateStatus",
                 "parameters": [
                     {
-                        "name": "jobId",
+                        "name": "job_id",
                         "in": "path",
-                        "description": "jobId for the validation request",
+                        "description": "job_id for the validation request",
                         "required": true,
                         "schema": {
                             "type": "string"
@@ -1195,7 +1255,7 @@
                         "description": "This request is unauthenticated."
                     },
                     "404": {
-                        "description": "JobId not found"
+                        "description": "job_id not found"
                     },
                     "500": {
                         "description": "An server error occurred."
@@ -2081,7 +2141,7 @@
                     "data_source",
                     "osw_schema_version",
                     "dataset_area",
-                    "tdei_project_group_id"
+                    "valid_from"
                 ],
                 "type": "object",
                 "properties": {
@@ -2097,18 +2157,9 @@
                         "type": "string",
                         "description": "Dataset version"
                     },
-                    "derived_from_dataset_id": {
-                        "type": "string",
-                        "description": "Dataset id from which this dataset was derived"
-                    },
                     "custom_metadata": {
                         "type": "object",
                         "description": "Custom structured JSON metadata"
-                    },
-                    "tdei_project_group_id": {
-                        "type": "string",
-                        "description": "tdei-assigned project group id. Represented as UUID. Project Group ids can be retrieved using the /api/v1/project-group path.",
-                        "example": "4e991e7a-5c16-4ebf-ad31-3a3625bcca10"
                     },
                     "collected_by": {
                         "type": "string",
@@ -2130,10 +2181,15 @@
                             "other"
                         ]
                     },
-                    "publication_date": {
+                    "valid_from": {
                         "type": "string",
-                        "description": "Date of publication of the file",
-                        "example": "2023-03-02T04:22:42.493Z"
+                        "description": "date from which this file is valid",
+                        "example": "2023-02-10T09:30Z"
+                    },
+                    "valid_to": {
+                        "type": "string",
+                        "description": "date until which this data is valid",
+                        "example": "2023-02-10T09:30Z"
                     },
                     "data_source": {
                         "type": "string",
@@ -2165,8 +2221,6 @@
                     "data_source",
                     "pathways_schema_version",
                     "dataset_area",
-                    "tdei_project_group_id",
-                    "tdei_station_id",
                     "valid_from"
                 ],
                 "type": "object",
@@ -2183,23 +2237,9 @@
                         "type": "string",
                         "description": "Dataset version"
                     },
-                    "derived_from_dataset_id": {
-                        "type": "string",
-                        "description": "Dataset id from which this dataset was derived"
-                    },
                     "custom_metadata": {
                         "type": "object",
                         "description": "Custom structured JSON metadata"
-                    },
-                    "tdei_project_group_id": {
-                        "type": "string",
-                        "description": "tdei-assigned project group id. Represented as UUID. Project Group ids can be retrieved using the /api/v1/project-group path.",
-                        "example": "4e991e7a-5c16-4ebf-ad31-3a3625bcca10"
-                    },
-                    "tdei_station_id": {
-                        "type": "string",
-                        "description": "tdei-assigned station id. Represented as UUID. Station ids can be retrieved using the /api/v1.0/stations path.",
-                        "example": "5e991e7a-5c16-4ebf-ad31-3a3625bcca10"
                     },
                     "collected_by": {
                         "type": "string",
@@ -2279,23 +2319,9 @@
                         "type": "string",
                         "description": "Dataset version"
                     },
-                    "derived_from_dataset_id": {
-                        "type": "string",
-                        "description": "Dataset id from which this dataset was derived"
-                    },
                     "custom_metadata": {
                         "type": "object",
                         "description": "Custom structured JSON metadata"
-                    },
-                    "tdei_project_group_id": {
-                        "type": "string",
-                        "description": "tdei-assigned project group id. Represented as UUID. Project Group ids can be retrieved using the /api/v1.0/project-group path.",
-                        "example": "4e991e7a-5c16-4ebf-ad31-3a3625bcca10"
-                    },
-                    "tdei_service_id": {
-                        "type": "string",
-                        "description": "TDEI id of a GTFS Flex service",
-                        "example": "5e991e7a-5c16-4ebf-ad31-3a3625bcca10"
                     },
                     "collected_by": {
                         "type": "string",
@@ -2385,11 +2411,11 @@
             },
             "RecordPublishStatus": {
                 "required": [
-                    "jobId"
+                    "job_id"
                 ],
                 "type": "object",
                 "properties": {
-                    "jobId": {
+                    "job_id": {
                         "type": "string",
                         "description": "Job ID of the publish record"
                     },
@@ -2423,7 +2449,8 @@
                     "tdei_project_group_id",
                     "tdei_record_id",
                     "uploaded_timestamp",
-                    "status"
+                    "status",
+                    "valid_from"
                 ],
                 "type": "object",
                 "properties": {
@@ -2485,10 +2512,15 @@
                             "other"
                         ]
                     },
-                    "publication_date": {
+                    "valid_from": {
                         "type": "string",
-                        "description": "Date of publication of the file",
-                        "example": "2023-03-02T04:22:42.493Z"
+                        "description": "date from which this file is valid",
+                        "example": "2023-02-10T09:30Z"
+                    },
+                    "valid_to": {
+                        "type": "string",
+                        "description": "date until which this data is valid",
+                        "example": "2023-02-10T09:30Z"
                     },
                     "confidence_level": {
                         "type": "integer",
@@ -2954,9 +2986,9 @@
             "ValidationStatus": {
                 "type": "object",
                 "properties": {
-                    "jobId": {
+                    "job_id": {
                         "type": "integer",
-                        "description": "jobId of the Validation request",
+                        "description": "job_id of the Validation request",
                         "example": 1
                     },
                     "ValidationResult": {
