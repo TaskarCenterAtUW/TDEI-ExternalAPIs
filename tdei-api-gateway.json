@@ -113,7 +113,16 @@
                     {
                         "name": "name",
                         "in": "query",
-                        "description": "dataset name or Title.",
+                        "description": "dataset name or title.",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "version",
+                        "in": "query",
+                        "description": "dataset version.",
                         "required": false,
                         "schema": {
                             "type": "string"
@@ -122,7 +131,7 @@
                     {
                         "name": "status",
                         "in": "query",
-                        "description": "Request for files based on status. The default setting is 'published', limiting the list to published files only. When set to 'pre-release', it includes pre-release files for the project groups user belongs. ",
+                        "description": "request for files based on status. The default setting is 'published', limiting the list to published files only. When set to 'pre-release', it includes pre-release files for the project groups user belongs. ",
                         "required": false,
                         "schema": {
                             "type": "boolean",
