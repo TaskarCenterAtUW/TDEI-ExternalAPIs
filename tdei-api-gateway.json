@@ -63,6 +63,44 @@
                 }
             }
         },
+        "/api/v1/authenticate": {
+            "post": {
+                "tags": [
+                    "Authentication"
+                ],
+                "summary": "Authenticates the user to the TDEI system.",
+                "description": "Authenticates the user to the TDEI system. Returns access token.",
+                "operationId": "authenticate",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/LoginModel"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful response - Returns the access token for the validated user.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/TokenResponse"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "This request is unauthenticated."
+                    },
+                    "500": {
+                        "description": "An server error occurred."
+                    }
+                }
+            }
+        },
         "/api/v1/osw": {
             "get": {
                 "tags": [
@@ -348,6 +386,366 @@
                     }
                 },
                 "security": [
+                    {
+                        "AuthorizationToken": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/osw/versions": {
+            "get": {
+                "tags": [
+                    "OSW"
+                ],
+                "summary": "List available OSW versions",
+                "description": "Lists the versions of OSW data which are supported by TDEI.",
+                "operationId": "listOswVersions",
+                "responses": {
+                    "200": {
+                        "description": "Returns list of OSW versions supported by TDEI.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/VersionList"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "This request is unauthenticated."
+                    },
+                    "500": {
+                        "description": "An server error occurred."
+                    }
+                },
+                "security": [
+                    {
+                        "ApiKey": []
+                    },
+                    {
+                        "AuthorizationToken": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/osw/confidence/status/{jobId}": {
+            "get": {
+                "tags": [
+                    "OSW"
+                ],
+                "summary": "Get the status of confidence request",
+                "description": "Fetches the status of confidence request job.",
+                "operationId": "getOSWConfidenceStatus",
+                "parameters": [
+                    {
+                        "name": "jobId",
+                        "in": "path",
+                        "description": "jobId for confidence request",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Returns the status of Confidence request.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/OSWConfidenceStatus"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "This request is unauthenticated."
+                    },
+                    "404": {
+                        "description": "JobId not found"
+                    },
+                    "500": {
+                        "description": "An server error occurred."
+                    }
+                },
+                "security": [
+                    {
+                        "ApiKey": []
+                    },
+                    {
+                        "AuthorizationToken": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/osw/confidence/calculate": {
+            "post": {
+                "tags": [
+                    "OSW"
+                ],
+                "summary": "Initiate Confidence calculation for a dataset",
+                "description": "Initiates the confidence calculation of a tdeiRecordId as mentioned in the body",
+                "operationId": "oswConfidenceCalculate",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/OSWConfidenceRequest"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": " Created confidence jobId ",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/OSWConfidenceResponse"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "This request is unauthenticated."
+                    },
+                    "404": {
+                        "description": "tdeiRecordId is not found"
+                    },
+                    "500": {
+                        "description": "An server error occurred."
+                    }
+                }
+            }
+        },
+        "/api/v1/osw/format/status/{jobId}": {
+            "get": {
+                "tags": [
+                    "OSW"
+                ],
+                "summary": "Fetch status of format request",
+                "description": "Summary of the formatting request",
+                "operationId": "oswFormatStatus",
+                "parameters": [
+                    {
+                        "name": "jobId",
+                        "in": "path",
+                        "description": "jobId for format request",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": " Status of the formatting Job ",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/OSWFormatStatusResponse"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "This request is unauthenticated."
+                    },
+                    "404": {
+                        "description": "jobId not found"
+                    },
+                    "500": {
+                        "description": "An server error occurred."
+                    }
+                }
+            }
+        },
+        "/api/v1/osw/format/upload": {
+            "post": {
+                "tags": [
+                    "OSW"
+                ],
+                "summary": "Request osw format on demand",
+                "description": "Upload a file and request for formatting on demand",
+                "operationId": "oswOnDemandFormat",
+                "requestBody": {
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "required": [
+                                    "file",
+                                    "source",
+                                    "target"
+                                ],
+                                "type": "object",
+                                "properties": {
+                                    "source": {
+                                        "type": "string",
+                                        "description": "Source format",
+                                        "example": "osm"
+                                    },
+                                    "target": {
+                                        "type": "string",
+                                        "description": "Target format",
+                                        "example": "osw"
+                                    },
+                                    "file": {
+                                        "type": "string",
+                                        "format": "binary"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": " Created formatting jobId ",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/OSWFormatResponse"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    },
+                    "401": {
+                        "description": "This request is unauthenticated."
+                    },
+                    "500": {
+                        "description": "An server error occurred."
+                    }
+                }
+            }
+        },
+        "/api/v1/osw/{tdei_record_id}": {
+            "get": {
+                "tags": [
+                    "OSW"
+                ],
+                "summary": "returns a geojson osw file by default, can request for different format using 'format' querystring",
+                "description": "returns a specific osw file as zip containing metadata, dataset, and changeset identified by the tdei_record_id",
+                "operationId": "getOswFile",
+                "parameters": [
+                    {
+                        "name": "tdei_record_id",
+                        "in": "path",
+                        "description": "tdei_record_id for a file, represented as a uuid",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "format",
+                        "in": "query",
+                        "description": "File format to download. Default to osw",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "osm",
+                                "osw"
+                            ]
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Returns the single zip file containing dataset.zip, metadata.json, changeset.txt (optional).",
+                        "content": {
+                            "application/octet-stream": {}
+                        }
+                    },
+                    "401": {
+                        "description": "This request is unauthenticated."
+                    },
+                    "404": {
+                        "description": "A file with the specified tdei_record_id was not found. Use the /api/v1/osw endpoints to find valid file ids.",
+                        "content": {
+                            "application/json": {}
+                        }
+                    },
+                    "500": {
+                        "description": "An server error occurred."
+                    }
+                },
+                "security": [
+                    {
+                        "ApiKey": []
+                    },
+                    {
+                        "AuthorizationToken": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/osw/publish/{tdei_record_id}": {
+            "post": {
+                "tags": [
+                    "OSW"
+                ],
+                "summary": "Publishes the OSW dataset for the tdei_record_id",
+                "description": "Publishes an OSW dataset that has undergone prior uploading and editing via the [POST] /osw endpoint, marking it as an official release for the uploaded mobility service. This official release status ensures visibility to all TDEI data consumers.",
+                "operationId": "publishOswFile",
+                "parameters": [
+                    {
+                        "name": "tdei_record_id",
+                        "in": "path",
+                        "description": "tdei_record_id for a file, represented as a uuid",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "202": {
+                        "description": "The request has been accepted for processing. returns the jobId, unique identifier for publish request.",
+                        "content": {
+                            "application/text": {
+                                "schema": {
+                                    "type": "string"
+                                }
+                            }
+                        },
+                        "headers": {
+                            "Location": {
+                                "schema": {
+                                    "type": "string"
+                                },
+                                "description": "Location api to find the status of request processing"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "The request was invalid."
+                    },
+                    "401": {
+                        "description": "This request is unauthenticated."
+                    },
+                    "403": {
+                        "description": "This request is unauthorized."
+                    },
+                    "404": {
+                        "description": "A file with the specified tdei_record_id was not found. Use the [GET] /api/v1/osw endpoint to find valid file ids.",
+                        "content": {
+                            "text/plain": {}
+                        }
+                    },
+                    "500": {
+                        "description": "An server error occurred."
+                    }
+                },
+                "security": [
+                    {
+                        "ApiKey": []
+                    },
                     {
                         "AuthorizationToken": []
                     }
@@ -655,6 +1053,230 @@
                     }
                 },
                 "security": [
+                    {
+                        "AuthorizationToken": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/gtfs-pathways/{tdei_record_id}": {
+            "get": {
+                "tags": [
+                    "GTFS-Pathways"
+                ],
+                "summary": "returns a gtfs_pathways file",
+                "description": "returns a specific gtfs_pathways file as zip containing metadata, dataset, and changeset identified by the tdei_record_id",
+                "operationId": "getPathwaysFile",
+                "parameters": [
+                    {
+                        "name": "tdei_record_id",
+                        "in": "path",
+                        "description": "tdei_record_id for a file, represented as a uuid",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Returns the single zip file containing dataset.zip, metadata.json, changeset.txt (optional).",
+                        "content": {
+                            "application/octet-stream": {}
+                        }
+                    },
+                    "401": {
+                        "description": "This request is unauthenticated."
+                    },
+                    "404": {
+                        "description": "A file with the specified tdei_record_id was not found. Use the /api/v1/gtfs-pathways endpoints to find valid file ids.",
+                        "content": {
+                            "application/json": {}
+                        }
+                    },
+                    "500": {
+                        "description": "An server error occurred."
+                    }
+                },
+                "security": [
+                    {
+                        "ApiKey": []
+                    },
+                    {
+                        "AuthorizationToken": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/gtfs-pathways/publish/{tdei_record_id}": {
+            "post": {
+                "tags": [
+                    "GTFS-Pathways"
+                ],
+                "summary": "Publishes the GTFS Pathways dataset for the tdei_record_id",
+                "description": "Publishes an GTFS Pathways dataset that has undergone prior uploading and editing via the [POST] /gtfs-pathways endpoint, marking it as an official release for the uploaded mobility service. This official release status ensures visibility to all TDEI data consumers.",
+                "operationId": "publishGTFSPathwaysFile",
+                "parameters": [
+                    {
+                        "name": "tdei_record_id",
+                        "in": "path",
+                        "description": "tdei_record_id for a file, represented as a uuid",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "202": {
+                        "description": "The request has been accepted for processing. returns the jobId, unique identifier for publish request.",
+                        "content": {
+                            "application/text": {
+                                "schema": {
+                                    "type": "string"
+                                }
+                            }
+                        },
+                        "headers": {
+                            "Location": {
+                                "schema": {
+                                    "type": "string"
+                                },
+                                "description": "Location api to find the status of request processing"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "The request was invalid."
+                    },
+                    "401": {
+                        "description": "This request is unauthenticated."
+                    },
+                    "403": {
+                        "description": "This request is unauthorized."
+                    },
+                    "404": {
+                        "description": "A file with the specified tdei_record_id was not found. Use the [GET] /api/v1/gtfs-pathways endpoint to find valid file ids.",
+                        "content": {
+                            "text/plain": {}
+                        }
+                    },
+                    "500": {
+                        "description": "An server error occurred."
+                    }
+                },
+                "security": [
+                    {
+                        "ApiKey": []
+                    },
+                    {
+                        "AuthorizationToken": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/gtfs-pathways/versions": {
+            "get": {
+                "tags": [
+                    "GTFS-Pathways"
+                ],
+                "summary": "List available GTFS Pathways versions",
+                "description": "Lists the versions of GTFS pathways data which are supported by TDEI. Returns a json list of the GTFS pathways versions supported by TDEI.",
+                "operationId": "listPathwaysVersions",
+                "responses": {
+                    "200": {
+                        "description": "List of GTFS Pathways versions suppored by TDEI.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/VersionList"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "This request is unauthenticated."
+                    },
+                    "500": {
+                        "description": "An server error occurred."
+                    }
+                },
+                "security": [
+                    {
+                        "ApiKey": []
+                    },
+                    {
+                        "AuthorizationToken": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/gtfs-pathways/stations": {
+            "get": {
+                "tags": [
+                    "GTFS-Pathways"
+                ],
+                "summary": "List Stations",
+                "description": "Path used to retrieve the list of stations with data in the TDEI system. Allows callers to get the tdei_station_id id for a station.\n\nReturns the tdei_station_id and station information for all stations with data in the TDEI system.\n\nIf tdei_project_group_id param is specified, will return stations for that project group. ",
+                "operationId": "listStations",
+                "parameters": [
+                    {
+                        "name": "tdei_project_group_id",
+                        "in": "query",
+                        "description": "TDEI project group id.",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "page_no",
+                        "in": "query",
+                        "description": "Integer, defaults to 1.",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int32",
+                            "default": 1
+                        }
+                    },
+                    {
+                        "name": "page_size",
+                        "in": "query",
+                        "description": "page size. integer, between 1 to 50, defaults to 10.",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int32",
+                            "default": 10
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Returns an array of `Station` entities. ",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Station"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "This request is unauthenticated."
+                    },
+                    "500": {
+                        "description": "An server error occurred."
+                    }
+                },
+                "security": [
+                    {
+                        "ApiKey": []
+                    },
                     {
                         "AuthorizationToken": []
                     }
@@ -975,825 +1597,6 @@
                 ]
             }
         },
-        "/api/v1/authenticate": {
-            "post": {
-                "tags": [
-                    "Authentication"
-                ],
-                "summary": "Authenticates the user to the TDEI system.",
-                "description": "Authenticates the user to the TDEI system. Returns access token.",
-                "operationId": "authenticate",
-                "requestBody": {
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "$ref": "#/components/schemas/LoginModel"
-                            }
-                        }
-                    },
-                    "required": true
-                },
-                "responses": {
-                    "200": {
-                        "description": "Successful response - Returns the access token for the validated user.",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/TokenResponse"
-                                }
-                            }
-                        }
-                    },
-                    "401": {
-                        "description": "This request is unauthenticated."
-                    },
-                    "500": {
-                        "description": "An server error occurred."
-                    }
-                }
-            }
-        },
-        "/api/v1/upload/status/{tdei_record_id}": {
-            "get": {
-                "tags": [
-                    "General"
-                ],
-                "summary": "Get the upload status",
-                "description": "Fetches the status of an uploaded record",
-                "operationId": "getUploadStatus",
-                "parameters": [
-                    {
-                        "name": "tdei_record_id",
-                        "in": "path",
-                        "description": "tdei_record_id received during upload",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Returns status of record",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/RecordUploadStatus"
-                                }
-                            }
-                        }
-                    },
-                    "400": {
-                        "description": "Record not found"
-                    },
-                    "401": {
-                        "description": "This request is unauthenticated."
-                    },
-                    "500": {
-                        "description": "An server error occurred."
-                    }
-                }
-            }
-        },
-        "/api/v1/publish/status/{job_id}": {
-            "get": {
-                "tags": [
-                    "General"
-                ],
-                "summary": "Get the publish status",
-                "description": "Fetches the status of an published record",
-                "operationId": "getPublishStatus",
-                "parameters": [
-                    {
-                        "name": "job_id",
-                        "in": "path",
-                        "description": "job_id received during upload",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Returns status of record",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/RecordPublishStatus"
-                                }
-                            }
-                        }
-                    },
-                    "400": {
-                        "description": "Record not found"
-                    },
-                    "401": {
-                        "description": "This request is unauthenticated."
-                    },
-                    "500": {
-                        "description": "An server error occurred."
-                    }
-                }
-            }
-        },
-        "/api/v1/osw/{tdei_record_id}": {
-            "get": {
-                "tags": [
-                    "OSW"
-                ],
-                "summary": "returns a geojson osw file by default, can request for different format using 'format' querystring",
-                "description": "returns a specific osw file as zip containing metadata, dataset, and changeset identified by the tdei_record_id",
-                "operationId": "getOswFile",
-                "parameters": [
-                    {
-                        "name": "tdei_record_id",
-                        "in": "path",
-                        "description": "tdei_record_id for a file, represented as a uuid",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    {
-                        "name": "format",
-                        "in": "query",
-                        "description": "File format to download. Default to osw",
-                        "required": false,
-                        "schema": {
-                            "type": "string",
-                            "enum": [
-                                "osm",
-                                "osw"
-                            ]
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Returns the single zip file containing dataset.zip, metadata.json, changeset.txt (optional).",
-                        "content": {
-                            "application/octet-stream": {}
-                        }
-                    },
-                    "401": {
-                        "description": "This request is unauthenticated."
-                    },
-                    "404": {
-                        "description": "A file with the specified tdei_record_id was not found. Use the /api/v1/osw endpoints to find valid file ids.",
-                        "content": {
-                            "application/json": {}
-                        }
-                    },
-                    "500": {
-                        "description": "An server error occurred."
-                    }
-                },
-                "security": [
-                    {
-                        "ApiKey": []
-                    },
-                    {
-                        "AuthorizationToken": []
-                    }
-                ]
-            }
-        },
-        "/api/v1/osw/publish/{tdei_record_id}": {
-            "post": {
-                "tags": [
-                    "OSW"
-                ],
-                "summary": "Publishes the OSW dataset for the tdei_record_id",
-                "description": "Publishes an OSW dataset that has undergone prior uploading and editing via the [POST] /osw endpoint, marking it as an official release for the uploaded mobility service. This official release status ensures visibility to all TDEI data consumers.",
-                "operationId": "publishOswFile",
-                "parameters": [
-                    {
-                        "name": "tdei_record_id",
-                        "in": "path",
-                        "description": "tdei_record_id for a file, represented as a uuid",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                ],
-                "responses": {
-                    "202": {
-                        "description": "The request has been accepted for processing. returns the jobId, unique identifier for publish request.",
-                        "content": {
-                            "application/text": {
-                                "schema": {
-                                    "type": "string"
-                                }
-                            }
-                        },
-                        "headers": {
-                            "Location": {
-                                "schema": {
-                                    "type": "string"
-                                },
-                                "description": "Location api to find the status of request processing"
-                            }
-                        }
-                    },
-                    "400": {
-                        "description": "The request was invalid."
-                    },
-                    "401": {
-                        "description": "This request is unauthenticated."
-                    },
-                    "403": {
-                        "description": "This request is unauthorized."
-                    },
-                    "404": {
-                        "description": "A file with the specified tdei_record_id was not found. Use the [GET] /api/v1/osw endpoint to find valid file ids.",
-                        "content": {
-                            "text/plain": {}
-                        }
-                    },
-                    "500": {
-                        "description": "An server error occurred."
-                    }
-                },
-                "security": [
-                    {
-                        "ApiKey": []
-                    },
-                    {
-                        "AuthorizationToken": []
-                    }
-                ]
-            }
-        },
-        "/api/v1/validate/status/{job_id}": {
-            "get": {
-                "tags": [
-                    "General"
-                ],
-                "summary": "Get the status of the validation request.",
-                "description": "Fetches the status of the validation request job.",
-                "operationId": "getValidateStatus",
-                "parameters": [
-                    {
-                        "name": "job_id",
-                        "in": "path",
-                        "description": "job_id for the validation request",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Returns the status of the validation request.",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/ValidationStatus"
-                                }
-                            }
-                        }
-                    },
-                    "401": {
-                        "description": "This request is unauthenticated."
-                    },
-                    "404": {
-                        "description": "job_id not found"
-                    },
-                    "500": {
-                        "description": "An server error occurred."
-                    }
-                },
-                "security": [
-                    {
-                        "ApiKey": []
-                    },
-                    {
-                        "AuthorizationToken": []
-                    }
-                ]
-            }
-        },
-        "/api/v1/osw/versions": {
-            "get": {
-                "tags": [
-                    "OSW"
-                ],
-                "summary": "List available OSW versions",
-                "description": "Lists the versions of OSW data which are supported by TDEI.",
-                "operationId": "listOswVersions",
-                "responses": {
-                    "200": {
-                        "description": "Returns list of OSW versions supported by TDEI.",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/VersionList"
-                                }
-                            }
-                        }
-                    },
-                    "401": {
-                        "description": "This request is unauthenticated."
-                    },
-                    "500": {
-                        "description": "An server error occurred."
-                    }
-                },
-                "security": [
-                    {
-                        "ApiKey": []
-                    },
-                    {
-                        "AuthorizationToken": []
-                    }
-                ]
-            }
-        },
-        "/api/v1/osw/confidence/status/{jobId}": {
-            "get": {
-                "tags": [
-                    "OSW"
-                ],
-                "summary": "Get the status of confidence request",
-                "description": "Fetches the status of confidence request job.",
-                "operationId": "getOSWConfidenceStatus",
-                "parameters": [
-                    {
-                        "name": "jobId",
-                        "in": "path",
-                        "description": "jobId for confidence request",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Returns the status of Confidence request.",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/OSWConfidenceStatus"
-                                }
-                            }
-                        }
-                    },
-                    "401": {
-                        "description": "This request is unauthenticated."
-                    },
-                    "404": {
-                        "description": "JobId not found"
-                    },
-                    "500": {
-                        "description": "An server error occurred."
-                    }
-                },
-                "security": [
-                    {
-                        "ApiKey": []
-                    },
-                    {
-                        "AuthorizationToken": []
-                    }
-                ]
-            }
-        },
-        "/api/v1/osw/confidence/calculate": {
-            "post": {
-                "tags": [
-                    "OSW"
-                ],
-                "summary": "Initiate Confidence calculation for a dataset",
-                "description": "Initiates the confidence calculation of a tdeiRecordId as mentioned in the body",
-                "operationId": "oswConfidenceCalculate",
-                "requestBody": {
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "$ref": "#/components/schemas/OSWConfidenceRequest"
-                            }
-                        }
-                    },
-                    "required": true
-                },
-                "responses": {
-                    "200": {
-                        "description": " Created confidence jobId ",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/OSWConfidenceResponse"
-                                }
-                            }
-                        }
-                    },
-                    "401": {
-                        "description": "This request is unauthenticated."
-                    },
-                    "404": {
-                        "description": "tdeiRecordId is not found"
-                    },
-                    "500": {
-                        "description": "An server error occurred."
-                    }
-                }
-            }
-        },
-        "/api/v1/osw/format/status/{jobId}": {
-            "get": {
-                "tags": [
-                    "OSW"
-                ],
-                "summary": "Fetch status of format request",
-                "description": "Summary of the formatting request",
-                "operationId": "oswFormatStatus",
-                "parameters": [
-                    {
-                        "name": "jobId",
-                        "in": "path",
-                        "description": "jobId for format request",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": " Status of the formatting Job ",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/OSWFormatStatusResponse"
-                                }
-                            }
-                        }
-                    },
-                    "401": {
-                        "description": "This request is unauthenticated."
-                    },
-                    "404": {
-                        "description": "jobId not found"
-                    },
-                    "500": {
-                        "description": "An server error occurred."
-                    }
-                }
-            }
-        },
-        "/api/v1/osw/format/upload": {
-            "post": {
-                "tags": [
-                    "OSW"
-                ],
-                "summary": "Request osw format on demand",
-                "description": "Upload a file and request for formatting on demand",
-                "operationId": "oswOnDemandFormat",
-                "requestBody": {
-                    "content": {
-                        "multipart/form-data": {
-                            "schema": {
-                                "required": [
-                                    "file",
-                                    "source",
-                                    "target"
-                                ],
-                                "type": "object",
-                                "properties": {
-                                    "source": {
-                                        "type": "string",
-                                        "description": "Source format",
-                                        "example": "osm"
-                                    },
-                                    "target": {
-                                        "type": "string",
-                                        "description": "Target format",
-                                        "example": "osw"
-                                    },
-                                    "file": {
-                                        "type": "string",
-                                        "format": "binary"
-                                    }
-                                }
-                            }
-                        }
-                    },
-                    "required": true
-                },
-                "responses": {
-                    "200": {
-                        "description": " Created formatting jobId ",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/OSWFormatResponse"
-                                }
-                            }
-                        }
-                    },
-                    "400": {
-                        "description": "Bad request"
-                    },
-                    "401": {
-                        "description": "This request is unauthenticated."
-                    },
-                    "500": {
-                        "description": "An server error occurred."
-                    }
-                }
-            }
-        },
-        "/api/v1/project-group": {
-            "get": {
-                "tags": [
-                    "General"
-                ],
-                "summary": "List project groups",
-                "description": "Path used to retrieve the list of project groups with data in the TDEI system. Allows callers to get the tdei_project_group_id id for an project group.\n\nReturns the tdei_project_group_id and project group information for all project groups with data in the TDEI system.",
-                "operationId": "listProjectGroups",
-                "parameters": [
-                    {
-                        "name": "page_no",
-                        "in": "query",
-                        "description": "Integer, defaults to 1.",
-                        "required": false,
-                        "schema": {
-                            "type": "integer",
-                            "format": "int32",
-                            "default": 1
-                        }
-                    },
-                    {
-                        "name": "page_size",
-                        "in": "query",
-                        "description": "page size. integer, between 1 to 50, defaults to 10.",
-                        "required": false,
-                        "schema": {
-                            "type": "integer",
-                            "format": "int32",
-                            "default": 10
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Successful response - returns an array of `Agency` entities.",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "array",
-                                    "items": {
-                                        "$ref": "#/components/schemas/ProjectGroup"
-                                    }
-                                }
-                            }
-                        }
-                    },
-                    "401": {
-                        "description": "This request is unauthenticated."
-                    },
-                    "500": {
-                        "description": "An server error occurred."
-                    }
-                },
-                "security": [
-                    {
-                        "ApiKey": []
-                    },
-                    {
-                        "AuthorizationToken": []
-                    }
-                ]
-            }
-        },
-        "/api/v1/gtfs-pathways/{tdei_record_id}": {
-            "get": {
-                "tags": [
-                    "GTFS-Pathways"
-                ],
-                "summary": "returns a gtfs_pathways file",
-                "description": "returns a specific gtfs_pathways file as zip containing metadata, dataset, and changeset identified by the tdei_record_id",
-                "operationId": "getPathwaysFile",
-                "parameters": [
-                    {
-                        "name": "tdei_record_id",
-                        "in": "path",
-                        "description": "tdei_record_id for a file, represented as a uuid",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Returns the single zip file containing dataset.zip, metadata.json, changeset.txt (optional).",
-                        "content": {
-                            "application/octet-stream": {}
-                        }
-                    },
-                    "401": {
-                        "description": "This request is unauthenticated."
-                    },
-                    "404": {
-                        "description": "A file with the specified tdei_record_id was not found. Use the /api/v1/gtfs-pathways endpoints to find valid file ids.",
-                        "content": {
-                            "application/json": {}
-                        }
-                    },
-                    "500": {
-                        "description": "An server error occurred."
-                    }
-                },
-                "security": [
-                    {
-                        "ApiKey": []
-                    },
-                    {
-                        "AuthorizationToken": []
-                    }
-                ]
-            }
-        },
-        "/api/v1/gtfs-pathways/publish/{tdei_record_id}": {
-            "post": {
-                "tags": [
-                    "GTFS-Pathways"
-                ],
-                "summary": "Publishes the GTFS Pathways dataset for the tdei_record_id",
-                "description": "Publishes an GTFS Pathways dataset that has undergone prior uploading and editing via the [POST] /gtfs-pathways endpoint, marking it as an official release for the uploaded mobility service. This official release status ensures visibility to all TDEI data consumers.",
-                "operationId": "publishGTFSPathwaysFile",
-                "parameters": [
-                    {
-                        "name": "tdei_record_id",
-                        "in": "path",
-                        "description": "tdei_record_id for a file, represented as a uuid",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                ],
-                "responses": {
-                    "202": {
-                        "description": "The request has been accepted for processing. returns the jobId, unique identifier for publish request.",
-                        "content": {
-                            "application/text": {
-                                "schema": {
-                                    "type": "string"
-                                }
-                            }
-                        },
-                        "headers": {
-                            "Location": {
-                                "schema": {
-                                    "type": "string"
-                                },
-                                "description": "Location api to find the status of request processing"
-                            }
-                        }
-                    },
-                    "400": {
-                        "description": "The request was invalid."
-                    },
-                    "401": {
-                        "description": "This request is unauthenticated."
-                    },
-                    "403": {
-                        "description": "This request is unauthorized."
-                    },
-                    "404": {
-                        "description": "A file with the specified tdei_record_id was not found. Use the [GET] /api/v1/gtfs-pathways endpoint to find valid file ids.",
-                        "content": {
-                            "text/plain": {}
-                        }
-                    },
-                    "500": {
-                        "description": "An server error occurred."
-                    }
-                },
-                "security": [
-                    {
-                        "ApiKey": []
-                    },
-                    {
-                        "AuthorizationToken": []
-                    }
-                ]
-            }
-        },
-        "/api/v1/gtfs-pathways/versions": {
-            "get": {
-                "tags": [
-                    "GTFS-Pathways"
-                ],
-                "summary": "List available GTFS Pathways versions",
-                "description": "Lists the versions of GTFS pathways data which are supported by TDEI. Returns a json list of the GTFS pathways versions supported by TDEI.",
-                "operationId": "listPathwaysVersions",
-                "responses": {
-                    "200": {
-                        "description": "List of GTFS Pathways versions suppored by TDEI.",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/VersionList"
-                                }
-                            }
-                        }
-                    },
-                    "401": {
-                        "description": "This request is unauthenticated."
-                    },
-                    "500": {
-                        "description": "An server error occurred."
-                    }
-                },
-                "security": [
-                    {
-                        "ApiKey": []
-                    },
-                    {
-                        "AuthorizationToken": []
-                    }
-                ]
-            }
-        },
-        "/api/v1/gtfs-pathways/stations": {
-            "get": {
-                "tags": [
-                    "GTFS-Pathways"
-                ],
-                "summary": "List Stations",
-                "description": "Path used to retrieve the list of stations with data in the TDEI system. Allows callers to get the tdei_station_id id for a station.\n\nReturns the tdei_station_id and station information for all stations with data in the TDEI system.\n\nIf tdei_project_group_id param is specified, will return stations for that project group. ",
-                "operationId": "listStations",
-                "parameters": [
-                    {
-                        "name": "tdei_project_group_id",
-                        "in": "query",
-                        "description": "TDEI project group id.",
-                        "required": false,
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    {
-                        "name": "page_no",
-                        "in": "query",
-                        "description": "Integer, defaults to 1.",
-                        "required": false,
-                        "schema": {
-                            "type": "integer",
-                            "format": "int32",
-                            "default": 1
-                        }
-                    },
-                    {
-                        "name": "page_size",
-                        "in": "query",
-                        "description": "page size. integer, between 1 to 50, defaults to 10.",
-                        "required": false,
-                        "schema": {
-                            "type": "integer",
-                            "format": "int32",
-                            "default": 10
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Returns an array of `Station` entities. ",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "array",
-                                    "items": {
-                                        "$ref": "#/components/schemas/Station"
-                                    }
-                                }
-                            }
-                        }
-                    },
-                    "401": {
-                        "description": "This request is unauthenticated."
-                    },
-                    "500": {
-                        "description": "An server error occurred."
-                    }
-                },
-                "security": [
-                    {
-                        "ApiKey": []
-                    },
-                    {
-                        "AuthorizationToken": []
-                    }
-                ]
-            }
-        },
         "/api/v1/gtfs-flex/{tdei_record_id}": {
             "get": {
                 "tags": [
@@ -1996,6 +1799,203 @@
                                     "type": "array",
                                     "items": {
                                         "$ref": "#/components/schemas/GtfsFlexServiceModel"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "This request is unauthenticated."
+                    },
+                    "500": {
+                        "description": "An server error occurred."
+                    }
+                },
+                "security": [
+                    {
+                        "ApiKey": []
+                    },
+                    {
+                        "AuthorizationToken": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/upload/status/{tdei_record_id}": {
+            "get": {
+                "tags": [
+                    "General"
+                ],
+                "summary": "Get the upload status",
+                "description": "Fetches the status of an uploaded record",
+                "operationId": "getUploadStatus",
+                "parameters": [
+                    {
+                        "name": "tdei_record_id",
+                        "in": "path",
+                        "description": "tdei_record_id received during upload",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Returns status of record",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/RecordUploadStatus"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Record not found"
+                    },
+                    "401": {
+                        "description": "This request is unauthenticated."
+                    },
+                    "500": {
+                        "description": "An server error occurred."
+                    }
+                }
+            }
+        },
+        "/api/v1/publish/status/{job_id}": {
+            "get": {
+                "tags": [
+                    "General"
+                ],
+                "summary": "Get the publish status",
+                "description": "Fetches the status of an published record",
+                "operationId": "getPublishStatus",
+                "parameters": [
+                    {
+                        "name": "job_id",
+                        "in": "path",
+                        "description": "job_id received during upload",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Returns status of record",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/RecordPublishStatus"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Record not found"
+                    },
+                    "401": {
+                        "description": "This request is unauthenticated."
+                    },
+                    "500": {
+                        "description": "An server error occurred."
+                    }
+                }
+            }
+        },
+        "/api/v1/validate/status/{job_id}": {
+            "get": {
+                "tags": [
+                    "General"
+                ],
+                "summary": "Get the status of the validation request.",
+                "description": "Fetches the status of the validation request job.",
+                "operationId": "getValidateStatus",
+                "parameters": [
+                    {
+                        "name": "job_id",
+                        "in": "path",
+                        "description": "job_id for the validation request",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Returns the status of the validation request.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ValidationStatus"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "This request is unauthenticated."
+                    },
+                    "404": {
+                        "description": "job_id not found"
+                    },
+                    "500": {
+                        "description": "An server error occurred."
+                    }
+                },
+                "security": [
+                    {
+                        "ApiKey": []
+                    },
+                    {
+                        "AuthorizationToken": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/project-group": {
+            "get": {
+                "tags": [
+                    "General"
+                ],
+                "summary": "List project groups",
+                "description": "Path used to retrieve the list of project groups with data in the TDEI system. Allows callers to get the tdei_project_group_id id for an project group.\n\nReturns the tdei_project_group_id and project group information for all project groups with data in the TDEI system.",
+                "operationId": "listProjectGroups",
+                "parameters": [
+                    {
+                        "name": "page_no",
+                        "in": "query",
+                        "description": "Integer, defaults to 1.",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int32",
+                            "default": 1
+                        }
+                    },
+                    {
+                        "name": "page_size",
+                        "in": "query",
+                        "description": "page size. integer, between 1 to 50, defaults to 10.",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int32",
+                            "default": 10
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful response - returns an array of `Agency` entities.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/ProjectGroup"
                                     }
                                 }
                             }
