@@ -165,7 +165,7 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "Successful response - returns an array of `OswDownload` entities.",
+                        "description": "Successful response - returns an array of [OswDownload](#/components/schemas/OswDownload) entities.",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -234,15 +234,18 @@
                                 "properties": {
                                     "dataset": {
                                         "type": "string",
-                                        "format": "binary"
+                                        "format": "binary",
+                                        "description": "OSW file which is expected to be a zip file, internally has {nodes, edges, points}.geojson. If the extensions are present, then the zip file will have {nodes, edges, points}.extension.geojson files"
                                     },
                                     "metadata": {
                                         "type": "string",
-                                        "format": "binary"
+                                        "format": "binary",
+                                        "description": "OSW dataset metadata information. see schema [OswUpload](#/components/schemas/OswUpload)"
                                     },
                                     "changeset": {
                                         "type": "string",
-                                        "format": "binary"
+                                        "format": "binary",
+                                        "description": "changeset file captures changes to the sidewalk network that are captured in the OSW dataset"
                                     }
                                 }
                             }
@@ -462,7 +465,7 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "Successful response - returns an array of `GtfsPathwaysDownload` entities.",
+                        "description": "Successful response - returns an array of [GtfsPathwaysDownload](#/components/schemas/GtfsPathwaysDownload) entities.",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -511,7 +514,7 @@
                     },
                     {
                         "name": "tdei_station_id",
-                        "in": "query",
+                        "in": "path",
                         "description": "tdei assigned station id. Represented as UUID. Station ids can be retrieved using the /api/v1/gtfs-pathways/stations path.",
                         "required": true,
                         "schema": {
@@ -544,7 +547,8 @@
                                     },
                                     "metadata": {
                                         "type": "string",
-                                        "format": "binary"
+                                        "format": "binary",
+                                        "description": "GTFS pathways dataset metadata information. see schema [GtfsPathwaysUpload](#/components/schemas/GtfsPathwaysUpload)"
                                     },
                                     "changeset": {
                                         "type": "string",
@@ -768,7 +772,7 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "Successful response - returns an array of `GtfsFlexDownload` entities.",
+                        "description": "Successful response - returns an array of [GtfsFlexDownload](#/components/schemas/GtfsFlexDownload) entities.",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -817,7 +821,7 @@
                     },
                     {
                         "name": "tdei_service_id",
-                        "in": "query",
+                        "in": "path",
                         "description": "tdei assigned service id. Represented as UUID. Service ids can be retrieved using the /api/v1/gtfs-flex/services path.",
                         "required": true,
                         "schema": {
@@ -850,7 +854,8 @@
                                     },
                                     "metadata": {
                                         "type": "string",
-                                        "format": "binary"
+                                        "format": "binary",
+                                        "description": "GTFS flex dataset metadata information. see schema [GtfsFlexUpload](#/components/schemas/GtfsFlexUpload)"
                                     },
                                     "changeset": {
                                         "type": "string",
