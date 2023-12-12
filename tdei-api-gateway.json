@@ -107,7 +107,7 @@
                     "OSW"
                 ],
                 "summary": "List osw files meeting criteria.",
-                "description": "This endpoint returns a list of url to gzip'd geojson files with osw data that meet the specified criteria. Criteria that can be specified include: a dataset area (polygon), minimum confidence level and osw version. This endpoint can be used by an application developer to obtain a list of osw files in the TDEI system meeting the specified criteria.",
+                "description": "This endpoint returns a list of url to zipped geojson files with osw data that meet the specified criteria. Criteria that can be specified include: a dataset area (polygon), minimum confidence level and osw version.",
                 "operationId": "listOswFiles",
                 "parameters": [
                     {
@@ -246,8 +246,8 @@
                 "tags": [
                     "OSW"
                 ],
-                "summary": "upload/create a new osw data file.",
-                "description": "This path allows a user to upload or create a new osw file. The caller must provide metadata about the file - includes information about how and when the data was collected and valid dates of the file. Returns the tdei_record_id of the uploaded file.",
+                "summary": "upload a pre-release of OSW dataset.",
+                "description": "This path allows a user to upload pre-release osw dataset. The caller must provide metadata about the file - includes information about how and when the data was collected and valid dates of the file. Returns the tdei_record_id of the uploaded file.",
                 "operationId": "uploadOswFile",
                 "parameters": [
                     {
@@ -341,7 +341,7 @@
                     "OSW"
                 ],
                 "summary": "Publishes the OSW dataset for the tdei_record_id",
-                "description": "Publishes an OSW dataset that has undergone prior uploading and editing via the [POST] /osw endpoint, marking it as an official release for the uploaded mobility service. This official release status ensures visibility to all TDEI data consumers.",
+                "description": "Publishes an OSW dataset that was previously uploaded via the [POST] /osw endpoint, marking it as an official release for the mobility service. This official release status ensures visibility to all TDEI data consumers.",
                 "operationId": "publishOswFile",
                 "parameters": [
                     {
@@ -408,7 +408,7 @@
                     "OSW"
                 ],
                 "summary": "Validates the osw dataset.",
-                "description": "Allows a user to validate osw dataset to check the correctness of data. The caller must provide metadata about the file - includes information about how and when the data was collected and valid dates of the file. Returns the job_id associated with validation job.",
+                "description": "Allows a user to validate osw dataset to check the correctness of data. Returns the job_id associated with validation job.",
                 "operationId": "validateOswFile",
                 "requestBody": {
                     "content": {
@@ -473,8 +473,8 @@
                 "tags": [
                     "OSW"
                 ],
-                "summary": "Request osw format on demand",
-                "description": "Upload a file and request for formatting on demand",
+                "summary": "OSW reformatting on demand",
+                "description": "upload a file and request for file format conversion",
                 "operationId": "oswOnDemandFormat",
                 "requestBody": {
                     "content": {
