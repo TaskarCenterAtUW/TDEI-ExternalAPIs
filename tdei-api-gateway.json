@@ -241,7 +241,7 @@
                 ]
             }
         },
-        "/api/v1/osw/upload/{tdei_project_group_id}": {
+        "/api/v1/osw/upload/{tdei_service_id}": {
             "post": {
                 "tags": [
                     "OSW"
@@ -251,9 +251,9 @@
                 "operationId": "uploadOswFile",
                 "parameters": [
                     {
-                        "name": "tdei_project_group_id",
+                        "name": "tdei_service_id",
                         "in": "path",
-                        "description": "tdei assigned project group id. Represented as UUID. Project Group ids can be retrieved using the /api/v1/project-group path.",
+                        "description": "tdei service id associated with project group id. Represented as UUID.",
                         "required": true,
                         "schema": {
                             "type": "string"
