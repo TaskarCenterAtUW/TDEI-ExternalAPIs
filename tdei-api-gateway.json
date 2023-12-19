@@ -241,7 +241,7 @@
                 ]
             }
         },
-        "/api/v1/osw/upload/{tdei_service_id}": {
+        "/api/v1/osw/upload/{tdei_project_group_id}/{tdei_service_id}": {
             "post": {
                 "tags": [
                     "OSW"
@@ -250,6 +250,15 @@
                 "description": "This path allows a user to upload pre-release osw dataset. The caller must provide metadata about the file - includes information about how and when the data was collected and valid dates of the file. Returns the tdei_record_id of the uploaded file.",
                 "operationId": "uploadOswFile",
                 "parameters": [
+                    {
+                        "name": "tdei_project_group_id",
+                        "in": "path",
+                        "description": "tdei project group id. Represented as UUID.",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
                     {
                         "name": "tdei_service_id",
                         "in": "path",
