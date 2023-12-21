@@ -111,6 +111,27 @@
                 "operationId": "listOswFiles",
                 "parameters": [
                     {
+                        "name": "bbox",
+                        "in": "query",
+                        "description": "A bounding box which specifies the area to be searched. A bounding box is specified by a string providing the lat/lon coordinates of the corners of the bounding box. Coordinate should be specified as west, south, east, north.",
+                        "required": false,
+                        "schema": {
+                            "maxItems": 4,
+                            "minItems": 4,
+                            "type": "array",
+                            "items": {
+                                "type": "number",
+                                "format": "double"
+                            }
+                        },
+                        "example": [
+                            23.5,
+                            34.65,
+                            89.5,
+                            65.98
+                        ]
+                    },
+                    {
                         "name": "name",
                         "in": "query",
                         "description": "dataset name or title.",
@@ -140,15 +161,6 @@
                                 "pre-release",
                                 "all"
                             ]
-                        }
-                    },
-                    {
-                        "name": "dataset_area",
-                        "in": "query",
-                        "description": "A geojson polygon which specifies the area to be searched. Ex. https://geojson.io/ one of the tool to mark polygon on the map",
-                        "required": false,
-                        "schema": {
-                            "$ref": "#/components/schemas/GeoJsonObject"
                         }
                     },
                     {
