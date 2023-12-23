@@ -489,7 +489,7 @@
                 ]
             }
         },
-        "/api/v1/osw/format/upload": {
+        "/api/v1/osw/convert": {
             "post": {
                 "tags": [
                     "OSW"
@@ -628,7 +628,7 @@
                 ]
             }
         },
-        "/api/v1/osw/confidence/status/{jobId}": {
+        "/api/v1/osw/confidence/status/{job_id}": {
             "get": {
                 "tags": [
                     "OSW"
@@ -638,9 +638,9 @@
                 "operationId": "getOSWConfidenceStatus",
                 "parameters": [
                     {
-                        "name": "jobId",
+                        "name": "job_id",
                         "in": "path",
-                        "description": "jobId for confidence request",
+                        "description": "job_id for confidence request",
                         "required": true,
                         "schema": {
                             "type": "string"
@@ -662,7 +662,7 @@
                         "description": "This request is unauthenticated."
                     },
                     "404": {
-                        "description": "JobId not found"
+                        "description": "job_id not found"
                     },
                     "500": {
                         "description": "An server error occurred."
@@ -678,7 +678,7 @@
                 ]
             }
         },
-        "/api/v1/osw/format/status/{jobId}": {
+        "/api/v1/osw/convert/status/{job_id}": {
             "get": {
                 "tags": [
                     "OSW"
@@ -688,9 +688,9 @@
                 "operationId": "oswFormatStatus",
                 "parameters": [
                     {
-                        "name": "jobId",
+                        "name": "job_id",
                         "in": "path",
-                        "description": "jobId for format request",
+                        "description": "job_id for format request",
                         "required": true,
                         "schema": {
                             "type": "string"
@@ -1481,10 +1481,10 @@
                 ]
             }
         },
-        "/api/v1/upload/status/{tdei_record_id}": {
+        "/api/v1/osw/upload/status/{tdei_record_id}": {
             "get": {
                 "tags": [
-                    "General"
+                    "OSW"
                 ],
                 "summary": "Get the upload status",
                 "description": "Fetches the status of an uploaded record",
@@ -1523,19 +1523,19 @@
                 }
             }
         },
-        "/api/v1/publish/status/{job_id}": {
+        "/api/v1/osw/publish/status/{tdei_record_id}": {
             "get": {
                 "tags": [
-                    "General"
+                    "OSW"
                 ],
                 "summary": "Get the publish status",
                 "description": "Fetches the status of an published record",
                 "operationId": "getPublishStatus",
                 "parameters": [
                     {
-                        "name": "job_id",
+                        "name": "tdei_record_id",
                         "in": "path",
-                        "description": "job_id received during upload",
+                        "description": "tdei_record_id received during upload",
                         "required": true,
                         "schema": {
                             "type": "string"
@@ -1565,10 +1565,10 @@
                 }
             }
         },
-        "/api/v1/validate/status/{job_id}": {
+        "/api/v1/osw/validate/status/{job_id}": {
             "get": {
                 "tags": [
-                    "General"
+                    "OSW"
                 ],
                 "summary": "Get the status of the validation request.",
                 "description": "Fetches the status of the validation request job.",
