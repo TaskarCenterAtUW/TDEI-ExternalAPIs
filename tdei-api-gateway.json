@@ -530,7 +530,7 @@
                 },
                 "responses": {
                     "200": {
-                        "description": " Created formatting jobId ",
+                        "description": " Created formatting job_id ",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -571,7 +571,7 @@
                 },
                 "responses": {
                     "200": {
-                        "description": " Created confidence jobId ",
+                        "description": " Created confidence job_id ",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -2515,14 +2515,14 @@
             "OSWConfidenceResponse": {
                 "type": "object",
                 "properties": {
-                    "tdeiRecordId": {
+                    "tdei_record_id": {
                         "type": "string",
                         "description": "TDEI record ID of the dataset to calculate confidence metric",
                         "example": "5e991e7a-5c16-4ebf-ad31-3a3625bcca10"
                     },
-                    "jobId": {
+                    "job_id": {
                         "type": "integer",
-                        "description": "jobId of the confidence request",
+                        "description": "job_id of the confidence request",
                         "example": 1
                     }
                 }
@@ -2530,9 +2530,9 @@
             "OSWConfidenceStatus": {
                 "type": "object",
                 "properties": {
-                    "jobId": {
+                    "job_id": {
                         "type": "integer",
-                        "description": "jobId of the confidence request",
+                        "description": "job_id of the confidence request",
                         "example": 1
                     },
                     "confidenceValue": {
@@ -2568,11 +2568,11 @@
                         "description": "job_id of the Validation request",
                         "example": 1
                     },
-                    "ValidationResult": {
+                    "validation_result": {
                         "type": "string",
                         "description": "Validation result"
                     },
-                    "updatedAt": {
+                    "updated_at": {
                         "type": "string",
                         "description": "Date time of the last update on status",
                         "example": "2018-02-10T09:30Z"
@@ -2590,9 +2590,9 @@
             "OSWFormatResponse": {
                 "type": "object",
                 "properties": {
-                    "jobId": {
+                    "job_id": {
                         "type": "string",
-                        "description": "jobId of the format request"
+                        "description": "job_id of the format request"
                     },
                     "statusUrl": {
                         "type": "string",
@@ -2603,12 +2603,12 @@
             "OSWFormatStatusResponse": {
                 "type": "object",
                 "required": [
-                    "jobId"
+                    "job_id"
                 ],
                 "properties": {
-                    "jobId": {
+                    "job_id": {
                         "type": "string",
-                        "description": "jobId of the format request"
+                        "description": "job_id of the format request"
                     },
                     "status": {
                         "type": "string",
