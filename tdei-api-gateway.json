@@ -1713,10 +1713,77 @@
                     }
                 ]
             }
+        },
+        "/api/v1/status": {
+            "get": {
+                "tags": [
+                    "General"
+                ],
+                "summary": "Get status",
+                "description": "Fetches the status of an uploaded record",
+                "operationId": "getStatus",
+                "parameters": [
+                    {
+                        "name": "tdeiRecordId",
+                        "in": "query",
+                        "description": "tdeiRecordId received during upload",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Returns status of record",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/RecordStatus"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Record not found"
+                    },
+                    "401": {
+                        "description": "This request is unauthenticated."
+                    },
+                    "500": {
+                        "description": "An server error occurred."
+                    }
+                }
+            }
         }
     },
     "components": {
         "schemas": {
+            "RecordStatus": {
+                "required": [
+                    "tdeiRecordId"
+                ],
+                "type": "object",
+                "properties": {
+                    "tdeiRecordId": {
+                        "type": "string",
+                        "description": "Record ID of the file generated"
+                    },
+                    "stage": {
+                        "type": "string",
+                        "description": "Current stage of the file processing"
+                    },
+                    "status": {
+                        "type": "string",
+                        "description": "Current status of processing. (failed, in progress or complete). If failed, shows the failure reason"
+                    },
+                    "isComplete": {
+                        "type": "boolean",
+                        "description": "Whether processing is complete. (will be true if any stage fails)"
+                    }
+                },
+                "description": "Describes the status of an uploaded record"
+            },
             "TokenResponse": {
                 "type": "object",
                 "properties": {
@@ -2239,7 +2306,7 @@
                         "type": "string",
                         "description": "Current status of processing. (failed, in progress or complete). If failed, shows the failure reason"
                     },
-                    "isComplete": {
+                    "completed": {
                         "type": "boolean",
                         "description": "Whether processing is complete. (will be true if any stage fails)"
                     }
