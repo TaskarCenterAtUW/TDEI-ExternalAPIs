@@ -510,13 +510,21 @@
                                 "properties": {
                                     "source": {
                                         "type": "string",
+                                        "default": "osw",
                                         "description": "Source format",
-                                        "example": "osm"
+                                        "enum": [
+                                            "osm",
+                                            "osw"
+                                        ]
                                     },
                                     "target": {
                                         "type": "string",
                                         "description": "Target format",
-                                        "example": "osw"
+                                        "default": "osm",
+                                        "enum": [
+                                            "osm",
+                                            "osw"
+                                        ]
                                     },
                                     "file": {
                                         "type": "string",
