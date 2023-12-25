@@ -1417,14 +1417,14 @@
                 ]
             }
         },
-        "/api/v1/gtfs-flex/services": {
+        "/api/v1/services": {
             "get": {
                 "tags": [
-                    "GTFS-Flex"
+                    "General"
                 ],
-                "summary": "List GTFS Flex Services",
-                "description": "Path used to retrieve the list of GTFS Services in the TDEI system. Allows callers to get the tdei_service_id id for a service.  Returns the tdei_service_id and service name for all services in the TDEI system.   If tdei_project_group_id param is used, will return services for that project group.",
-                "operationId": "listFlexServices",
+                "summary": "List Services",
+                "description": "Path used to retrieve the list of Services in the TDEI system. Allows callers to get the tdei_service_id id for a service.  Returns the tdei_service_id and service name for all services in the TDEI system.   If tdei_project_group_id param is used, will return services for that project group.",
+                "operationId": "listServices",
                 "parameters": [
                     {
                         "name": "tdei_project_group_id",
@@ -1433,6 +1433,21 @@
                         "required": false,
                         "schema": {
                             "type": "string"
+                        }
+                    },
+                    {
+                        "name": "service_type",
+                        "in": "query",
+                        "description": "Service type",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "default": "flex",
+                            "enum": [
+                                "flex",
+                                "pathways",
+                                "osw"
+                            ]
                         }
                     },
                     {
@@ -1466,7 +1481,7 @@
                                 "schema": {
                                     "type": "array",
                                     "items": {
-                                        "$ref": "#/components/schemas/GtfsFlexServiceModel"
+                                        "$ref": "#/components/schemas/ServiceModel"
                                     }
                                 }
                             }
@@ -2551,7 +2566,7 @@
                     }
                 }
             },
-            "GtfsFlexServiceModel": {
+            "ServiceModel": {
                 "required": [
                     "polygon",
                     "service_name",
@@ -2571,6 +2586,16 @@
                         "type": "string",
                         "description": "tdei assigned service id. Necessary to ensure that service ids are unique.",
                         "example": "5e991e7a-5c16-4ebf-ad31-3a3625bcca10"
+                    },
+                    "service_type": {
+                        "type": "string",
+                        "description": "Service type",
+                        "default": "flex",
+                        "enum": [
+                            "flex",
+                            "pathways",
+                            "osw"
+                        ]
                     }
                 }
             },
