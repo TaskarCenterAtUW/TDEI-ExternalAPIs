@@ -720,7 +720,7 @@
                         "description": "This request is unauthenticated."
                     },
                     "404": {
-                        "description": "jobId not found"
+                        "description": "job_id not found"
                     },
                     "500": {
                         "description": "An server error occurred."
