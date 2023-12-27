@@ -728,6 +728,49 @@
                 }
             }
         },
+        "/api/v1/osw/convert/download/{job_id}": {
+            "get": {
+                "tags": [
+                    "OSW"
+                ],
+                "summary": "Downloads the converted file",
+                "description": "Downloads the converted file from the job",
+                "operationId": "oswFormatDownload",
+                "parameters": [
+                    {
+                        "name": "job_id",
+                        "in": "path",
+                        "description": "job_id for format request",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Downloadable stream of the file",
+                        "content": {
+                            "application/octet-stream": {
+                                
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "This request is unauthenticated."
+                    },
+                    "404": {
+                        "description": "job_id not found"
+                    },
+                    "400": {
+                        "description":"job_id is not complete"
+                    },
+                    "500": {
+                        "description": "An server error occurred."
+                    }
+                }
+            }
+        },
         "/api/v1/osw/{tdei_record_id}": {
             "get": {
                 "tags": [
@@ -2723,13 +2766,10 @@
                         "type": "string",
                         "description": "Any error message during failure"
                     },
-                    "sourceUrl": {
+                    
+                    "downloadUrl": {
                         "type": "string",
-                        "description": "URL of the source file"
-                    },
-                    "targetUrl": {
-                        "type": "string",
-                        "description": "URL of the target file"
+                        "description": "URL to download the converted file"
                     },
                     "conversion": {
                         "type": "string",
