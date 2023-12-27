@@ -2766,13 +2766,10 @@
                         "type": "string",
                         "description": "Any error message during failure"
                     },
-                    "sourceUrl": {
+                    
+                    "downloadUrl": {
                         "type": "string",
-                        "description": "URL of the source file"
-                    },
-                    "targetUrl": {
-                        "type": "string",
-                        "description": "URL of the target file"
+                        "description": "URL to download the converted file"
                     },
                     "conversion": {
                         "type": "string",
