@@ -157,9 +157,9 @@
                         "schema": {
                             "type": "string",
                             "enum": [
-                                "published",
-                                "pre-release",
-                                "all"
+                                "Publish",
+                                "Pre-Release",
+                                "All"
                             ]
                         }
                     },
