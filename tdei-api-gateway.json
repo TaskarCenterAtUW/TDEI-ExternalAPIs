@@ -155,7 +155,7 @@
                         "description": "request for files based on status. The default setting is 'published', limiting the list to published files only. When set to 'pre-release', it includes pre-release files for the project groups user belongs. ",
                         "required": false,
                         "schema": {
-                            "type": "boolean",
+                            "type": "string",
                             "enum": [
                                 "published",
                                 "pre-release",
