@@ -377,7 +377,7 @@
                 ],
                 "responses": {
                     "202": {
-                        "description": "The request has been accepted for processing. returns the jobId, unique identifier for publish request.",
+                        "description": "The request has been accepted for processing. returns the tdei_record_id, unique identifier for publish request.",
                         "content": {
                             "application/text": {
                                 "schema": {
