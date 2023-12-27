@@ -155,7 +155,7 @@
                         "description": "request for files based on status. The default setting is 'published', limiting the list to published files only. When set to 'pre-release', it includes pre-release files for the project groups user belongs. ",
                         "required": false,
                         "schema": {
-                            "type": "boolean",
+                            "type": "string",
                             "enum": [
                                 "published",
                                 "pre-release",
@@ -565,7 +565,7 @@
                     "OSW"
                 ],
                 "summary": "Initiate Confidence calculation for a dataset",
-                "description": "Initiates the confidence calculation of a tdeiRecordId as mentioned in the body",
+                "description": "Initiates the confidence calculation of a tdei_record_id as mentioned in the body",
                 "operationId": "oswConfidenceCalculate",
                 "requestBody": {
                     "content": {
@@ -592,7 +592,7 @@
                         "description": "This request is unauthenticated."
                     },
                     "404": {
-                        "description": "tdeiRecordId is not found"
+                        "description": "tdei_record_id is not found"
                     },
                     "500": {
                         "description": "An server error occurred."
@@ -2602,10 +2602,10 @@
             "OSWConfidenceRequest": {
                 "type": "object",
                 "required": [
-                    "tdeiRecordId"
+                    "tdei_record_id"
                 ],
                 "properties": {
-                    "tdeiRecordId": {
+                    "tdei_record_id": {
                         "type": "string",
                         "description": "TDEI record ID of the dataset to calculate confidence metric",
                         "example": "5e991e7a-5c16-4ebf-ad31-3a3625bcca10"
