@@ -5,4 +5,4 @@ This repository contains the external APIs for the Transportation Data Equity In
 
 The API consists of endpoints intended for application developers to use to retrieve data from the TDEI. Applications must register and get an API key to use the API. There are not restrictions on who can get an API key, simply that an application must have an API key to consume data from the TDEI. 
 
-The API also includes endpoints intended for data tenants, transportation agencies, and TDEI project partners to publish data to the TDEI. Data production will be restricted to TDEI project partners.
+The API also includes endpoints intended for the data tenants, transportation agencies, and TDEI project partners to publish data to the TDEI. Data production will be restricted to TDEI project partners.
