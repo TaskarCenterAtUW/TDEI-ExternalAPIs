@@ -751,9 +751,7 @@
                     "200": {
                         "description": "Downloadable stream of the file",
                         "content": {
-                            "application/octet-stream": {
-                                
-                            }
+                            "application/octet-stream": {}
                         }
                     },
                     "401": {
@@ -763,7 +761,7 @@
                         "description": "job_id not found"
                     },
                     "400": {
-                        "description":"job_id is not complete"
+                        "description": "job_id is not complete"
                     },
                     "500": {
                         "description": "An server error occurred."
@@ -815,6 +813,57 @@
                     },
                     "404": {
                         "description": "A file with the specified tdei_record_id was not found. Use the /api/v1/osw endpoints to find valid file ids.",
+                        "content": {
+                            "application/json": {}
+                        }
+                    },
+                    "500": {
+                        "description": "An server error occurred."
+                    }
+                },
+                "security": [
+                    {
+                        "ApiKey": []
+                    },
+                    {
+                        "AuthorizationToken": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "OSW"
+                ],
+                "summary": "Invalidates the OSW record",
+                "description": "Returns boolean true if the action is successful",
+                "operationId": "deleteOsw",
+                "parameters": [
+                    {
+                        "name": "tdei_record_id",
+                        "in": "path",
+                        "description": "tdei_record_id for a file, represented as a uuid",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Returns true if action is successful.",
+                        "content": {
+                            "application/text": {
+                                "schema": {
+                                    "type": "boolean"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "This request is unauthenticated."
+                    },
+                    "400": {
+                        "description": "The specified tdei_record_id was not found. Use the [GET] /api/v1/osw endpoints to find valid tdei_record_id.",
                         "content": {
                             "application/json": {}
                         }
@@ -2766,7 +2815,6 @@
                         "type": "string",
                         "description": "Any error message during failure"
                     },
-                    
                     "downloadUrl": {
                         "type": "string",
                         "description": "URL to download the converted file"
