@@ -308,7 +308,7 @@
                                     "metadata": {
                                         "type": "string",
                                         "format": "binary",
-                                        "description": "OSW dataset metadata information. see schema [OswUpload](#/components/schemas/OswUpload)"
+                                        "description": "OSW dataset metadata information. see [metadata schema](https://raw.githubusercontent.com/TaskarCenterAtUW/TDEI-osw-datasvc-ts/dev/schema/osw-metadata.schema.json)"
                                     },
                                     "changeset": {
                                         "type": "string",
