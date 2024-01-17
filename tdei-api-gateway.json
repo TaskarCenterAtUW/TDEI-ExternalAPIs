@@ -325,7 +325,11 @@
                     "202": {
                         "description": "The request has been accepted for processing. returns the tdei_record_id, unique identifier for uploaded file.",
                         "content": {
-                            "application/text": {}
+                            "application/text": {
+                                "schema": {
+                                    "type": "string"
+                                }
+                            }
                         },
                         "headers": {
                             "Location": {
