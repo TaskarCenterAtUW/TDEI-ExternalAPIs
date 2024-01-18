@@ -2789,10 +2789,6 @@
                     "job_id": {
                         "type": "string",
                         "description": "job_id of the format request"
-                    },
-                    "statusUrl": {
-                        "type": "string",
-                        "description": "the url to fetch the status of the job"
                     }
                 }
             },
