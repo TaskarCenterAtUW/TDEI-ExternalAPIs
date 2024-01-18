@@ -152,7 +152,7 @@
                     {
                         "name": "status",
                         "in": "query",
-                        "description": "request for files based on status. The default setting is 'published', limiting the list to published files only. When set to 'pre-release', it includes pre-release files for the project groups user belongs. ",
+                        "description": "request for files based on status. The default setting is 'Publish', limiting the list to published files only. When set to 'pre-release', it includes pre-release files for the project groups user belongs. ",
                         "required": false,
                         "schema": {
                             "type": "string",
@@ -2481,10 +2481,10 @@
                         "type": "string",
                         "description": "Status of the dataset release",
                         "enum": [
-                            "pre-release",
-                            "published"
+                            "Pre-Release",
+                            "Publish"
                         ],
-                        "default": "published"
+                        "default": "Publish"
                     },
                     "name": {
                         "type": "string",
