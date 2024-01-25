@@ -150,6 +150,50 @@
                         }
                     },
                     {
+                        "name": "data_source",
+                        "in": "query",
+                        "description": "data source of the dataset.",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "collected_by",
+                        "in": "query",
+                        "description": "Collection agency or person.",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "derived_from_dataset_id",
+                        "in": "query",
+                        "description": "Derived from dataset id.",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "collection_date",
+                        "in": "query",
+                        "description": "Collection date time",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "confidence_level",
+                        "description": "Minimum confidence level required. Data returned will be at this confidence level or higher. Confidence level range is: 0 (very low confidence) to 100 (very high confidence).",
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "in": "query"
+                    },
+                    {
                         "name": "status",
                         "in": "query",
                         "description": "request for files based on status. The default setting is 'Publish', limiting the list to published files only. When set to 'pre-release', it includes pre-release files for the project groups user belongs. ",
@@ -182,7 +226,16 @@
                         }
                     },
                     {
-                        "name": "date_time",
+                        "name": "valid_from",
+                        "in": "query",
+                        "description": "Valid from date time. date-time for which the caller is interested in obtaining files.",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "valid_to",
                         "in": "query",
                         "description": "date-time for which the caller is interested in obtaining files. all files that are valid at the specified date-time and meet the other criteria will be returned.",
                         "required": false,
