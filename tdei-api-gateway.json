@@ -155,7 +155,27 @@
                         "description": "data source of the dataset.",
                         "required": false,
                         "schema": {
-                            "type": "string"
+                            "type": "string",
+                            "enum": [
+                                "3rdParty",
+                                "TDEITools",
+                                "InHouse"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "collection_method",
+                        "in": "query",
+                        "description": "Method by which the data was collected.",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "manual",
+                                "transform",
+                                "generated",
+                                "other"
+                            ]
                         }
                     },
                     {
