@@ -159,6 +159,15 @@
                         }
                     },
                     {
+                        "name": "collection_method",
+                        "in": "query",
+                        "description": "Collection method used to collect the data.",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
                         "name": "collected_by",
                         "in": "query",
                         "description": "Collection agency or person.",
