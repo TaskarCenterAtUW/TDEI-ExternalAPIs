@@ -1959,15 +1959,16 @@
                 "parameters": [
                     {
                         "name": "override",
-                        "in": "path",
+                        "in": "query",
                         "description": "true to override if any existing data is present, false otherwise",
+                        "required": false,
                         "schema": {
                             "type": "boolean"
                         }
                     },
                     {
                         "name": "tdei_record_id",
-                        "in": "query",
+                        "in": "path",
                         "description": "tdei_record_id for a file, represented as a uuid",
                         "required": true,
                         "schema": {
