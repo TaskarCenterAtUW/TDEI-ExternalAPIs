@@ -1958,8 +1958,16 @@
                 "operationId": "datasetFlatternById",
                 "parameters": [
                     {
-                        "name": "tdei_record_id",
+                        "name": "override",
                         "in": "path",
+                        "description": "true to override if any existing data is present, false otherwise",
+                        "schema": {
+                            "type": "boolean"
+                        }
+                    },
+                    {
+                        "name": "tdei_record_id",
+                        "in": "query",
                         "description": "tdei_record_id for a file, represented as a uuid",
                         "required": true,
                         "schema": {
@@ -2078,7 +2086,7 @@
                         "name": "tdei_record_id",
                         "in": "query",
                         "description": "tdei_record_id for a file, represented as a uuid",
-                        "required": false,
+                        "required": true,
                         "schema": {
                             "type": "string"
                         }
@@ -2087,7 +2095,7 @@
                         "name": "bbox",
                         "in": "query",
                         "description": "A bounding box which specifies the area to be searched. A bounding box is specified by a string providing the lat/lon coordinates of the corners of the bounding box. Coordinate should be specified as west, south, east, north.",
-                        "required": false,
+                        "required": true,
                         "schema": {
                             "maxItems": 4,
                             "minItems": 4,
