@@ -1647,14 +1647,14 @@
                 }
             }
         },
-        "/api/v1/osw/dataset-flattern/{tdei_dataset_id}": {
+        "/api/v1/osw/dataset-flatten/{tdei_dataset_id}": {
             "post": {
                 "tags": [
                     "OSW"
                 ],
-                "summary": "Flatterns an OSW dataset",
-                "description": "Flatterns an OSW dataset for provided tdei_dataset_id.",
-                "operationId": "datasetFlatternById",
+                "summary": "flattens an OSW dataset",
+                "description": "flattens an OSW dataset for provided tdei_dataset_id.",
+                "operationId": "datasetflattenById",
                 "parameters": [
                     {
                         "name": "override",
