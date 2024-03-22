@@ -12,7 +12,7 @@
     },
     "servers": [
         {
-            "url": "tde-gateway-dev-2.azurewebsites.net",
+            "url": "https://tde-gateway-dev-2.azurewebsites.net",
             "description": "Secondary gateway server url"
         },
         {
