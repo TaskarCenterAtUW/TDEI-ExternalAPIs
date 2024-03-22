@@ -12,6 +12,10 @@
     },
     "servers": [
         {
+            "url": "tde-gateway-dev-2.azurewebsites.net",
+            "description": "Secondary gateway server url"
+        },
+        {
             "url": "https://tdei-gateway-dev.azurewebsites.net",
             "description": "Generated server url"
         }
