@@ -12,12 +12,8 @@
     },
     "servers": [
         {
-            "url": "https://tde-gateway-dev-2.azurewebsites.net",
-            "description": "Secondary gateway server url"
-        },
-        {
-            "url": "https://tdei-gateway-dev.azurewebsites.net",
-            "description": "Generated server url"
+            "url": "https://tdei-api-dev.azurewebsites.net",
+            "description": "TDEI API Gateway"
         }
     ],
     "security": [
@@ -2165,6 +2161,11 @@
                     "tdei_project_group_id": {
                         "type": "string",
                         "description": "tdei-assigned project group id. Represented as UUID. Project Group ids can be retrieved using the /api/v1/project-group path.",
+                        "example": "4e991e7a-5c16-4ebf-ad31-3a3625bcca10"
+                    },
+                    "tdei_service_id": {
+                        "type": "string",
+                        "description": "Service id. Represented as UUID. Project Group ids can be retrieved using the /api/v1/services path.",
                         "example": "4e991e7a-5c16-4ebf-ad31-3a3625bcca10"
                     },
                     "collected_by": {
