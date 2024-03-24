@@ -12,12 +12,8 @@
     },
     "servers": [
         {
-            "url": "https://tde-gateway-dev-2.azurewebsites.net",
-            "description": "Secondary gateway server url"
-        },
-        {
-            "url": "https://tdei-gateway-dev.azurewebsites.net",
-            "description": "Generated server url"
+            "url": "https://tdei-api-dev.azurewebsites.net",
+            "description": "TDEI API Gateway"
         }
     ],
     "security": [
