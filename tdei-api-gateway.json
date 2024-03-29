@@ -101,7 +101,7 @@
                 }
             }
         },
-        "/api/v1/dataset": {
+        "/api/v1/datasets": {
             "get": {
                 "tags": [
                     "General"
@@ -340,7 +340,7 @@
                 ]
             }
         },
-        "/api/v1/job": {
+        "/api/v1/jobs": {
             "get": {
                 "tags": [
                     "General"
@@ -870,7 +870,7 @@
                 }
             }
         },
-        "/api/v1/osw/confidence/calculate/{tdei_dataset_id}": {
+        "/api/v1/osw/confidence/{tdei_dataset_id}": {
             "post": {
                 "tags": [
                     "OSW"
@@ -1018,82 +1018,6 @@
                 ]
             }
         },
-        "/api/v1/osw/dataset-flatten/{tdei_dataset_id}": {
-            "post": {
-                "tags": [
-                    "OSW"
-                ],
-                "summary": "flattens an OSW dataset",
-                "description": "flattens an OSW dataset for provided tdei_dataset_id.",
-                "operationId": "datasetflattenById",
-                "parameters": [
-                    {
-                        "name": "override",
-                        "in": "query",
-                        "description": "true to override if any existing data is present, false otherwise",
-                        "required": false,
-                        "schema": {
-                            "type": "boolean"
-                        }
-                    },
-                    {
-                        "name": "tdei_dataset_id",
-                        "in": "path",
-                        "description": "tdei_dataset_id for a file, represented as a uuid",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                ],
-                "responses": {
-                    "202": {
-                        "description": "The request has been accepted for processing. returns the job_id, unique identifier for flattening request.",
-                        "content": {
-                            "application/text": {
-                                "schema": {
-                                    "type": "string"
-                                }
-                            }
-                        },
-                        "headers": {
-                            "Location": {
-                                "schema": {
-                                    "type": "string"
-                                },
-                                "description": "Location api to find the status of request processing"
-                            }
-                        }
-                    },
-                    "400": {
-                        "description": "The request was invalid."
-                    },
-                    "401": {
-                        "description": "This request is unauthenticated."
-                    },
-                    "403": {
-                        "description": "This request is unauthorized."
-                    },
-                    "404": {
-                        "description": "A file with the specified tdei_dataset_id was not found. Use the [GET] /api/v1/osw endpoint to find valid file ids.",
-                        "content": {
-                            "text/plain": {}
-                        }
-                    },
-                    "500": {
-                        "description": "An server error occurred."
-                    }
-                },
-                "security": [
-                    {
-                        "ApiKey": []
-                    },
-                    {
-                        "AuthorizationToken": []
-                    }
-                ]
-            }
-        },
         "/api/v1/osw/dataset-bbox": {
             "post": {
                 "tags": [
@@ -1110,6 +1034,19 @@
                         "required": true,
                         "schema": {
                             "type": "string"
+                        }
+                    },
+                    {
+                        "name": "file_type",
+                        "in": "query",
+                        "description": "Output file type for a file",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "osw",
+                                "osm"
+                            ]
                         }
                     },
                     {
@@ -1913,7 +1850,7 @@
                 ]
             }
         },
-        "/api/v1/project-group": {
+        "/api/v1/project-groups": {
             "get": {
                 "tags": [
                     "General"
@@ -2385,6 +2322,20 @@
                     "response_props": {
                         "type": "object",
                         "description": "response properties of the job request"
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "description": "date-time that job was created",
+                        "example": "2018-02-10T09:30Z"
+                    },
+                    "updated_at": {
+                        "type": "string",
+                        "description": "date-time that job was last updated",
+                        "example": "2018-02-10T09:30Z"
+                    },
+                    "data_type": {
+                        "type": "string",
+                        "description": "data type of the job request"
                     }
                 }
             }
