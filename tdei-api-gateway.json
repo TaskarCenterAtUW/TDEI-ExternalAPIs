@@ -986,6 +986,20 @@
                                 "osw"
                             ]
                         }
+                    },
+                    {
+                        "name": "file_version",
+                        "in": "query",
+                        "description": "File format to download. Default to osw",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "latest",
+                                "original"
+                            ],
+                            "default": "latest"
+                        }
                     }
                 ],
                 "responses": {
@@ -1069,6 +1083,76 @@
                             -122.116939,
                             47.65387
                         ]
+                    }
+                ],
+                "responses": {
+                    "202": {
+                        "description": "The request has been accepted for processing. returns the job_id, unique identifier for the request.",
+                        "content": {
+                            "application/text": {
+                                "schema": {
+                                    "type": "string"
+                                }
+                            }
+                        },
+                        "headers": {
+                            "Location": {
+                                "schema": {
+                                    "type": "string"
+                                },
+                                "description": "Location api to find the status of request processing"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "The request was invalid."
+                    },
+                    "401": {
+                        "description": "This request is unauthenticated."
+                    },
+                    "403": {
+                        "description": "This request is unauthorized."
+                    },
+                    "500": {
+                        "description": "An server error occurred."
+                    }
+                },
+                "security": [
+                    {
+                        "ApiKey": []
+                    },
+                    {
+                        "AuthorizationToken": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/osw/dataset-tag-road": {
+            "post": {
+                "tags": [
+                    "OSW"
+                ],
+                "summary": "Given a target dataset, tags the sidewalks with the road network from source dataset.",
+                "description": "Given a target dataset, tags the sidewalks with the road network from source dataset which is within the buffer of 5 meters from the sidewalk.",
+                "operationId": "datasetTagRoad",
+                "parameters": [
+                    {
+                        "name": "source_dataset_id",
+                        "in": "query",
+                        "description": "Dataset from which the road network to be retrieved",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "target_dataset_id",
+                        "in": "query",
+                        "description": "Dataset for which the road network is to be tagged",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
                     }
                 ],
                 "responses": {
