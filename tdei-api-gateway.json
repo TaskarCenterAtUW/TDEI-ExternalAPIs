@@ -12,6 +12,7 @@
     },
     "servers": [
         {
+
             "url": "https://tdei-api-dev.azurewebsites.net",
             "description": "TDEI API Gateway"
         }
