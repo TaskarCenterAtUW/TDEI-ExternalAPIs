@@ -1,7 +1,7 @@
 {
     "openapi": "3.0.1",
     "info": {
-        "title": "TDEI Gateway Dev API",
+        "title": "TDEI Gateway Stage API",
         "description": "This is an API for interacting with the Transportation Data Equity Initiative (TDEI) data system. It is intended for applications producing data to and consuming data from the TDEI system. It currently supports GTFS-Pathways, GTFS-Flex v2 and OpenSidewalks v0.2 data schemas.",
         "contact": {
             "name": "TDEI",
@@ -12,8 +12,7 @@
     },
     "servers": [
         {
-
-            "url": "https://tdei-api-dev.azurewebsites.net",
+            "url": "https://tdei-gateway-stage.azurewebsites.net",
             "description": "TDEI API Gateway"
         }
     ],
@@ -608,7 +607,7 @@
                                     "metadata": {
                                         "type": "string",
                                         "format": "binary",
-                                        "description": "OSW dataset metadata information. see [metadata schema](https://raw.githubusercontent.com/TaskarCenterAtUW/TDEI-osw-datasvc-ts/dev/schema/metadata.schema.json)"
+                                        "description": "OSW dataset metadata information. see [metadata schema](https://raw.githubusercontent.com/TaskarCenterAtUW/TDEI-osw-datasvc-ts/stage/schema/metadata.schema.json)"
                                     },
                                     "changeset": {
                                         "type": "string",
