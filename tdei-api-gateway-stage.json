@@ -984,13 +984,14 @@
                             "enum": [
                                 "osm",
                                 "osw"
-                            ]
+                            ],
+                            "default": "osw"
                         }
                     },
                     {
                         "name": "file_version",
                         "in": "query",
-                        "description": "File format to download. Default to osw",
+                        "description": "File version to download. Default to latest",
                         "required": false,
                         "schema": {
                             "type": "string",
