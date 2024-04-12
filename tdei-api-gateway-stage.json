@@ -127,7 +127,7 @@
                     {
                         "name": "status",
                         "in": "query",
-                        "description": "request for files based on status. The default setting is 'Publish', limiting the list to published files only. When set to 'pre-release', it includes pre-release files for the project groups user belongs. ",
+                        "description": "request for files based on status. The default setting is 'All', lists all datasets. When set to 'Pre-Release' | 'Publish', it includes Pre-Release | Publish datasets for the project groups user belongs. ",
                         "required": false,
                         "schema": {
                             "type": "string",
@@ -135,7 +135,8 @@
                                 "Publish",
                                 "Pre-Release",
                                 "All"
-                            ]
+                            ],
+                            "default": "All"
                         }
                     },
                     {
