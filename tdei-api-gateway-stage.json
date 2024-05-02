@@ -877,7 +877,7 @@
                     "OSW"
                 ],
                 "summary": "Initiate Confidence calculation for a dataset",
-                "description": "Initiates the confidence calculation for requested tdei_dataset_id. Returns the job_id for confidence calculation request. For checking the status, refer to the Location header in the response, which contains the URL for the status API endpoint.",
+                "description": "Initiates the confidence calculation for requested tdei_dataset_id with optional sub-regions. Returns the job_id for confidence calculation request. For checking the status, refer to the Location header in the response, which contains the URL for the status API endpoint.",
                 "operationId": "oswConfidenceCalculate",
                 "parameters": [
                     {
@@ -890,6 +890,22 @@
                         }
                     }
                 ],
+                "requestBody": {
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "file": {
+                                        "type": "string",
+                                        "format": "binary",
+                                        "description": "Sub regions geojson file for which confidence to be calculated"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
                 "responses": {
                     "202": {
                         "description": "The request has been accepted for processing. returns the job_id, unique identifier for convert job request.",
