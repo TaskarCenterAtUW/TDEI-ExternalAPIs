@@ -979,7 +979,7 @@
                     "OSW"
                 ],
                 "summary": "downloads the OSW files as zip",
-                "description": "returns a specific osw file as zip containing metadata, dataset, and changeset identified by the tdei_record_id",
+                "description": "returns a specific osw file as zip containing metadata, dataset, and changeset identified by the tdei_dataset_id",
                 "operationId": "getOswFile",
                 "parameters": [
                     {
@@ -1461,7 +1461,7 @@
                     "GTFS Flex"
                 ],
                 "summary": "downloads the GTFS Flex files as zip",
-                "description": "returns a specific GTFS Flex file as zip containing metadata, dataset, and changeset identified by the tdei_record_id",
+                "description": "returns a specific GTFS Flex file as zip containing metadata, dataset, and changeset identified by the tdei_dataset_id",
                 "operationId": "getGtfsFlexFile",
                 "parameters": [
                     {
@@ -1786,7 +1786,7 @@
                     "GTFS Pathways"
                 ],
                 "summary": "downloads the GTFS Pathways files as zip",
-                "description": "returns a specific GTFS Pathways file as zip containing metadata, dataset, and changeset identified by the tdei_record_id",
+                "description": "returns a specific GTFS Pathways file as zip containing metadata, dataset, and changeset identified by the tdei_dataset_id",
                 "operationId": "getGtfsPathwaysFile",
                 "parameters": [
                     {
@@ -2193,8 +2193,9 @@
                     "download_url",
                     "osw_schema_version",
                     "dataset_area",
-                    "tdei_project_group_id",
-                    "tdei_record_id",
+                    "project_group",
+                    "service",
+                    "tdei_dataset_id",
                     "uploaded_timestamp",
                     "status",
                     "valid_from"
@@ -2234,15 +2235,39 @@
                         "type": "string",
                         "description": "Uploaded timestamp of the dataset"
                     },
-                    "tdei_project_group_id": {
-                        "type": "string",
+                    "project_group": {
+                        "type": "object",
                         "description": "tdei-assigned project group id. Represented as UUID. Project Group ids can be retrieved using the /api/v1/project-group path.",
-                        "example": "4e991e7a-5c16-4ebf-ad31-3a3625bcca10"
+                        "properties": {
+                            "name": {
+                                "type": "string"
+                            },
+                            "tdei_project_group_id": {
+                                "type": "string",
+                                "example": "4e991e7a-5c16-4ebf-ad31-3a3625bcca10"
+                            }
+                        },
+                        "required": [
+                            "name",
+                            "tdei_project_group_id"
+                        ]
                     },
-                    "tdei_service_id": {
-                        "type": "string",
+                    "service": {
+                        "type": "object",
                         "description": "Service id. Represented as UUID. Project Group ids can be retrieved using the /api/v1/services path.",
-                        "example": "4e991e7a-5c16-4ebf-ad31-3a3625bcca10"
+                        "properties": {
+                            "name": {
+                                "type": "string"
+                            },
+                            "tdei_service_id": {
+                                "type": "string",
+                                "example": "4e991e7a-5c16-4ebf-ad31-3a3625bcca10"
+                            }
+                        },
+                        "required": [
+                            "name",
+                            "tdei_service_id"
+                        ]
                     },
                     "collected_by": {
                         "type": "string",
