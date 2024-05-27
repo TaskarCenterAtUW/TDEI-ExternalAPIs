@@ -2603,7 +2603,7 @@
                         "properties": {
                             "name": {
                                 "type": "string",
-                                "description": "Dataset name or Title that this data is known by"
+                                "description": "Dataset Title that this data is known by"
                             },
                             "description": {
                                 "type": "string",
@@ -2619,27 +2619,26 @@
                             },
                             "collected_by": {
                                 "type": "string",
-                                "description": "Description of who data was collected by. See Best Practices document for information on how to format this string.",
-                                "example": "See best practices document"
+                                "description": "Description of who data was collected by."
                             },
                             "collection_date": {
                                 "type": "string",
                                 "description": "date-time that data was collected",
-                                "example": "2018-02-10T09:30Z"
+                                "example": "2018-22-10T09:30Z"
                             },
                             "valid_from": {
                                 "type": "string",
                                 "description": "date from which this file is valid",
-                                "example": "2023-02-10T09:30Z"
+                                "example": "2023-22-10T09:30Z"
                             },
                             "valid_to": {
                                 "type": "string",
                                 "description": "date until which this data is valid",
-                                "example": "2023-02-10T09:30Z"
+                                "example": "2023-22-10T09:30Z"
                             },
                             "collection_method": {
                                 "type": "string",
-                                "description": "Method by which the data was collected. See Best Practices document for information on how to format this string.",
+                                "description": "Method by which the data was collected.",
                                 "enum": [
                                     "manual",
                                     "transform",
@@ -2649,7 +2648,7 @@
                             },
                             "data_source": {
                                 "type": "string",
-                                "description": "Description of data source or sources from which the data was collected. See Best Practices document for information on how to format this string.",
+                                "description": "Description of data source or sources from which the data was collected.",
                                 "enum": [
                                     "3rdParty",
                                     "TDEITools",
