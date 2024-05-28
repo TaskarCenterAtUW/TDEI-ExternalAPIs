@@ -288,6 +288,324 @@
                         ]
                     },
                     {
+                        "name": "other_published_locations",
+                        "in": "query",
+                        "description": "Other published locations",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "dataset_update_frequency_months",
+                        "in": "query",
+                        "description": "Dataset update frequency in months",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "schema_validation_run_description",
+                        "in": "query",
+                        "description": "Schema validation run description",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "full_dataset_name",
+                        "in": "query",
+                        "description": "Full dataset name",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "collection_name",
+                        "in": "query",
+                        "description": "Name of the collection",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "department_name",
+                        "in": "query",
+                        "description": "Name of the department",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "city",
+                        "in": "query",
+                        "description": "Name of the city",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "region",
+                        "in": "query",
+                        "description": "Name of the region",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "county",
+                        "in": "query",
+                        "description": "Name of the county",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "key_limitations_of_the_dataset",
+                        "in": "query",
+                        "description": "Key limitations of the dataset",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "challenges",
+                        "in": "query",
+                        "description": "Challenges faced in collecting the data",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "official_maintainer",
+                        "in": "query",
+                        "description": "Official maintainer of the dataset",
+                        "required": false,
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    {
+                        "name": "last_updated",
+                        "in": "query",
+                        "description": "Date when the dataset was last updated",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "update_frequency",
+                        "in": "query",
+                        "description": "Frequency of updates",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "authorization_chain",
+                        "in": "query",
+                        "description": "Authorization chain",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "maintenance_funded",
+                        "in": "query",
+                        "description": "Is maintenance funded",
+                        "required": false,
+                        "schema": {
+                            "type": "boolean"
+                        }
+                    },
+                    {
+                        "name": "funding_details",
+                        "in": "query",
+                        "description": "Funding details",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "point_data_collection_device",
+                        "in": "query",
+                        "description": "Point data collection device",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "node_locations_and_attributes_editing_software",
+                        "in": "query",
+                        "description": "Node locations and attributes editing software",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "data_collected_by_people",
+                        "in": "query",
+                        "description": "Is data collected by people",
+                        "required": false,
+                        "schema": {
+                            "type": "boolean"
+                        }
+                    },
+                    {
+                        "name": "data_collectors",
+                        "in": "query",
+                        "description": "Data collectors",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "data_captured_automatically",
+                        "in": "query",
+                        "description": "Is data captured automatically",
+                        "required": false,
+                        "schema": {
+                            "type": "boolean"
+                        }
+                    },
+                    {
+                        "name": "automated_collection",
+                        "in": "query",
+                        "description": "Automated collection",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "data_collectors_organization",
+                        "in": "query",
+                        "description": "Data collectors organization",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "data_collector_compensation",
+                        "in": "query",
+                        "description": "Data collector compensation",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "preprocessing_location",
+                        "in": "query",
+                        "description": "Preprocessing location",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "preprocessing_by",
+                        "in": "query",
+                        "description": "Preprocessing by",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "preprocessing_steps",
+                        "in": "query",
+                        "description": "Preprocessing steps",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "data_collection_preprocessing_documentation",
+                        "in": "query",
+                        "description": "Is data collection preprocessing documentation available",
+                        "required": false,
+                        "schema": {
+                            "type": "boolean"
+                        }
+                    },
+                    {
+                        "name": "documentation_uri",
+                        "in": "query",
+                        "description": "Documentation URI",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "validation_process_exists",
+                        "in": "query",
+                        "description": "Is validation process exists",
+                        "required": false,
+                        "schema": {
+                            "type": "boolean"
+                        }
+                    },
+                    {
+                        "name": "validation_process_description",
+                        "in": "query",
+                        "description": "Validation process description",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "validation_conducted_by",
+                        "in": "query",
+                        "description": "Validation conducted by",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "excluded_data",
+                        "in": "query",
+                        "description": "Excluded data",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "excluded_data_reason",
+                        "in": "query",
+                        "description": "Excluded data reason",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
                         "name": "page_no",
                         "in": "query",
                         "description": "Integer, defaults to 1.",
@@ -448,6 +766,69 @@
                     {
                         "ApiKey": []
                     },
+                    {
+                        "AuthorizationToken": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/metadata/{tdei_dataset_id}": {
+            "put": {
+                "tags": [
+                    "General"
+                ],
+                "summary": "Edit metadata for the dataset",
+                "description": "Edit metadata for the dataset. Returns status 200 if the action is successful.",
+                "operationId": "editMetadata",
+                "parameters": [
+                    {
+                        "name": "tdei_dataset_id",
+                        "in": "path",
+                        "description": "tdei dataset id for a file, represented as a uuid",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "required": [
+                                    "file"
+                                ],
+                                "type": "object",
+                                "properties": {
+                                    "file": {
+                                        "type": "string",
+                                        "format": "binary",
+                                        "description": "Metadata file. see [metadata schema](https://raw.githubusercontent.com/TaskarCenterAtUW/TDEI-osw-datasvc-ts/stage/schema/metadata.schema.json)"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "Request successful."
+                    },
+                    "400": {
+                        "description": "The request was invalid."
+                    },
+                    "401": {
+                        "description": "This request is unauthenticated."
+                    },
+                    "403": {
+                        "description": "This request is unauthorized."
+                    },
+                    "500": {
+                        "description": "An server error occurred."
+                    }
+                },
+                "security": [
                     {
                         "AuthorizationToken": []
                     }
@@ -2181,24 +2562,273 @@
                     }
                 }
             },
+            "MetadataModel": {
+                "type": "object",
+                "properties": {
+                    "data_provenance": {
+                        "type": "object",
+                        "properties": {
+                            "full_dataset_name": {
+                                "type": "string",
+                                "description": "Full name of the dataset"
+                            },
+                            "other_published_locations": {
+                                "type": "string",
+                                "description": "Other published locations"
+                            },
+                            "dataset_update_frequency_months": {
+                                "type": "number",
+                                "description": "Dataset update frequency in months"
+                            },
+                            "schema_validation_run": {
+                                "type": "boolean",
+                                "description": "Is schema validation run"
+                            },
+                            "schema_validation_run_description": {
+                                "type": "string",
+                                "description": "Description of schema validation run"
+                            },
+                            "allow_crowd_contributions": {
+                                "type": "boolean",
+                                "description": "Is crowd contributions allowed"
+                            },
+                            "location_inaccuracy_factors": {
+                                "type": "string",
+                                "description": "Location inaccuracy factors"
+                            }
+                        }
+                    },
+                    "dataset_detail": {
+                        "type": "object",
+                        "properties": {
+                            "name": {
+                                "type": "string",
+                                "description": "Dataset Title that this data is known by"
+                            },
+                            "description": {
+                                "type": "string",
+                                "description": "Free text description of the data"
+                            },
+                            "version": {
+                                "type": "string",
+                                "description": "Dataset version"
+                            },
+                            "custom_metadata": {
+                                "type": "object",
+                                "description": "Custom structured JSON metadata"
+                            },
+                            "collected_by": {
+                                "type": "string",
+                                "description": "Description of who data was collected by."
+                            },
+                            "collection_date": {
+                                "type": "string",
+                                "description": "date-time that data was collected",
+                                "example": "2023-22-10T09:30Z"
+                            },
+                            "valid_from": {
+                                "type": "string",
+                                "description": "date from which this file is valid",
+                                "example": "2023-22-10T09:30Z"
+                            },
+                            "valid_to": {
+                                "type": "string",
+                                "description": "date until which this data is valid",
+                                "example": "2023-22-10T09:30Z"
+                            },
+                            "collection_method": {
+                                "type": "string",
+                                "description": "Method by which the data was collected.",
+                                "enum": [
+                                    "manual",
+                                    "transform",
+                                    "generated",
+                                    "other"
+                                ]
+                            },
+                            "data_source": {
+                                "type": "string",
+                                "description": "Description of data source or sources from which the data was collected.",
+                                "enum": [
+                                    "3rdParty",
+                                    "TDEITools",
+                                    "InHouse"
+                                ]
+                            },
+                            "dataset_area": {
+                                "$ref": "#/components/schemas/GeoJsonObject"
+                            },
+                            "schema_version": {
+                                "type": "string"
+                            }
+                        },
+                        "required": [
+                            "name",
+                            "version",
+                            "collected_by",
+                            "collection_date",
+                            "valid_from",
+                            "collection_method",
+                            "data_source",
+                            "schema_version"
+                        ]
+                    },
+                    "dataset_summary": {
+                        "type": "object",
+                        "description": "Summary of the dataset",
+                        "properties": {
+                            "collection_name": {
+                                "type": "string",
+                                "description": "Name of the collection"
+                            },
+                            "department_name": {
+                                "type": "string",
+                                "description": "Name of the department"
+                            },
+                            "city": {
+                                "type": "string",
+                                "description": "Name of the city"
+                            },
+                            "region": {
+                                "type": "string",
+                                "description": "Name of the region"
+                            },
+                            "county": {
+                                "type": "string",
+                                "description": "Name of the county"
+                            },
+                            "key_limitations_of_the_dataset": {
+                                "type": "string",
+                                "description": "Key limitations of the dataset"
+                            },
+                            "challenges": {
+                                "type": "string",
+                                "description": "Challenges faced in collecting the data"
+                            }
+                        }
+                    },
+                    "maintenance": {
+                        "type": "object",
+                        "description": "Maintenance details of the dataset",
+                        "properties": {
+                            "official_maintainer": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string"
+                                },
+                                "description": "Official maintainer of the dataset"
+                            },
+                            "last_updated": {
+                                "type": "string",
+                                "description": "Date when the dataset was last updated"
+                            },
+                            "update_frequency": {
+                                "type": "string",
+                                "description": "Frequency of updates"
+                            },
+                            "authorization_chain": {
+                                "type": "string",
+                                "description": "Authorization chain"
+                            },
+                            "maintenance_funded": {
+                                "type": "boolean",
+                                "description": "Is maintenance funded"
+                            },
+                            "funding_details": {
+                                "type": "string",
+                                "description": "Funding details"
+                            }
+                        }
+                    },
+                    "methodology": {
+                        "type": "object",
+                        "properties": {
+                            "point_data_collection_device": {
+                                "type": "string",
+                                "description": "Point data collection device"
+                            },
+                            "node_locations_and_attributes_editing_software": {
+                                "type": "string",
+                                "description": "Node locations and attributes editing software"
+                            },
+                            "data_collected_by_people": {
+                                "type": "boolean",
+                                "description": "Is data collected by people"
+                            },
+                            "data_collectors": {
+                                "type": "string",
+                                "description": "Data collectors"
+                            },
+                            "data_captured_automatically": {
+                                "type": "boolean",
+                                "description": "Is data captured automatically"
+                            },
+                            "automated_collection": {
+                                "type": "string",
+                                "description": "Automated collection"
+                            },
+                            "data_collectors_organization": {
+                                "type": "string",
+                                "description": "Data collectors organization"
+                            },
+                            "data_collector_compensation": {
+                                "type": "string",
+                                "description": "Data collector compensation"
+                            },
+                            "preprocessing_location": {
+                                "type": "string",
+                                "description": "Preprocessing location"
+                            },
+                            "preprocessing_by": {
+                                "type": "string",
+                                "description": "Preprocessing by"
+                            },
+                            "preprocessing_steps": {
+                                "type": "string",
+                                "description": "Preprocessing steps"
+                            },
+                            "data_collection_preprocessing_documentation": {
+                                "type": "boolean",
+                                "description": "Is data collection preprocessing documentation available"
+                            },
+                            "documentation_uri": {
+                                "type": "string",
+                                "description": "Documentation URI"
+                            },
+                            "validation_process_exists": {
+                                "type": "boolean",
+                                "description": "Is validation process exists"
+                            },
+                            "validation_process_description": {
+                                "type": "string",
+                                "description": "Validation process description"
+                            },
+                            "validation_conducted_by": {
+                                "type": "string",
+                                "description": "Validation conducted by"
+                            },
+                            "excluded_data": {
+                                "type": "string",
+                                "description": "Excluded data"
+                            },
+                            "excluded_data_reason": {
+                                "type": "string",
+                                "description": "Excluded data reason"
+                            }
+                        }
+                    }
+                }
+            },
             "DatasetItem": {
                 "required": [
-                    "name",
-                    "version",
-                    "collected_by",
-                    "collection_date",
-                    "collection_method",
                     "confidence_level",
-                    "data_source",
                     "download_url",
-                    "osw_schema_version",
-                    "dataset_area",
                     "project_group",
                     "service",
                     "tdei_dataset_id",
                     "uploaded_timestamp",
                     "status",
-                    "valid_from"
+                    "metadata"
                 ],
                 "type": "object",
                 "properties": {
@@ -2211,25 +2841,9 @@
                         ],
                         "default": "Publish"
                     },
-                    "name": {
-                        "type": "string",
-                        "description": "Dataset name or Title that this data is known by"
-                    },
-                    "description": {
-                        "type": "string",
-                        "description": "Free text description of the data"
-                    },
-                    "version": {
-                        "type": "string",
-                        "description": "Dataset version"
-                    },
                     "derived_from_dataset_id": {
                         "type": "string",
                         "description": "Dataset id from which this dataset was derived"
-                    },
-                    "custom_metadata": {
-                        "type": "object",
-                        "description": "Custom structured JSON metadata"
                     },
                     "uploaded_timestamp": {
                         "type": "string",
@@ -2269,68 +2883,24 @@
                             "tdei_service_id"
                         ]
                     },
-                    "collected_by": {
-                        "type": "string",
-                        "description": "Description of who data was collected by. See Best Practices document for information on how to format this string.",
-                        "example": "See best practices document"
-                    },
-                    "collection_date": {
-                        "type": "string",
-                        "description": "date-time that data was collected",
-                        "example": "2018-02-10T09:30Z"
-                    },
-                    "collection_method": {
-                        "type": "string",
-                        "description": "Method by which the data was collected. See Best Practices document for information on how to format this string.",
-                        "enum": [
-                            "manual",
-                            "transform",
-                            "generated",
-                            "other"
-                        ]
-                    },
-                    "valid_from": {
-                        "type": "string",
-                        "description": "date from which this file is valid",
-                        "example": "2023-02-10T09:30Z"
-                    },
-                    "valid_to": {
-                        "type": "string",
-                        "description": "date until which this data is valid",
-                        "example": "2023-02-10T09:30Z"
-                    },
                     "confidence_level": {
                         "type": "integer",
                         "description": "tdei-generated confidence level. Confidence level range is: 0 (very low confidence) to 100 (very high confidence).",
                         "format": "int32",
                         "example": 41
                     },
-                    "data_source": {
-                        "type": "string",
-                        "description": "Description of data source or sources from which the data was collected. See Best Practices document for information on how to format this string.",
-                        "enum": [
-                            "3rdParty",
-                            "TDEITools",
-                            "InHouse"
-                        ]
-                    },
-                    "dataset_area": {
-                        "$ref": "#/components/schemas/GeoJsonObject"
-                    },
                     "tdei_dataset_id": {
                         "type": "string",
                         "description": "unique id identifying the file in the tdei system, can be used to retrieve the file itself.",
                         "example": "4e991e7a-5c16-4ebf-ad31-3a3625bcca10"
                     },
-                    "schema_version": {
-                        "type": "string",
-                        "description": "version of osw schema this file conforms to",
-                        "example": "v1.1"
-                    },
                     "download_url": {
                         "type": "string",
                         "description": "The url from which this file can be downloaded.",
                         "example": "/api/v1/osw/{tdei_dataset_id}"
+                    },
+                    "metadata": {
+                        "$ref": "#/components/schemas/MetadataModel"
                     }
                 },
                 "description": "represents a osw data file."
