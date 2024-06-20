@@ -1684,6 +1684,158 @@
                 ]
             }
         },
+        "/api/v1/osw/spatial-join": {
+            "post": {
+                "tags": [
+                    "OSW"
+                ],
+                "summary": "Performs the spatial join operation on the OSW dataset.",
+                "description": "Executes a spatial join operation on the OSW dataset. Based on the provided spatial join input parameters, the system runs the query and generates a downloadable dataset. Returns the job_id for the spatial join request. To check the status, refer to the Location header in the response, which includes the URL for the status API endpoint.",
+                "operationId": "osw-spatial-join",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "target_dataset_id": {
+                                        "type": "string",
+                                        "example": "fa8e12ea-6b0c-4d3e-8b38-5b87b268e76b",
+                                        "description": "Unique dataset id defined in TDEI system"
+                                    },
+                                    "target_dimension": {
+                                        "type": "string",
+                                        "enum": [
+                                            "node",
+                                            "edge",
+                                            "zone"
+                                        ]
+                                    },
+                                    "source_dataset_id": {
+                                        "type": "string",
+                                        "example": "0d661b69495d47fb838862edf699fe09",
+                                        "description": "Unique dataset id defined in TDEI system"
+                                    },
+                                    "source_dimension": {
+                                        "type": "string",
+                                        "enum": [
+                                            "node",
+                                            "edge",
+                                            "zone",
+                                            "point",
+                                            "line",
+                                            "polygon"
+                                        ]
+                                    },
+                                    "join_condition": {
+                                        "type": "string",
+                                        "enum": [
+                                            "ST_Contains(geometry_target, geometry_source)",
+                                            "ST_DWithin(geometry_target, geometry_source, radius)",
+                                            "ST_Intersects(geometry_target, geometry_source)",
+                                            "ST_Touches(geometry_target, geometry_source)",
+                                            "ST_Within(geometry_target, geometry_source)"
+                                        ],
+                                        "description": "Condition on which target and source geometry will join. geometry_target & geometry_source are constant variable representing the element geometry.\n"
+                                    },
+                                    "transform_target": {
+                                        "type": "string",
+                                        "description": "Transformation on the target geometry (geometry_target)",
+                                        "example": "ST_Buffer(geometry_target, 5)",
+                                        "nullable": true,
+                                        "default": null
+                                    },
+                                    "transform_source": {
+                                        "type": "string",
+                                        "description": "Transformation on the source geometry (geometry_source)",
+                                        "nullable": true,
+                                        "default": null
+                                    },
+                                    "filter_target": {
+                                        "type": "string",
+                                        "description": "Target attribute filters",
+                                        "default": "highway='footway' AND footway='sidewalk'"
+                                    },
+                                    "filter_source": {
+                                        "type": "string",
+                                        "description": "Source attribute filters",
+                                        "default": "highway='street_lamp'"
+                                    },
+                                    "aggregate": {
+                                        "type": "string",
+                                        "description": "Agrregate function for attribute.all attribute_name/alias will be prefixed with 'ext:'",
+                                        "example": [
+                                            "ARRAY_AGG(highway) as alias",
+                                            "min(attribute_name)",
+                                            "max(attribute_name)",
+                                            "avg(attribute_name)",
+                                            "count(attribute_name)",
+                                            "sum(attribute_name)"
+                                        ]
+                                    },
+                                    "attributes": {
+                                        "type": "array",
+                                        "description": "List of attributes from source, all attributes/alias will be prefixed with 'ext:'",
+                                        "items": {
+                                            "type": "string"
+                                        },
+                                        "example": [
+                                            "barrier as new_barrier",
+                                            "pole"
+                                        ]
+                                    }
+                                },
+                                "required": [
+                                    "target_dataset_id",
+                                    "source_dataset_id",
+                                    "join_condition",
+                                    "source_dimension",
+                                    "target_dimension"
+                                ]
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "202": {
+                        "description": "The request has been accepted for processing. returns the job_id, unique identifier for validation job request.",
+                        "content": {
+                            "application/text": {
+                                "schema": {
+                                    "type": "string"
+                                }
+                            }
+                        },
+                        "headers": {
+                            "Location": {
+                                "schema": {
+                                    "type": "string"
+                                },
+                                "description": "Location api to find the status of request processing"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "The request was invalid."
+                    },
+                    "401": {
+                        "description": "This request is unauthenticated."
+                    },
+                    "403": {
+                        "description": "This request is unauthorized."
+                    },
+                    "500": {
+                        "description": "An server error occurred."
+                    }
+                },
+                "security": [
+                    {
+                        "AuthorizationToken": []
+                    }
+                ]
+            }
+        },
         "/api/v1/gtfs-flex/upload/{tdei_project_group_id}/{tdei_service_id}": {
             "post": {
                 "tags": [
@@ -3158,6 +3310,49 @@
                     "data_type": {
                         "type": "string",
                         "description": "data type of the job request"
+                    },
+                    "current_stage": {
+                        "type": "string",
+                        "description": "current stage of the job request"
+                    },
+                    "progress": {
+                        "$ref": "#/components/schemas/JobProgress"
+                    }
+                }
+            },
+            "JobProgress": {
+                "type": "object",
+                "description": "Job progress details",
+                "properties": {
+                    "total_stages": {
+                        "type": "integer",
+                        "description": "total number of stages in the job"
+                    },
+                    "current_stage": {
+                        "type": "string",
+                        "description": "description of the current stage of the job"
+                    },
+                    "completed_stages": {
+                        "type": "integer",
+                        "description": "number of stages completed in the job"
+                    },
+                    "current_status": {
+                        "type": "string",
+                        "description": "status of the job in current stage",
+                        "enum": [
+                            "COMPLETED",
+                            "FAILED",
+                            "IN-PROGRESS"
+                        ]
+                    },
+                    "current_stage_percentage": {
+                        "type": "integer",
+                        "description": "percentage of the current stage completed"
+                    },
+                    "last_updated_at": {
+                        "type": "string",
+                        "description": "date-time that job was last updated",
+                        "example": "2024-06-17T06:32:35.842Z"
                     }
                 }
             }
