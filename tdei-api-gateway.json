@@ -1690,7 +1690,7 @@
                     "OSW"
                 ],
                 "summary": "Performs the spatial join operation on the OSW dataset.",
-                "description": "Executes a spatial join operation on the OSW dataset. Based on the provided spatial join input parameters, the system runs the query and generates a downloadable dataset. Returns the job_id for the spatial join request. To check the status, refer to the Location header in the response, which includes the URL for the status API endpoint.",
+                "description": "Executes a spatial join operation on the OSW dataset. Based on the provided spatial join input parameters, the system runs the query and generates a downloadable dataset. Returns the job_id for the spatial join request. The geometry column for data elements is specified as `geometry_target` and `geometry_source`. To check the status, refer to the Location header in the response, which includes the URL for the status API endpoint.",
                 "operationId": "osw-spatial-join",
                 "requestBody": {
                     "content": {
@@ -1706,8 +1706,8 @@
                                     "target_dimension": {
                                         "type": "string",
                                         "enum": [
-                                            "node",
                                             "edge",
+                                            "node",
                                             "zone"
                                         ]
                                     },
@@ -1719,8 +1719,8 @@
                                     "source_dimension": {
                                         "type": "string",
                                         "enum": [
-                                            "node",
                                             "edge",
+                                            "node",
                                             "zone",
                                             "point",
                                             "line",
