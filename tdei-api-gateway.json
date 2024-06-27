@@ -1377,7 +1377,66 @@
                 },
                 "responses": {
                     "202": {
-                        "description": "The request has been accepted for processing. returns the job_id, unique identifier for convert job request.",
+                        "description": "The request has been accepted for processing. returns the job_id, unique identifier for confidence job request.",
+                        "content": {
+                            "application/text": {
+                                "schema": {
+                                    "type": "string"
+                                }
+                            }
+                        },
+                        "headers": {
+                            "Location": {
+                                "schema": {
+                                    "type": "string"
+                                },
+                                "description": "Location api to find the status of request processing"
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "This request is unauthenticated."
+                    },
+                    "404": {
+                        "description": "tdei_dataset_id is not found"
+                    },
+                    "500": {
+                        "description": "An server error occurred."
+                    }
+                }
+            }
+        },
+        "/api/v1/osw/quality-metric/{tdei_dataset_id}": {
+            "post": {
+                "tags": [
+                    "OSW"
+                ],
+                "summary": "Initiate Quality metric calculation for a dataset",
+                "description": "Initiates the Quality calculation for requested tdei_dataset_id with list of algorithms and optional persistence. Returns the job_id for quality metric calculation request. For checking the status, refer to the Location header in the response, which contains the URL for the status API endpoint.",
+                "operationId": "oswQualityCalculate",
+                "parameters": [
+                    {
+                        "name": "tdei_dataset_id",
+                        "in": "path",
+                        "description": "tdei_dataset_id for a file, represented as a uuid",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref":"#/components/schemas/QualityMetricRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "202": {
+                        "description": "The request has been accepted for processing. returns the job_id, unique identifier for quality metric job request.",
                         "content": {
                             "application/text": {
                                 "schema": {
@@ -3353,6 +3412,28 @@
                         "type": "string",
                         "description": "date-time that job was last updated",
                         "example": "2024-06-17T06:32:35.842Z"
+                    }
+                }
+            },
+            "QualityMetricRequest":{
+                "type":"object",
+                "description": "Payload for quality metric request",
+                "properties" :{
+                    "algorithms":{
+                        "type":"array",
+                        "description": "List of algorithms to calculate the quality metric against. Currently supports fixed and random",
+                        "items":{
+                            "description":"Name of the algorithm",
+                            "type":"string",
+                            "enum":["fixed","random"]
+                        },
+                        "example":["fixed","random"]
+                    },
+                    "persist" : {
+                        "type":"object",
+                        "additionalProperties":{
+                            "type":"string"
+                        }
                     }
                 }
             }
