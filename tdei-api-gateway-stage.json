@@ -1429,7 +1429,7 @@
                     "content": {
                         "application/json": {
                             "schema": {
-                                "$ref":"#/components/schemas/QualityMetricRequest"
+                                "$ref": "#/components/schemas/QualityMetricRequest"
                             }
                         }
                     }
@@ -1788,13 +1788,7 @@
                                     },
                                     "join_condition": {
                                         "type": "string",
-                                        "enum": [
-                                            "ST_Contains(geometry_target, geometry_source)",
-                                            "ST_DWithin(geometry_target, geometry_source, radius)",
-                                            "ST_Intersects(geometry_target, geometry_source)",
-                                            "ST_Touches(geometry_target, geometry_source)",
-                                            "ST_Within(geometry_target, geometry_source)"
-                                        ],
+                                        "example": "ST_Intersects(geometry_target, geometry_source)",
                                         "description": "Condition on which target and source geometry will join. geometry_target & geometry_source are constant variable representing the element geometry.\n"
                                     },
                                     "transform_target": {
@@ -1821,8 +1815,11 @@
                                         "default": "highway='street_lamp'"
                                     },
                                     "aggregate": {
-                                        "type": "string",
+                                        "type": "array",
                                         "description": "Agrregate function for attribute.all attribute_name/alias will be prefixed with 'ext:'",
+                                        "items": {
+                                            "type": "string"
+                                        },
                                         "example": [
                                             "ARRAY_AGG(highway) as alias",
                                             "min(attribute_name)",
@@ -3415,29 +3412,34 @@
                     }
                 }
             },
-            "QualityMetricRequest":{
-                "type":"object",
+            "QualityMetricRequest": {
+                "type": "object",
                 "description": "Payload for quality metric request",
-                "properties" :{
-                    "algorithms":{
-                        "type":"array",
+                "properties": {
+                    "algorithms": {
+                        "type": "array",
                         "description": "List of algorithms to calculate the quality metric against. Currently supports fixed and random",
-                        "items":{
-                            "description":"Name of the algorithm",
-                            "type":"string",
-                            "enum":["fixed","random"]
+                        "items": {
+                            "description": "Name of the algorithm",
+                            "type": "string",
+                            "enum": [
+                                "fixed",
+                                "random"
+                            ]
                         },
-                        "example":["fixed","random"]
+                        "example": [
+                            "fixed",
+                            "random"
+                        ]
                     },
-                    "persist" : {
-                        "type":"object",
-                        "additionalProperties":{
-                            "type":"string"
+                    "persist": {
+                        "type": "object",
+                        "additionalProperties": {
+                            "type": "string"
                         }
                     }
                 }
             }
-
         },
         "securitySchemes": {
             "AuthorizationToken": {
