@@ -1784,32 +1784,20 @@
                                             "point",
                                             "line",
                                             "polygon"
-                                        ]
+                                        ],
+                                        "default": "point"
                                     },
                                     "join_condition": {
                                         "type": "string",
-                                        "example": "ST_Intersects(geometry_target, geometry_source)",
+                                        "example": "ST_Intersects(ST_Buffer(geometry_target, 5), geometry_source)",
                                         "description": "Condition on which target and source geometry will join. geometry_target & geometry_source are constant variable representing the element geometry.\n"
                                     },
-                                    "transform_target": {
-                                        "type": "string",
-                                        "description": "Transformation on the target geometry (geometry_target)",
-                                        "example": "ST_Buffer(geometry_target, 5)",
-                                        "nullable": true,
-                                        "default": null
-                                    },
-                                    "transform_source": {
-                                        "type": "string",
-                                        "description": "Transformation on the source geometry (geometry_source)",
-                                        "nullable": true,
-                                        "default": null
-                                    },
-                                    "filter_target": {
+                                    "join_filter_target": {
                                         "type": "string",
                                         "description": "Target attribute filters",
                                         "default": "highway='footway' AND footway='sidewalk'"
                                     },
-                                    "filter_source": {
+                                    "join_filter_source": {
                                         "type": "string",
                                         "description": "Source attribute filters",
                                         "default": "highway='street_lamp'"
@@ -1827,17 +1815,6 @@
                                             "avg(attribute_name)",
                                             "count(attribute_name)",
                                             "sum(attribute_name)"
-                                        ]
-                                    },
-                                    "attributes": {
-                                        "type": "array",
-                                        "description": "List of attributes from source, all attributes/alias will be prefixed with 'ext:'",
-                                        "items": {
-                                            "type": "string"
-                                        },
-                                        "example": [
-                                            "barrier as new_barrier",
-                                            "pole"
                                         ]
                                     }
                                 },
