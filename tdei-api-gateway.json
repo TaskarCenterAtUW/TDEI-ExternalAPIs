@@ -1465,6 +1465,77 @@
                 }
             }
         },
+        "/api/v1/osw/quality-metric/tag/{tdei_dataset_id}": {
+            "post": {
+                "tags": [
+                    "OSW"
+                ],
+                "summary": "Calculates the quality metric on a dataset element tags",
+                "description": "Calculates the quality metric on a dataset element tags for requested tdei_dataset_id. Returns the tag quality metric for the dataset element tags.",
+                "operationId": "qualityMetricTag",
+                "parameters": [
+                    {
+                        "name": "tdei_dataset_id",
+                        "in": "path",
+                        "description": "tdei_dataset_id for a dataset, represented as a uuid",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "required": [
+                                    "file"
+                                ],
+                                "type": "object",
+                                "properties": {
+                                    "file": {
+                                        "type": "string",
+                                        "format": "binary",
+                                        "description": "OSW dataset element tag list for which quality metric to be calculated. Example file format: [tag-quality.json](https://raw.githubusercontent.com/TaskarCenterAtUW/TDEI-osw-datasvc-ts/dev/schema/tag-quality.json). OSW Schema tag definition [osw-tag-definition.json](https://github.com/OpenSidewalks/OpenSidewalks-Schema/blob/Audiom/opensidewalks.schema.json#L5)"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful response - returns the tag quality metric for the dataset element tags.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "$ref": "#/components/schemas/qualityMetricTagResponse"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "The request was invalid."
+                    },
+                    "401": {
+                        "description": "This request is unauthenticated."
+                    },
+                    "403": {
+                        "description": "This request is unauthorized."
+                    },
+                    "500": {
+                        "description": "An server error occurred."
+                    }
+                },
+                "security": [
+                    {
+                        "AuthorizationToken": []
+                    }
+                ]
+            }
+        },
         "/api/v1/osw/versions": {
             "get": {
                 "tags": [
@@ -3416,6 +3487,37 @@
                         }
                     }
                 }
+            },
+            "qualityMetricTagResponse": {
+                "type": "object",
+                "properties": {
+                    "entity_type": {
+                        "type": "string"
+                    },
+                    "total_entity_count": {
+                        "type": "string",
+                        "description": "Total number of entities in the dataset"
+                    },
+                    "overall_quality_metric": {
+                        "type": "string",
+                        "description": "Overall quality metric for the dataset in percentage"
+                    },
+                    "metric_details": {
+                        "type": "object",
+                        "additionalProperties": {
+                            "title": "tag",
+                            "type": "string",
+                            "description": "Quality metric for the tag in percentage",
+                            "example": 45.0
+                        }
+                    }
+                },
+                "required": [
+                    "entity_type",
+                    "total_entity_count",
+                    "overall_quality_metric",
+                    "metric_details"
+                ]
             }
         },
         "securitySchemes": {
