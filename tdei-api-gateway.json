@@ -831,7 +831,7 @@
                     {
                         "name": "show_group_jobs",
                         "in": "query",
-                        "description": "Show all the jobs within the group.",
+                        "description": "Show all the jobs within the project group.",
                         "required": false,
                         "schema": {
                             "type": "boolean",
