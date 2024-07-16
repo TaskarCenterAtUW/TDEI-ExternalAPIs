@@ -678,6 +678,16 @@
                         }
                     },
                     {
+                        "name": "show_group_jobs",
+                        "in": "query",
+                        "description": "Show all the jobs within the group.",
+                        "required": false,
+                        "schema": {
+                            "type": "boolean",
+                            "default": false
+                        }
+                    },
+                    {
                         "name": "job_type",
                         "in": "query",
                         "description": "job_type of the job.",
@@ -691,7 +701,8 @@
                                 "Dataset-Publish",
                                 "Dataset-Validate",
                                 "Dataset-Flatten",
-                                "Dataset-Queries"
+                                "Dataset-Queries",
+                                "Quality-Metric"
                             ]
                         }
                     },
