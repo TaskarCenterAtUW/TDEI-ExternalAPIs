@@ -1542,6 +1542,9 @@
                 },
                 "security": [
                     {
+                        "ApiKey": []
+                    },
+                    {
                         "AuthorizationToken": []
                     }
                 ]
@@ -1817,9 +1820,6 @@
                 },
                 "security": [
                     {
-                        "ApiKey": []
-                    },
-                    {
                         "AuthorizationToken": []
                     }
                 ]
@@ -1945,6 +1945,9 @@
                     }
                 },
                 "security": [
+                    {
+                        "ApiKey": []
+                    },
                     {
                         "AuthorizationToken": []
                     }
