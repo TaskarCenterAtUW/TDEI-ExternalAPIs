@@ -700,7 +700,6 @@
                                 "Dataset-Upload",
                                 "Dataset-Publish",
                                 "Dataset-Validate",
-                                "Dataset-Flatten",
                                 "Dataset-Queries",
                                 "Quality-Metric"
                             ]
@@ -3388,7 +3387,6 @@
                             "Dataset-Upload",
                             "Dataset-Publish",
                             "Dataset-Validate",
-                            "Dataset-Flatten",
                             "Dataset-Queries"
                         ]
                     },
@@ -3454,16 +3452,16 @@
                         "type": "integer",
                         "description": "number of stages completed in the job"
                     },
-                    "current_status": {
+                    "current_state": {
                         "type": "string",
-                        "description": "status of the job in current stage",
+                        "description": "status of the job in current state",
                         "enum": [
                             "COMPLETED",
                             "FAILED",
                             "IN-PROGRESS"
                         ]
                     },
-                    "current_stage_percentage": {
+                    "current_stage_percent_done": {
                         "type": "integer",
                         "description": "percentage of the current stage completed"
                     },
