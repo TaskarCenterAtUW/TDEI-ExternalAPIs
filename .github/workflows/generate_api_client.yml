@@ -1,7 +1,7 @@
 name: ExternalAPI
 on:
   pull_request:
-    branches: [ dev, stage, gs-api-gateway-implementation ]
+    branches: [dev]
     types:
       - closed
 
