@@ -1,7 +1,7 @@
 {
     "openapi": "3.0.1",
     "info": {
-        "title": "TDEI Gateway Dev API",
+        "title": "TDEI Gateway API",
         "description": "This is an API for interacting with the Transportation Data Equity Initiative (TDEI) data system. It is intended for applications producing data to and consuming data from the TDEI system. It currently supports GTFS-Pathways, GTFS-Flex v2 and OpenSidewalks v0.2 data schemas.",
         "contact": {
             "name": "TDEI",
@@ -12,7 +12,7 @@
     },
     "servers": [
         {
-            "url": "https://tdei-api-dev.azurewebsites.net",
+            "url": "https://tdei-gateway-prod.azurewebsites.net",
             "description": "TDEI API Gateway"
         }
     ],
@@ -659,157 +659,6 @@
                 ]
             }
         },
-        "/api/v1/metadata/{tdei_dataset_id}": {
-            "put": {
-                "tags": [
-                    "General"
-                ],
-                "summary": "Edit metadata for the dataset",
-                "description": "Edit metadata for the dataset. Returns status 200 if the action is successful.",
-                "operationId": "editMetadata",
-                "parameters": [
-                    {
-                        "name": "tdei_dataset_id",
-                        "in": "path",
-                        "description": "tdei dataset id for a file, represented as a uuid",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                ],
-                "requestBody": {
-                    "content": {
-                        "multipart/form-data": {
-                            "schema": {
-                                "required": [
-                                    "file"
-                                ],
-                                "type": "object",
-                                "properties": {
-                                    "file": {
-                                        "type": "string",
-                                        "format": "binary",
-                                        "description": "Metadata file. see [metadata schema](https://raw.githubusercontent.com/TaskarCenterAtUW/TDEI-osw-datasvc-ts/dev/schema/metadata.schema.json)"
-                                    }
-                                }
-                            }
-                        }
-                    },
-                    "required": true
-                },
-                "responses": {
-                    "200": {
-                        "description": "Request successful."
-                    },
-                    "400": {
-                        "description": "The request was invalid."
-                    },
-                    "401": {
-                        "description": "This request is unauthenticated."
-                    },
-                    "403": {
-                        "description": "This request is unauthorized."
-                    },
-                    "500": {
-                        "description": "An server error occurred."
-                    }
-                },
-                "security": [
-                    {
-                        "AuthorizationToken": []
-                    }
-                ]
-            }
-        },
-        "/api/v1/dataset/clone/{tdei_dataset_id}/{tdei_project_group_id}/{tdei_service_id}": {
-            "post": {
-                "tags": [
-                    "General"
-                ],
-                "summary": "Clones the provided dataset to the designated project group and service.",
-                "description": "Clone the dataset `tdei_dataset_id` to the designated project group `tdei_project_group_id` and service `tdei_service_id`. Returns cloned dataset id if the action is successful.",
-                "operationId": "cloneDataset",
-                "parameters": [
-                    {
-                        "name": "tdei_dataset_id",
-                        "in": "path",
-                        "description": "tdei dataset id to be cloned",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    {
-                        "name": "tdei_project_group_id",
-                        "in": "path",
-                        "description": "tdei project group id. Represented as UUID.",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    {
-                        "name": "tdei_service_id",
-                        "in": "path",
-                        "description": "tdei service id associated with project group id. Represented as UUID.",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                ],
-                "requestBody": {
-                    "content": {
-                        "multipart/form-data": {
-                            "schema": {
-                                "required": [
-                                    "file"
-                                ],
-                                "type": "object",
-                                "properties": {
-                                    "file": {
-                                        "type": "string",
-                                        "format": "binary",
-                                        "description": "Metadata file. see [metadata schema](https://raw.githubusercontent.com/TaskarCenterAtUW/TDEI-osw-datasvc-ts/dev/schema/metadata.schema.json)"
-                                    }
-                                }
-                            }
-                        }
-                    },
-                    "required": true
-                },
-                "responses": {
-                    "200": {
-                        "description": "Request successful.",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "string"
-                                }
-                            }
-                        }
-                    },
-                    "400": {
-                        "description": "The request was invalid."
-                    },
-                    "401": {
-                        "description": "This request is unauthenticated."
-                    },
-                    "403": {
-                        "description": "This request is unauthorized."
-                    },
-                    "500": {
-                        "description": "An server error occurred."
-                    }
-                },
-                "security": [
-                    {
-                        "AuthorizationToken": []
-                    }
-                ]
-            }
-        },
         "/api/v1/jobs": {
             "get": {
                 "tags": [
@@ -927,6 +776,157 @@
                     {
                         "ApiKey": []
                     },
+                    {
+                        "AuthorizationToken": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/metadata/{tdei_dataset_id}": {
+            "put": {
+                "tags": [
+                    "General"
+                ],
+                "summary": "Edit metadata for the dataset",
+                "description": "Edit metadata for the dataset. Returns status 200 if the action is successful.",
+                "operationId": "editMetadata",
+                "parameters": [
+                    {
+                        "name": "tdei_dataset_id",
+                        "in": "path",
+                        "description": "tdei dataset id for a file, represented as a uuid",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "required": [
+                                    "file"
+                                ],
+                                "type": "object",
+                                "properties": {
+                                    "file": {
+                                        "type": "string",
+                                        "format": "binary",
+                                        "description": "Metadata file. see [metadata schema](https://raw.githubusercontent.com/TaskarCenterAtUW/TDEI-osw-datasvc-ts/master/schema/metadata.schema.json)"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "Request successful."
+                    },
+                    "400": {
+                        "description": "The request was invalid."
+                    },
+                    "401": {
+                        "description": "This request is unauthenticated."
+                    },
+                    "403": {
+                        "description": "This request is unauthorized."
+                    },
+                    "500": {
+                        "description": "An server error occurred."
+                    }
+                },
+                "security": [
+                    {
+                        "AuthorizationToken": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/dataset/clone/{tdei_dataset_id}/{tdei_project_group_id}/{tdei_service_id}": {
+            "post": {
+                "tags": [
+                    "General"
+                ],
+                "summary": "Clones the provided dataset to the designated project group and service.",
+                "description": "Clone the dataset `tdei_dataset_id` to the designated project group `tdei_project_group_id` and service `tdei_service_id`. Returns cloned dataset id if the action is successful.",
+                "operationId": "cloneDataset",
+                "parameters": [
+                    {
+                        "name": "tdei_dataset_id",
+                        "in": "path",
+                        "description": "tdei dataset id to be cloned",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "tdei_project_group_id",
+                        "in": "path",
+                        "description": "tdei project group id. Represented as UUID.",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "tdei_service_id",
+                        "in": "path",
+                        "description": "tdei service id associated with project group id. Represented as UUID.",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "required": [
+                                    "file"
+                                ],
+                                "type": "object",
+                                "properties": {
+                                    "file": {
+                                        "type": "string",
+                                        "format": "binary",
+                                        "description": "Metadata file. see [metadata schema](https://raw.githubusercontent.com/TaskarCenterAtUW/TDEI-osw-datasvc-ts/master/schema/metadata.schema.json)"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "Request successful.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "The request was invalid."
+                    },
+                    "401": {
+                        "description": "This request is unauthenticated."
+                    },
+                    "403": {
+                        "description": "This request is unauthorized."
+                    },
+                    "500": {
+                        "description": "An server error occurred."
+                    }
+                },
+                "security": [
                     {
                         "AuthorizationToken": []
                     }
@@ -1087,7 +1087,7 @@
                                     "metadata": {
                                         "type": "string",
                                         "format": "binary",
-                                        "description": "OSW dataset metadata information. see [metadata schema](https://raw.githubusercontent.com/TaskarCenterAtUW/TDEI-osw-datasvc-ts/dev/schema/metadata.schema.json)"
+                                        "description": "OSW dataset metadata information. see [metadata schema](https://raw.githubusercontent.com/TaskarCenterAtUW/TDEI-osw-datasvc-ts/master/schema/metadata.schema.json)"
                                     },
                                     "changeset": {
                                         "type": "string",
@@ -1387,7 +1387,7 @@
                 },
                 "responses": {
                     "202": {
-                        "description": "The request has been accepted for processing. returns the job_id, unique identifier for confidence job request.",
+                        "description": "The request has been accepted for processing. returns the job_id, unique identifier for convert job request.",
                         "content": {
                             "application/text": {
                                 "schema": {
@@ -1506,7 +1506,7 @@
                                     "file": {
                                         "type": "string",
                                         "format": "binary",
-                                        "description": "OSW dataset element tag list for which quality metric to be calculated. Example file format: [tag-quality.json](https://raw.githubusercontent.com/TaskarCenterAtUW/TDEI-osw-datasvc-ts/dev/schema/tag-quality.json). OSW Schema tag definition [osw-tag-definition.json](https://github.com/OpenSidewalks/OpenSidewalks-Schema/blob/Audiom/opensidewalks.schema.json#L5)"
+                                        "description": "OSW dataset element tag list for which quality metric to be calculated. Example file format: [tag-quality.json](https://raw.githubusercontent.com/TaskarCenterAtUW/TDEI-osw-datasvc-ts/master/schema/tag-quality.json). OSW Schema tag definition [osw-tag-definition.json](https://github.com/OpenSidewalks/OpenSidewalks-Schema/blob/Audiom/opensidewalks.schema.json#L5)"
                                     }
                                 }
                             }
@@ -2981,7 +2981,7 @@
                             "collection_date": {
                                 "type": "string",
                                 "description": "date-time that data was collected",
-                                "example": "2018-22-10T09:30Z"
+                                "example": "2023-22-10T09:30Z"
                             },
                             "valid_from": {
                                 "type": "string",

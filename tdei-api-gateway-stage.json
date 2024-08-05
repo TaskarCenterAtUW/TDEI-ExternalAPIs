@@ -678,6 +678,16 @@
                         }
                     },
                     {
+                        "name": "show_group_jobs",
+                        "in": "query",
+                        "description": "Show all the jobs within the project group.",
+                        "required": false,
+                        "schema": {
+                            "type": "boolean",
+                            "default": false
+                        }
+                    },
+                    {
                         "name": "job_type",
                         "in": "query",
                         "description": "job_type of the job.",
@@ -690,8 +700,8 @@
                                 "Dataset-Upload",
                                 "Dataset-Publish",
                                 "Dataset-Validate",
-                                "Dataset-Flatten",
-                                "Dataset-Queries"
+                                "Dataset-Queries",
+                                "Quality-Metric"
                             ]
                         }
                     },
@@ -1465,6 +1475,80 @@
                 }
             }
         },
+        "/api/v1/osw/quality-metric/tag/{tdei_dataset_id}": {
+            "post": {
+                "tags": [
+                    "OSW"
+                ],
+                "summary": "Calculates the quality metric on a dataset element tags",
+                "description": "Calculates the quality metric on a dataset element tags for requested tdei_dataset_id. Returns the tag quality metric for the dataset element tags.",
+                "operationId": "qualityMetricTag",
+                "parameters": [
+                    {
+                        "name": "tdei_dataset_id",
+                        "in": "path",
+                        "description": "tdei_dataset_id for a dataset, represented as a uuid",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "required": [
+                                    "file"
+                                ],
+                                "type": "object",
+                                "properties": {
+                                    "file": {
+                                        "type": "string",
+                                        "format": "binary",
+                                        "description": "OSW dataset element tag list for which quality metric to be calculated. Example file format: [tag-quality.json](https://raw.githubusercontent.com/TaskarCenterAtUW/TDEI-osw-datasvc-ts/stage/schema/tag-quality.json). OSW Schema tag definition [osw-tag-definition.json](https://github.com/OpenSidewalks/OpenSidewalks-Schema/blob/Audiom/opensidewalks.schema.json#L5)"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful response - returns the tag quality metric for the dataset element tags.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "$ref": "#/components/schemas/qualityMetricTagResponse"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "The request was invalid."
+                    },
+                    "401": {
+                        "description": "This request is unauthenticated."
+                    },
+                    "403": {
+                        "description": "This request is unauthorized."
+                    },
+                    "500": {
+                        "description": "An server error occurred."
+                    }
+                },
+                "security": [
+                    {
+                        "ApiKey": []
+                    },
+                    {
+                        "AuthorizationToken": []
+                    }
+                ]
+            }
+        },
         "/api/v1/osw/versions": {
             "get": {
                 "tags": [
@@ -1735,9 +1819,6 @@
                 },
                 "security": [
                     {
-                        "ApiKey": []
-                    },
-                    {
                         "AuthorizationToken": []
                     }
                 ]
@@ -1784,32 +1865,20 @@
                                             "point",
                                             "line",
                                             "polygon"
-                                        ]
+                                        ],
+                                        "default": "point"
                                     },
                                     "join_condition": {
                                         "type": "string",
-                                        "example": "ST_Intersects(geometry_target, geometry_source)",
+                                        "example": "ST_Intersects(ST_Buffer(geometry_target, 5), geometry_source)",
                                         "description": "Condition on which target and source geometry will join. geometry_target & geometry_source are constant variable representing the element geometry.\n"
                                     },
-                                    "transform_target": {
-                                        "type": "string",
-                                        "description": "Transformation on the target geometry (geometry_target)",
-                                        "example": "ST_Buffer(geometry_target, 5)",
-                                        "nullable": true,
-                                        "default": null
-                                    },
-                                    "transform_source": {
-                                        "type": "string",
-                                        "description": "Transformation on the source geometry (geometry_source)",
-                                        "nullable": true,
-                                        "default": null
-                                    },
-                                    "filter_target": {
+                                    "join_filter_target": {
                                         "type": "string",
                                         "description": "Target attribute filters",
                                         "default": "highway='footway' AND footway='sidewalk'"
                                     },
-                                    "filter_source": {
+                                    "join_filter_source": {
                                         "type": "string",
                                         "description": "Source attribute filters",
                                         "default": "highway='street_lamp'"
@@ -1827,17 +1896,6 @@
                                             "avg(attribute_name)",
                                             "count(attribute_name)",
                                             "sum(attribute_name)"
-                                        ]
-                                    },
-                                    "attributes": {
-                                        "type": "array",
-                                        "description": "List of attributes from source, all attributes/alias will be prefixed with 'ext:'",
-                                        "items": {
-                                            "type": "string"
-                                        },
-                                        "example": [
-                                            "barrier as new_barrier",
-                                            "pole"
                                         ]
                                     }
                                 },
@@ -1886,6 +1944,9 @@
                     }
                 },
                 "security": [
+                    {
+                        "ApiKey": []
+                    },
                     {
                         "AuthorizationToken": []
                     }
@@ -3326,7 +3387,6 @@
                             "Dataset-Upload",
                             "Dataset-Publish",
                             "Dataset-Validate",
-                            "Dataset-Flatten",
                             "Dataset-Queries"
                         ]
                     },
@@ -3392,16 +3452,16 @@
                         "type": "integer",
                         "description": "number of stages completed in the job"
                     },
-                    "current_status": {
+                    "current_state": {
                         "type": "string",
-                        "description": "status of the job in current stage",
+                        "description": "status of the job in current state",
                         "enum": [
                             "COMPLETED",
                             "FAILED",
                             "IN-PROGRESS"
                         ]
                     },
-                    "current_stage_percentage": {
+                    "current_stage_percent_done": {
                         "type": "integer",
                         "description": "percentage of the current stage completed"
                     },
@@ -3439,6 +3499,37 @@
                         }
                     }
                 }
+            },
+            "qualityMetricTagResponse": {
+                "type": "object",
+                "properties": {
+                    "entity_type": {
+                        "type": "string"
+                    },
+                    "total_entity_count": {
+                        "type": "string",
+                        "description": "Total number of entities in the dataset"
+                    },
+                    "overall_quality_metric": {
+                        "type": "string",
+                        "description": "Overall quality metric for the dataset in percentage"
+                    },
+                    "metric_details": {
+                        "type": "object",
+                        "additionalProperties": {
+                            "title": "tag",
+                            "type": "string",
+                            "description": "Quality metric for the tag in percentage",
+                            "example": 45.0
+                        }
+                    }
+                },
+                "required": [
+                    "entity_type",
+                    "total_entity_count",
+                    "overall_quality_metric",
+                    "metric_details"
+                ]
             }
         },
         "securitySchemes": {
