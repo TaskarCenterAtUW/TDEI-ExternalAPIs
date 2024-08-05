@@ -1,9 +1,9 @@
 {
     "openapi": "3.0.2",
     "info": {
-        "title": "TDEI API",
+        "title": "TDEI API - v1 - POR",
         "version": "1.0",
-        "description": "This is an API for applications consuming data from and publishing data to the Transportation Data Equity Initiative (TDEI) data system. This API supports consuming and publishing of GTFS-Pathways, GTFS-Flex v2 and OpenSidewalks data from and to the TDEI.",
+        "description": "This is an API for publishing data to the Transportation Data Equity Initiative (TDEI) data system. This API is intended for applications producing data for and consuming data from the TDEI system. This API supports publishing of GTFS-Pathways, GTFS-Flex v2 and OpenSidewalks data to the TDEI. ",
         "contact": {
             "name": "TDEI Support",
             "url": "https://placeholder.transequity.cs.washington.edu/support",
@@ -19,9 +19,11 @@
     "paths": {
         "/api": {
             "summary": "List TDEI API versions.",
-            "description": "Returns a json list of the TDEI API versions.",
+            "description": "",
             "get": {
-                "tags": [],
+                "tags": [
+                    "General"
+                ],
                 "responses": {
                     "200": {
                         "content": {
@@ -64,26 +66,26 @@
                 ],
                 "operationId": "list-api-versions",
                 "summary": "List available API versions",
-                "description": "Lists the versions of the TDEI  API which are available."
+                "description": "Returns a json list of the versions of the TDEI API which are available."
             }
         },
-        "/api/v1.0/agencies": {
-            "summary": "Path used to retrieve the list of agencies with data in the TDEI system. Allows callers to get the tdei_agency_id id for an agency.",
-            "description": "Returns the tdei_agency_id and gtfs agency information for all agencies with data in the TDEI system. ",
+        "/api/v1/osw/versions": {
+            "summary": "List OSW versions supported by TDEI.",
+            "description": "",
             "get": {
+                "tags": [
+                    "OSW"
+                ],
                 "responses": {
                     "200": {
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "type": "array",
-                                    "items": {
-                                        "$ref": "#/components/schemas/agency"
-                                    }
+                                    "$ref": "#/components/schemas/versionList"
                                 }
                             }
                         },
-                        "description": "Successful response - returns an array of `Agency` entities."
+                        "description": "Returns list of OSW versions supported by TDEI."
                     },
                     "401": {
                         "$ref": "#/components/responses/Unauthorized"
@@ -97,15 +99,738 @@
                         "ApplicationId": []
                     }
                 ],
-                "operationId": "list-agencies",
-                "summary": "List Agencies",
-                "description": "Returns a list of all `agency` entities. See endpoint description for detail."
+                "operationId": "list-osw-versions",
+                "summary": "List available OSW versions",
+                "description": "Lists the versions of OSW data which are supported by TDEI."
             }
         },
-        "/api/v1.0/stations": {
-            "summary": "Path used to retrieve the list of stations with data in the TDEI system. Allows callers to get the tdei_station_id id for a station.",
-            "description": "Returns the tdei_station_id and gtfs station information for all stations with data in the TDEI system. ",
+        "/api/v1/osw": {
+            "summary": "Path used to manage osw files.",
+            "description": "",
             "get": {
+                "tags": [
+                    "OSW"
+                ],
+                "parameters": [
+                    {
+                        "examples": {
+                            "bounding_box": {
+                                "value": {
+                                    "bbox": "23.5, 123.1, 23.1, 1234.5"
+                                }
+                            }
+                        },
+                        "name": "polygon",
+                        "description": "A polygon (bounding box) which specifies the area to be searched. A polygon is specified by a string providing the lat/lon coordinates of the corners of the polygon. Coordinate should be specified as west, south, east, north.",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "name": "confidence_level",
+                        "description": "Minimum confidence level required. Data returned will be at this confidence level or higher. Confidence level range is: 0 (very low confidence) to 100 (very high confidence).",
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "in": "query"
+                    },
+                    {
+                        "name": "osw_schema_version",
+                        "description": "A string with the name of the schema version the application requests.",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "in": "query"
+                    },
+                    {
+                        "name": "tdei_record_id",
+                        "description": "if included, returns the metadata for the specified file, all other parameters will be ignored.",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "in": "query"
+                    },
+                    {
+                        "name": "page_no",
+                        "description": "integer, defaults to 0",
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "in": "query"
+                    },
+                    {
+                        "name": "page_size",
+                        "description": "integer, between 20 and 100, defaults to 20",
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "in": "query"
+                    },
+                    {
+                        "name": "tdei_org_id",
+                        "description": "tdei organization id.",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/osw_download_md"
+                                }
+                            },
+                            "multipart/form-data": {}
+                        },
+                        "description": "Successful response - returns an array of `osw_download` entities."
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/Unauthorized"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/OSWNotFound"
+                    },
+                    "500": {
+                        "$ref": "#/components/responses/InternalServerError"
+                    }
+                },
+                "security": [
+                    {
+                        "ApplicationId": []
+                    }
+                ],
+                "operationId": "list-osw-files",
+                "summary": "List osw files meeting criteria.",
+                "description": "This endpoint returns a list of url to gzip'd geojson files with osw data that meet the specified criteria. Criteria that can be specified include: bounding box, minimum confidence level and pathways version.\n\nThis endpoint can be used by an application developer to obtain a list of osw files in the TDEI system meeting the specified criteria."
+            },
+            "post": {
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/osw_upload"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "tags": [
+                    "OSW"
+                ],
+                "responses": {
+                    "202": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "string"
+                                }
+                            }
+                        },
+                        "description": "Successful file creation. returns tdei_record_id of new file."
+                    },
+                    "400": {
+                        "$ref": "#/components/responses/InvalidRequest"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/Unauthorized"
+                    },
+                    "500": {
+                        "$ref": "#/components/responses/InternalServerError"
+                    }
+                },
+                "security": [
+                    {
+                        "ApplicationId": []
+                    }
+                ],
+                "operationId": "upload-osw-file",
+                "summary": "Path used to upload/create a new osw data file.",
+                "description": "This path allows a user to upload or create a new osw file. The caller must provide metadata about the file - includes information about how and when the data was collected and valid dates of the file. Returns the tdei_record_id of the uploaded file."
+            }
+        },
+        "/api/v1/gtfs-pathways/versions": {
+            "summary": "List GTFS Pathways versions supported by TDEI.",
+            "description": "",
+            "get": {
+                "tags": [
+                    "GTFS-Pathways"
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/versionList"
+                                }
+                            }
+                        },
+                        "description": "List of GTFS Pathways versions suppored by TDEI."
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/Unauthorized"
+                    },
+                    "500": {
+                        "$ref": "#/components/responses/InternalServerError"
+                    }
+                },
+                "security": [
+                    {
+                        "ApplicationId": []
+                    }
+                ],
+                "operationId": "list-pathways-versions",
+                "summary": "List available GTFS Pathways versions",
+                "description": "Lists the versions of GTFS pathways data which are supported by TDEI.\nReturns a json list of the GTFS pathways versions supported by TDEI."
+            }
+        },
+        "/api/v1/gtfs-pathways": {
+            "summary": "Path used to manage gtfs_pathways files.",
+            "description": "",
+            "get": {
+                "tags": [
+                    "GTFS-Pathways"
+                ],
+                "parameters": [
+                    {
+                        "name": "polygon",
+                        "description": "A polygon (bounding box) which specifies the area to be searched. A polygon (bounding box) is specified by a string providing the lat/lon coordinates of the corners of the polygon (bounding box). Coordinate should be specified as west, south, east, north.",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "in": "query"
+                    },
+                    {
+                        "name": "confidence_level",
+                        "description": "Minimum confidence level required by application. Data returned will be at this confidence level or higher. Confidence level range is: 0 (very low confidence) to 100 (very high confidence).",
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "in": "query"
+                    },
+                    {
+                        "name": "pathways_schema_version",
+                        "description": "version name of the pathways schema version that the application requests. list of versions can be found with /api/v1.0/gtfs_pathways path",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "in": "query"
+                    },
+                    {
+                        "name": "date_time",
+                        "description": "date-time for which the caller is interested in obtaining files. all files that are valid at the specified date-time and meet the other criteria will be returned.",
+                        "schema": {
+                            "format": "date-time",
+                            "type": "string"
+                        },
+                        "in": "query",
+                        "required": false
+                    },
+                    {
+                        "name": "tdei_org_id",
+                        "description": "tdei-assigned organization id. Necessary to ensure that organization ids are unique. Represented as a UUID.",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "in": "query"
+                    },
+                    {
+                        "name": "tdei_record_id",
+                        "description": "if included, returns the metadata for the specified file, all other parameters will be ignored.",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "in": "query"
+                    },
+                    {
+                        "name": "page_no",
+                        "description": "Integer, defaults to 0.",
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "in": "query"
+                    },
+                    {
+                        "name": "page_size",
+                        "description": "page size. integer, between 200 to 100, defaults to 20.",
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "in": "query"
+                    },
+                    {
+                        "name": "tdei_station_id",
+                        "description": "id of a station in the tdei system. gtfs station ids may not be unique",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/gtfs_pathways_download_md"
+                                    }
+                                }
+                            }
+                        },
+                        "description": "Successful response - returns an array of `gtfs_pathways_download` entities."
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/Unauthorized"
+                    },
+                    "500": {
+                        "$ref": "#/components/responses/InternalServerError"
+                    }
+                },
+                "security": [
+                    {
+                        "ApplicationId": []
+                    }
+                ],
+                "operationId": "list-pathways-files",
+                "summary": "List pathways files meeting criteria.",
+                "description": "This endpoint returns a json list of all gtfs pathways files stored in the TDEI system that meet the specified criteria. Criteria that can be specified include: polygon (bounding box), minimum confidence level, pathways version, date time and agency id.\n\nThis endpoint can be used by an application developer to obtain a list of gtfs pathways files in the TDEI system meeting the specified criteria. This endpoint returns a list of file-metadata including the uris of the file, which can be used to fetch the files themselves."
+            },
+            "post": {
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/gtfs_pathways_upload"
+                            }
+                        },
+                        "multipart/form-data": {}
+                    },
+                    "required": true
+                },
+                "tags": [
+                    "GTFS-Pathways"
+                ],
+                "responses": {
+                    "202": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "string"
+                                }
+                            }
+                        },
+                        "description": "Successful file creation. returns tdei_record_id of new file."
+                    },
+                    "400": {
+                        "$ref": "#/components/responses/InvalidRequest"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/Unauthorized"
+                    },
+                    "500": {
+                        "$ref": "#/components/responses/InternalServerError"
+                    }
+                },
+                "security": [
+                    {
+                        "ApplicationId": []
+                    }
+                ],
+                "operationId": "upload-pathways-file",
+                "summary": "create pathways file",
+                "description": "This call allows a user to upload or create a new gtfs pathways file. The caller must provide metadata about the file. Required metadata includes information about how and when the data was collected and valid dates of the file. Returns the tdei_record_id of the uploaded file."
+            }
+        },
+        "/api/v1/gtfs-flex/versions": {
+            "summary": "List GTFS flex versions supported by TDEI.",
+            "description": "",
+            "get": {
+                "tags": [
+                    "GTFS-Flex"
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/versionList"
+                                }
+                            }
+                        },
+                        "description": "Returns a list of flex versions supported by TDEI."
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/Unauthorized"
+                    },
+                    "500": {
+                        "$ref": "#/components/responses/InternalServerError"
+                    }
+                },
+                "security": [
+                    {
+                        "ApplicationId": []
+                    }
+                ],
+                "operationId": "list-flex-versions",
+                "summary": "List available GTFS flex versions",
+                "description": "List GTFS flex versions supported by TDEI.\n\nReturns a json list of the GTFS flex versions supported by TDEI."
+            }
+        },
+        "/api/v1/gtfs-flex/{tdei_record_id}": {
+            "summary": "Returns a gtfs flex  file",
+            "get": {
+                "tags": [
+                    "GTFS-Flex"
+                ],
+                "parameters": [
+                    {
+                        "name": "tdei_record_id",
+                        "description": "tdei_record_id for a file, represented as a uuid",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/octet-stream": {}
+                        },
+                        "description": "Success. Returns the file as an octet-stream."
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/Unauthorized"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/FlexFileNotFound"
+                    },
+                    "500": {
+                        "$ref": "#/components/responses/InternalServerError"
+                    }
+                },
+                "security": [
+                    {
+                        "ApplicationId": []
+                    }
+                ],
+                "operationId": "get-flex-file",
+                "summary": "returns a gtfs_flex file",
+                "description": "returns a specific gtfs_flex file identified by the record_id"
+            }
+        },
+        "/api/v1/gtfs-pathways/{tdei_record_id}/": {
+            "summary": "Returns a gtfs pathways file",
+            "get": {
+                "tags": [
+                    "GTFS-Pathways"
+                ],
+                "parameters": [
+                    {
+                        "name": "tdei_record_id",
+                        "description": "tdei_record_id for a file, represented as a uuid",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/octet-stream": {}
+                        },
+                        "description": "Success. Returns the file as application/octet-stream."
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/Unauthorized"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/PathwaysFileNotFound"
+                    },
+                    "500": {
+                        "$ref": "#/components/responses/InternalServerError"
+                    }
+                },
+                "security": [
+                    {
+                        "ApplicationId": []
+                    }
+                ],
+                "operationId": "get-pathways-file",
+                "summary": "returns a gtfs_pathways file",
+                "description": "returns a specific gtfs_pathways file identified by the tdei_record_id"
+            }
+        },
+        "/api/v1/osw/{tdei_record_id}/": {
+            "summary": "Returns an osw file",
+            "get": {
+                "tags": [
+                    "OSW"
+                ],
+                "parameters": [
+                    {
+                        "name": "tdei_record_id",
+                        "description": "tdei_record_id for a file, represented as a uuid",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "geojson": {}
+                        },
+                        "description": "Returns the osw file - will be geojson."
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/Unauthorized"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/OSWNotFound"
+                    },
+                    "500": {
+                        "$ref": "#/components/responses/InternalServerError"
+                    }
+                },
+                "security": [
+                    {
+                        "ApplicationId": []
+                    }
+                ],
+                "operationId": "get-osw-file",
+                "summary": "returns a geojson osw file",
+                "description": "returns a specific osw file identified by the record_id"
+            }
+        },
+        "/api/v1/gtfs-flex": {
+            "summary": "Path used to manage gtfs flex files.",
+            "description": "",
+            "get": {
+                "tags": [
+                    "GTFS-Flex"
+                ],
+                "parameters": [
+                    {
+                        "name": "polygon",
+                        "description": "A polygon (bounding box) which specifies the area to be searched. A polygon is specified by a string providing the lat/lon coordinates of the corners of the polygon. Coordinate should be specified as west, south, east, north.",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "in": "query",
+                        "required": false
+                    },
+                    {
+                        "name": "confidence_level",
+                        "description": "Minimum confidence level required by application. Data returned will be at this confidence level or higher. Confidence level range is: 0 (very low confidence) to 100 (very high confidence).",
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "in": "query"
+                    },
+                    {
+                        "name": "flex_schema_version",
+                        "description": "version name of the flex schema version that the application requests. list of versions can be found with /api/v1.0/gtfs_flex path",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "in": "query"
+                    },
+                    {
+                        "name": "tdei_org_id",
+                        "description": "tdei-assigned organization id. Necessary to ensure that organization ids are unique. Represented as a UUID.",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "in": "query",
+                        "required": false
+                    },
+                    {
+                        "name": "date_time",
+                        "description": "date-time for which the caller is interested in obtaining files. all files that are valid at the specified date-time and meet the other criteria will be returned.",
+                        "schema": {
+                            "format": "date-time",
+                            "type": "string"
+                        },
+                        "in": "query",
+                        "required": false
+                    },
+                    {
+                        "name": "tdei_record_id",
+                        "description": "if included, returns the metadata for the specified file, all other parameters will be ignored.",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "in": "query"
+                    },
+                    {
+                        "name": "page_no",
+                        "description": "Page number, defaults to 0.",
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "in": "query",
+                        "required": false
+                    },
+                    {
+                        "name": "page_size",
+                        "description": "Integer, between 200 to 100, defaults to 20.",
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "in": "query"
+                    },
+                    {
+                        "name": "tdei_service_id",
+                        "description": "Id of the flex service.",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/gtfs_flex_download_md"
+                                    }
+                                }
+                            }
+                        },
+                        "description": "Successful response - returns an array of `gtfs_flex_download` entities."
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/Unauthorized"
+                    },
+                    "500": {
+                        "$ref": "#/components/responses/InternalServerError"
+                    }
+                },
+                "security": [
+                    {
+                        "ApplicationId": []
+                    }
+                ],
+                "operationId": "list-flex-files",
+                "summary": "List flex files meeting specified criteria.",
+                "description": "This endpoint returns a json list of all gtfs flex files stored in the TDEI system that meet the specified criteria. Criteria that can be specified include: polygon (bounding box), minimum confidence level, flex version, date time and organization id.\n\nThis endpoint can be used by an application developer to obtain a list of gtfs flex files in the TDEI system meeting the specified criteria. This endpoint returns a list of file-metadata including the uris of the file, which can be used to fetch the files themselves."
+            },
+            "post": {
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/gtfs_flex_upload"
+                            }
+                        },
+                        "multipart/form-data": {}
+                    },
+                    "required": true
+                },
+                "tags": [
+                    "GTFS-Flex"
+                ],
+                "responses": {
+                    "202": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "string"
+                                }
+                            }
+                        },
+                        "description": "Successful file creation. returns tdei_record_id of new file."
+                    },
+                    "400": {
+                        "$ref": "#/components/responses/InvalidRequest"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/Unauthorized"
+                    },
+                    "500": {
+                        "$ref": "#/components/responses/InternalServerError"
+                    }
+                },
+                "security": [
+                    {
+                        "ApplicationId": []
+                    }
+                ],
+                "operationId": "upload-flex-file",
+                "summary": "upload a new gtfs_flex file",
+                "description": "This call allows a user to upload or create a new gtfs flex file. The caller must provide metadata about the file. Required metadata includes information about how and when the data was collected and valid dates of the file. Returns the tdei_record_id of the uploaded file."
+            }
+        },
+        "/api/v1/organizations": {
+            "summary": "Path used to retrieve the list of organizations with data in the TDEI system.",
+            "description": "",
+            "get": {
+                "tags": [
+                    "General"
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/organization"
+                                    }
+                                }
+                            }
+                        },
+                        "description": "Successful response - returns an array of `organization` entities."
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/Unauthorized"
+                    },
+                    "500": {
+                        "$ref": "#/components/responses/InternalServerError"
+                    }
+                },
+                "security": [
+                    {
+                        "ApplicationId": []
+                    }
+                ],
+                "operationId": "list-organizations",
+                "summary": "List Organizations",
+                "description": "Path used to retrieve the list of organizations with data in the TDEI system. Allows callers to get the tdei_org_id id for an organization.\n\nReturns the tdei_org_id and organization information for all organizations with data in the TDEI system. "
+            }
+        },
+        "/api/v1/gtfs-pathways/stations": {
+            "summary": "Path used to retrieve the list of stations with data in the TDEI system.",
+            "description": "",
+            "get": {
+                "tags": [
+                    "GTFS-Pathways"
+                ],
+                "parameters": [
+                    {
+                        "name": "tdei_org_id",
+                        "description": "TDEI organization id.",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "in": "query"
+                    }
+                ],
                 "responses": {
                     "200": {
                         "content": {
@@ -134,134 +859,20 @@
                 ],
                 "operationId": "list-stations",
                 "summary": "List Stations",
-                "description": "Returns a list of all `Station` entities. See endpoint description for detail."
+                "description": "Path used to retrieve the list of stations with data in the TDEI system. Allows callers to get the tdei_station_id id for a station.\n\nReturns the tdei_station_id and station information for all stations with data in the TDEI system. \n\nIf tdei_org_id param is specified, will return stations for that organization."
             }
         },
-        "/api/v1.0/osw/": {
-            "summary": "List GTFS Pathways versions supported by TDEI.",
-            "description": "Returns a json list of the GTFS flex versions supported by TDEI.",
+        "/api/v1/gtfs-flex/services": {
+            "summary": "Path used to retrieve the list of gtfs-flex feeds in the TDEI system.",
+            "description": "",
             "get": {
-                "tags": [],
-                "responses": {
-                    "200": {
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/versionList"
-                                },
-                                "example": {
-                                    "total": 2,
-                                    "apis": [
-                                        {
-                                            "apiKey": "oa_citations",
-                                            "apiVersionNumber": "v1",
-                                            "apiUrl": "https://developer.uspto.gov/ds-api/oa_citations/v1/fields",
-                                            "apiDocumentationUrl": "https://developer.uspto.gov/ds-api-docs/index.html?url=https://developer.uspto.gov/ds-api/swagger/docs/oa_citations.json"
-                                        },
-                                        {
-                                            "apiKey": "cancer_moonshot",
-                                            "apiVersionNumber": "v1",
-                                            "apiUrl": "https://developer.uspto.gov/ds-api/cancer_moonshot/v1/fields",
-                                            "apiDocumentationUrl": "https://developer.uspto.gov/ds-api-docs/index.html?url=https://developer.uspto.gov/ds-api/swagger/docs/cancer_moonshot.json"
-                                        }
-                                    ]
-                                }
-                            }
-                        },
-                        "description": "Returns a list of pathways versions"
-                    },
-                    "401": {
-                        "$ref": "#/components/responses/Unauthorized"
-                    },
-                    "500": {
-                        "$ref": "#/components/responses/InternalServerError"
-                    }
-                },
-                "security": [
-                    {
-                        "ApplicationId": []
-                    }
+                "tags": [
+                    "GTFS-Flex"
                 ],
-                "operationId": "list-osw-versions",
-                "summary": "List available OSW versions",
-                "description": "Lists the versions of OSW data which are supported by TDEI."
-            }
-        },
-        "/api/v1.0/gtfs-flex/": {
-            "summary": "List GTFS flex versions supported by TDEI.",
-            "description": "Returns a json list of the GTFS flex versions supported by TDEI.",
-            "get": {
-                "tags": [],
-                "responses": {
-                    "200": {
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/versionList"
-                                },
-                                "example": {
-                                    "total": 2,
-                                    "apis": [
-                                        {
-                                            "apiKey": "oa_citations",
-                                            "apiVersionNumber": "v1",
-                                            "apiUrl": "https://developer.uspto.gov/ds-api/oa_citations/v1/fields",
-                                            "apiDocumentationUrl": "https://developer.uspto.gov/ds-api-docs/index.html?url=https://developer.uspto.gov/ds-api/swagger/docs/oa_citations.json"
-                                        },
-                                        {
-                                            "apiKey": "cancer_moonshot",
-                                            "apiVersionNumber": "v1",
-                                            "apiUrl": "https://developer.uspto.gov/ds-api/cancer_moonshot/v1/fields",
-                                            "apiDocumentationUrl": "https://developer.uspto.gov/ds-api-docs/index.html?url=https://developer.uspto.gov/ds-api/swagger/docs/cancer_moonshot.json"
-                                        }
-                                    ]
-                                }
-                            }
-                        },
-                        "description": "Returns a list of flex versions supported by TDEI."
-                    },
-                    "401": {
-                        "$ref": "#/components/responses/Unauthorized"
-                    },
-                    "500": {
-                        "$ref": "#/components/responses/InternalServerError"
-                    }
-                },
-                "security": [
-                    {
-                        "ApplicationId": []
-                    }
-                ],
-                "operationId": "list-flex-versions",
-                "summary": "List available GTFS flex versions",
-                "description": "Lists the versions of GTFS flex data which are supported by TDEI."
-            }
-        },
-        "/api/v1.0/gtfs-flex/list": {
-            "summary": "Path used to retrieve a list of gtfs flex files. Bounding box, confidence, flex version can be specified. Allows user to get the tdei_record_id for a specific file so file can be updated.",
-            "description": "This endpoint returns a json list of all gtfs flex files stored in the TDEI system that meet the specified criteria. Criteria that can be specified include: bounding box, minimum confidence level and flex version.\n\nThe returned list contains a tdei_record_id for each file and meta-data about the files. The tdei_record_id is a unique identifier which uniquely identifies a file in the TDEI system. \n\nThis endpoint has several intended uses. \n\nFirst, it can be used by a data generator to obtain the tdei_record_id for a gtfs flex file, the tdei_record_id is required to update a file. \n\nSecond, it can be used by an application developer to obtain a list of gtfs flex files in the TDEI system meeting the specified criteria, the application developer can filter that list of files and then retrieve files using the tdei_record_id.",
-            "get": {
                 "parameters": [
                     {
-                        "name": "bbox",
-                        "description": "A bounding box which specifies the area to be searched. A bounding box is specified by a string providing the lat/lon coordinates of the corners of the bounding box. Coordinate should be specified as west, south, east, north.",
-                        "schema": {
-                            "type": "string"
-                        },
-                        "in": "query",
-                        "required": false
-                    },
-                    {
-                        "name": "confidence-level",
-                        "description": "Minimum confidence level required by application. Data returned will be at this confidence level or higher.",
-                        "schema": {
-                            "type": "integer"
-                        },
-                        "in": "query"
-                    },
-                    {
-                        "name": "version",
-                        "description": "version name of the pathways schema version that the application requests. list of versions can be found with /api/gtfs_pathways path",
+                        "name": "tdei_org_id",
+                        "description": "tdei_org_id - a tdei-assigned id for an organization. org_ids can be retrieved using the path /api/v1/organizations.",
                         "schema": {
                             "type": "string"
                         },
@@ -275,12 +886,12 @@
                                 "schema": {
                                     "type": "array",
                                     "items": {
-                                        "$ref": "#/components/schemas/gtfs_flex_file"
+                                        "$ref": "#/components/schemas/service"
                                     }
                                 }
                             }
                         },
-                        "description": "Successful response - returns an array of `gtfs_flex_file` entities."
+                        "description": "Returns an array of `Service` entities. "
                     },
                     "401": {
                         "$ref": "#/components/responses/Unauthorized"
@@ -294,706 +905,10 @@
                         "ApplicationId": []
                     }
                 ],
-                "operationId": "list-flex-files",
-                "summary": "List flex files meeting criteria.",
-                "description": "Returns a list of all `gtfs_flex_file` file entities. See endpoint description for detail."
+                "operationId": "list-flex-services",
+                "summary": "List GTFS Flex Services",
+                "description": "Path used to retrieve the list of GTFS Services in the TDEI system. Allows callers to get the tdei_service_id id for a service.\n\nReturns the tdei_service_id and service name for all services in the TDEI system. \n\nIf tdei_org_id param is used, will return services for that organization."
             }
-        },
-        "/api/v1.0/gtfs-flex/latest": {
-            "summary": "Retrieve the most current flex files for an agency,.",
-            "description": "Returns a url to a zip file containing the most current flexible trips and booking rules files for the specified agency. Agency is identified by tdei_agency_id, which can be retrieved using the /agencies endpoint. (Required to use tdei_agency_id as gtfs ids may not be unique.) A minimum confidence level and flex schema version can be specified. If confidence level and/or flex schema version is specified, only files meeting those criteria will be returned.",
-            "get": {
-                "parameters": [
-                    {
-                        "name": "confidence",
-                        "description": "Minimum confidence level required. Data returned will be at this confidence level or higher.",
-                        "schema": {
-                            "type": "integer"
-                        },
-                        "in": "query"
-                    },
-                    {
-                        "name": "tdei_agency_id",
-                        "description": "The tdei assigned agency id. tdei agency_ids can be obtained using the /agencies/ path. Required to use tdei agency id as gtfs agency ids are not guaranteed to be unique across agencies.",
-                        "schema": {
-                            "type": "integer"
-                        },
-                        "in": "query",
-                        "required": true
-                    },
-                    {
-                        "name": "schema_version",
-                        "description": "version name of the flex schema version that the application requests. list of versions can be found with /api/gtfs_flex path",
-                        "schema": {
-                            "type": "string"
-                        },
-                        "in": "query"
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "$ref": "#/components/responses/FlexResponse"
-                    },
-                    "401": {
-                        "$ref": "#/components/responses/Unauthorized"
-                    },
-                    "404": {
-                        "$ref": "#/components/responses/FlexFileNotFound"
-                    },
-                    "500": {
-                        "$ref": "#/components/responses/InternalServerError"
-                    }
-                },
-                "security": [
-                    {
-                        "ApplicationId": []
-                    }
-                ],
-                "operationId": "get-latest-flex-file",
-                "summary": "Retrieve latest GTFS flex data for an agency.",
-                "description": "Returns the latest gtfs flex data file associated with an agency. See endpoint description for detail."
-            }
-        },
-        "/api/v1.0/gtfs-pathways/": {
-            "summary": "List GTFS Pathways versions supported by TDEI.",
-            "description": "Returns a json list of the GTFS Pathways versions supported by TDEI.",
-            "get": {
-                "tags": [],
-                "responses": {
-                    "200": {
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/versionList"
-                                },
-                                "example": {
-                                    "total": 2,
-                                    "apis": [
-                                        {
-                                            "apiKey": "oa_citations",
-                                            "apiVersionNumber": "v1",
-                                            "apiUrl": "https://developer.uspto.gov/ds-api/oa_citations/v1/fields",
-                                            "apiDocumentationUrl": "https://developer.uspto.gov/ds-api-docs/index.html?url=https://developer.uspto.gov/ds-api/swagger/docs/oa_citations.json"
-                                        },
-                                        {
-                                            "apiKey": "cancer_moonshot",
-                                            "apiVersionNumber": "v1",
-                                            "apiUrl": "https://developer.uspto.gov/ds-api/cancer_moonshot/v1/fields",
-                                            "apiDocumentationUrl": "https://developer.uspto.gov/ds-api-docs/index.html?url=https://developer.uspto.gov/ds-api/swagger/docs/cancer_moonshot.json"
-                                        }
-                                    ]
-                                }
-                            }
-                        },
-                        "description": "Returns a list of pathways versions"
-                    },
-                    "401": {
-                        "$ref": "#/components/responses/Unauthorized"
-                    },
-                    "500": {
-                        "$ref": "#/components/responses/InternalServerError"
-                    }
-                },
-                "security": [
-                    {
-                        "ApplicationId": []
-                    }
-                ],
-                "operationId": "list-pathways-versions",
-                "summary": "List available GTFS Pathways versions",
-                "description": "Lists the versions of GTFS pathways data which are supported by TDEI."
-            }
-        },
-        "/api/v1.0/gtfs-pathways/list": {
-            "summary": "Path used to retrieve a list of gtfs pathways files. Bounding box, confidence, pathways version can be specified. Allows user to get the tdei_record_id for a specific file so file can be updated.",
-            "description": "This endpoint returns a json list of all gtfs pathways files stored in the TDEI system that meet the specified criteria. Criteria that can be specified include: bounding box, minimum confidence level and pathways version.\n\nThe returned list contains a tdei_record_id for each file and meta-data about the files. The tdei_record_id is a unique identifier which uniquely identifies a file in the TDEI system. \n\nThis endpoint has several intended uses. \n\nFirst, it can be used by a data generator to obtain the tdei_record_id for a gtfs pathways file, the tdei_record_id is required to update a file. \n\nSecond, it can be used by an application developer to obtain a list of gtfs pathways files in the TDEI system meeting the specified criteria, the application developer can filter that list of files and then retrieve files using the tdei_record_id.",
-            "get": {
-                "parameters": [
-                    {
-                        "name": "bbox",
-                        "description": "A bounding box which specifies the area to be searched. A bounding box is specified by a string providing the lat/lon coordinates of the corners of the bounding box. Coordinate should be specified as west, south, east, north.",
-                        "schema": {
-                            "type": "string"
-                        },
-                        "in": "query"
-                    },
-                    {
-                        "name": "confidence_level",
-                        "description": "",
-                        "schema": {
-                            "type": "integer"
-                        },
-                        "in": "query"
-                    },
-                    {
-                        "name": "version",
-                        "description": "",
-                        "schema": {
-                            "type": "string"
-                        },
-                        "in": "query"
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "array",
-                                    "items": {
-                                        "$ref": "#/components/schemas/gtfs_pathways_file"
-                                    }
-                                }
-                            }
-                        },
-                        "description": "Successful response - returns an array of `gtfs_pathways_file` entities."
-                    },
-                    "401": {
-                        "$ref": "#/components/responses/Unauthorized"
-                    },
-                    "500": {
-                        "$ref": "#/components/responses/InternalServerError"
-                    }
-                },
-                "security": [
-                    {
-                        "ApplicationId": []
-                    }
-                ],
-                "operationId": "list-pathways-files",
-                "summary": "List pathways files meeting criteria.",
-                "description": "Returns a list of all `gtfs_pathways_file` file entities. See endpoint description for detail."
-            }
-        },
-        "/api/v1.0/gtfs-pathways/upload/": {
-            "summary": "Path used to upload / create a new gtfs pathways file.",
-            "description": "This path allows a user to upload or create a new gtfs pathways file. The caller must provide metadata about the file - both gtfs station metadata and metadata for the tdei system. tdei required metadata includes information about how and when the data was collected and valid dates of the file.  Returns the tdei_record_id of the file.",
-            "post": {
-                "requestBody": {
-                    "description": "meta-data and uri for pathways file",
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "$ref": "#/components/schemas/gtfs_pathways_upload"
-                            }
-                        }
-                    },
-                    "required": true
-                },
-                "responses": {
-                    "202": {
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "integer"
-                                }
-                            }
-                        },
-                        "description": "File creation accepted."
-                    },
-                    "400": {
-                        "$ref": "#/components/responses/InvalidRequest"
-                    },
-                    "401": {
-                        "$ref": "#/components/responses/Unauthorized"
-                    },
-                    "500": {
-                        "$ref": "#/components/responses/InternalServerError"
-                    }
-                },
-                "security": [
-                    {
-                        "ApplicationId": []
-                    }
-                ],
-                "operationId": "upload-pathways-file",
-                "summary": "create pathways file.",
-                "description": "Allows application to upload / create a new gtfs pathways file. See endpoint description for detail."
-            }
-        },
-        "/api/v1.0/gtfs-pathways/latest/": {
-            "summary": "Retrieve the most current pathways files for a station.",
-            "description": "Returns a url to a zip file containing the most current pathways files for the specified station. Station is identified by tdei_station_id, which can be retrieved using the /stations endpoint. (Required to use tdei_station_id as gtfs ids may not be unique.) A minimum confidence level and pathways schema version can be specified. If confidence level and/or pathways schema version is specified, only files meeting those criteria will be returned.",
-            "get": {
-                "parameters": [
-                    {
-                        "name": "confidence",
-                        "description": "Minimum confidence level required. Data returned will be at this confidence level or higher.",
-                        "schema": {
-                            "type": "integer"
-                        },
-                        "in": "query"
-                    },
-                    {
-                        "name": "schema_version",
-                        "description": "version name of the flex schema version that the application requests. list of versions can be found with /api/gtfs_flex path",
-                        "schema": {
-                            "type": "string"
-                        },
-                        "in": "query"
-                    },
-                    {
-                        "name": "tdei_station_id",
-                        "description": "The tdei assigned station id. tdei_station_ids can be obtained using the /stations/ path. Required to use tdei station id as gtfs station ids are not guaranteed to be unique across agencies.",
-                        "schema": {
-                            "type": "integer"
-                        },
-                        "in": "query",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "$ref": "#/components/responses/PathwaysResponse"
-                    },
-                    "401": {
-                        "$ref": "#/components/responses/Unauthorized"
-                    },
-                    "404": {
-                        "$ref": "#/components/responses/PathwaysFileNotFound"
-                    },
-                    "500": {
-                        "$ref": "#/components/responses/InternalServerError"
-                    }
-                },
-                "security": [
-                    {
-                        "ApplicationId": []
-                    }
-                ],
-                "operationId": "get-latest-pathways-file",
-                "summary": "Retrieve most recent GTFS pathways data for a station."
-            }
-        },
-        "/api/v1.0/osw/list": {
-            "summary": "Path used to retrieve a list of osw files. Bounding box, confidence, osw version can be specified. Allows user to get the tdei_record_id for a specific file so file can be updated.",
-            "description": "This endpoint returns a list of url to gzip'd geojson files with osw data that meet the specified criteria. Criteria that can be specified include: bounding box, minimum confidence level and pathways version.\n\nThe returned list contains a tdei_record_id for each file and meta-data about the files. The tdei_record_id is a unique identifier which uniquely identifies a file in the TDEI system. \n\nThis endpoint has several intended uses. \n\nFirst, it can be used by a data generator to obtain the tdei_record_id for an osw file, the tdei_record_id is required to update a file. \n\nSecond, it can be used by an application developer to obtain a list of osw files in the TDEI system meeting the specified criteria, the application developer can filter that list of files and then retrieve files using the tdei_record_id.",
-            "get": {
-                "parameters": [
-                    {
-                        "examples": {
-                            "bounding_box": {
-                                "value": {
-                                    "bbox": "23.5, 123.1, 23.1, 1234.5"
-                                }
-                            }
-                        },
-                        "name": "bounding_box",
-                        "description": "A bounding box which specifies the area to be searched. A bounding box is specified by a string providing the lat/lon coordinates of the corners of the bounding box. Coordinate should be specified as west, south, east, north.",
-                        "schema": {
-                            "type": "string"
-                        },
-                        "in": "query",
-                        "required": true
-                    },
-                    {
-                        "name": "confidence_level",
-                        "description": "Minimum confidence level required. Data returned will be at this confidence level or higher.",
-                        "schema": {
-                            "type": "integer"
-                        },
-                        "in": "query"
-                    },
-                    {
-                        "name": "schema_version",
-                        "description": "A string with the name of the schema version the application requests.",
-                        "schema": {
-                            "type": "string"
-                        },
-                        "in": "query"
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "$ref": "#/components/responses/OSWResponse"
-                    },
-                    "401": {
-                        "$ref": "#/components/responses/Unauthorized"
-                    },
-                    "404": {
-                        "$ref": "#/components/responses/OSWNotFound"
-                    },
-                    "500": {
-                        "$ref": "#/components/responses/InternalServerError"
-                    }
-                },
-                "security": [
-                    {
-                        "ApplicationId": []
-                    }
-                ],
-                "operationId": "list-osw-files",
-                "summary": "List osw files meeting criteria.",
-                "description": "Returns a list of all osw file entities. See endpoint description for detail."
-            }
-        },
-        "/api/v1.0/gtfs-flex/upload": {
-            "summary": "Path used to upload / create a new gtfs flex file.",
-            "description": "This path allows a user to upload or create a new gtfs flex file. The caller must provide metadata about the file - both gtfs agency metadata and metadata for the tdei system. tdei required metadata includes information about how and when the data was collected and valid dates of the file.  Returns the tdei_record_id of the file.",
-            "post": {
-                "requestBody": {
-                    "description": "specify metadata and uri for new file",
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "$ref": "#/components/schemas/gtfs_flex_upload"
-                            }
-                        }
-                    },
-                    "required": true
-                },
-                "responses": {
-                    "202": {
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "integer"
-                                }
-                            }
-                        },
-                        "description": "Successful file creation. returns data_record_id of new file."
-                    },
-                    "400": {
-                        "$ref": "#/components/responses/InvalidRequest"
-                    },
-                    "401": {
-                        "$ref": "#/components/responses/Unauthorized"
-                    },
-                    "500": {
-                        "$ref": "#/components/responses/InternalServerError"
-                    }
-                },
-                "security": [
-                    {
-                        "ApplicationId": []
-                    }
-                ],
-                "operationId": "upload-flex-file",
-                "summary": "upload a new gtfs_flex file",
-                "description": "Allows application to upload / create a new gtfs_flex file. See endpoint description for detail."
-            }
-        },
-        "/api/v1.0/gtfs-flex/list/{tdei_record_id}": {
-            "summary": "Path used to retrieve a single gtfs flex file.",
-            "description": "This endpoint returns a single `gtfs_flex_file`. The file is identified by tdei_record_id. The tdei_record_id of a file can be obtained by using the gtfs-flex/list endpoint and is also returned when a file is uploaded.",
-            "get": {
-                "responses": {
-                    "200": {
-                        "$ref": "#/components/responses/FlexResponse"
-                    },
-                    "401": {
-                        "$ref": "#/components/responses/Unauthorized"
-                    },
-                    "404": {
-                        "$ref": "#/components/responses/FileIdNotFound"
-                    },
-                    "500": {
-                        "$ref": "#/components/responses/InternalServerError"
-                    }
-                },
-                "security": [
-                    {
-                        "ApplicationId": []
-                    }
-                ],
-                "operationId": "get-flex-file",
-                "summary": "Get a flex file",
-                "description": "Gets the details of a single instance of a `gtfs_flex_file` file details. See endpoint description for detail. "
-            },
-            "parameters": [
-                {
-                    "name": "tdei_record_id",
-                    "description": "A unique identifier for a `flexDataFile`.",
-                    "schema": {
-                        "type": "string"
-                    },
-                    "in": "path",
-                    "required": true
-                }
-            ]
-        },
-        "/api/v1.0/gtfs-flex/update/{tdei_record_id}": {
-            "summary": "Path used to update a single gtfs flex file.",
-            "description": "This endpoint is used to update a single instance of a `gtfs_flex_file`. The file is identified by tdei_record_id. The tdei_record_id of a file can be obtained by using the gtfs-flex/list endpoint and is also returned when a file is uploaded.. The primary intent of this endpoint is to allow an agency to invalidate a file that was found to be incorrect. The endpoint can also be used to update metadata for a previously uploaded file. ",
-            "put": {
-                "requestBody": {
-                    "description": "Flex data file meta data and uri from which the updated file can be retrieved.",
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "$ref": "#/components/schemas/gtfs_flex_upload"
-                            }
-                        }
-                    },
-                    "required": true
-                },
-                "responses": {
-                    "202": {
-                        "description": "Successful response."
-                    },
-                    "400": {
-                        "$ref": "#/components/responses/InvalidRequest"
-                    },
-                    "401": {
-                        "$ref": "#/components/responses/Unauthorized"
-                    },
-                    "404": {
-                        "$ref": "#/components/responses/FlexFileNotFound"
-                    },
-                    "500": {
-                        "$ref": "#/components/responses/InternalServerError"
-                    }
-                },
-                "security": [
-                    {
-                        "ApplicationId": []
-                    }
-                ],
-                "operationId": "update-flex-file",
-                "summary": "Update a gtfs flex file.",
-                "description": "Updates meta data for an an existing gtfs flex file. See endpoint description for detail. "
-            },
-            "parameters": [
-                {
-                    "name": "tdei_record_id",
-                    "description": "A unique identifier for a `flexDataFile`.",
-                    "schema": {
-                        "type": "string"
-                    },
-                    "in": "path",
-                    "required": true
-                }
-            ]
-        },
-        "/api/v1.0/gtfs-pathways/list/{tdei_record_id}": {
-            "summary": "Path used to retrieve a single gtfs pathways file.",
-            "description": "This endpoint returns a single `gtfs_pathways_file`. The file is identified by tdei_record_id. The tdei_record_id of a file can be obtained by using the gtfs-pathways/list endpoint and is also returned when a file is uploaded.",
-            "get": {
-                "responses": {
-                    "200": {
-                        "$ref": "#/components/responses/PathwaysResponse"
-                    },
-                    "401": {
-                        "$ref": "#/components/responses/Unauthorized"
-                    },
-                    "404": {
-                        "$ref": "#/components/responses/FileIdNotFound"
-                    },
-                    "500": {
-                        "$ref": "#/components/responses/InternalServerError"
-                    }
-                },
-                "security": [
-                    {
-                        "ApplicationId": []
-                    }
-                ],
-                "operationId": "get-pathways-file",
-                "summary": "Get a gtfs pathways file",
-                "description": "Gets the details of a single instance of a `gtfs_pathways_file`."
-            },
-            "parameters": [
-                {
-                    "name": "tdei_record_id",
-                    "description": "A unique identifier for a `gtfs_pathways`.",
-                    "schema": {
-                        "type": "string"
-                    },
-                    "in": "path",
-                    "required": true
-                }
-            ]
-        },
-        "/api/v1.0/gtfs-pathways/update/{tdei_record_id}": {
-            "summary": "Path used to update a single gtfs pathways file.",
-            "description": "This endpoint is used to update a single instance of a `gtfs_pathways_file`. The file is identified by tdei_record_id. The tdei_record_id of a file can be obtained by using the gtfs-pathways/list endpoint and is also returned when a file is uploaded. The primary intent of this endpoint is to allow an agency to invalidate a file that was found to be incorrect. The endpoint can also be used to update metadata for a previously uploaded file. ",
-            "put": {
-                "requestBody": {
-                    "description": "Updated `gtfs_pathways` information.",
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "$ref": "#/components/schemas/gtfs_pathways_upload"
-                            }
-                        }
-                    },
-                    "required": true
-                },
-                "responses": {
-                    "202": {
-                        "description": "Successful response."
-                    },
-                    "400": {
-                        "$ref": "#/components/responses/InvalidRequest"
-                    },
-                    "401": {
-                        "$ref": "#/components/responses/Unauthorized"
-                    },
-                    "404": {
-                        "$ref": "#/components/responses/PathwaysFileNotFound"
-                    },
-                    "500": {
-                        "$ref": "#/components/responses/InternalServerError"
-                    }
-                },
-                "security": [
-                    {
-                        "ApplicationId": []
-                    }
-                ],
-                "operationId": "update-pathways-file",
-                "summary": "Update a gtfs pathways file.",
-                "description": "Updates meta data for an an existing gtfs pathways file. See endpoint description for detail. "
-            },
-            "parameters": [
-                {
-                    "name": "tdei_record_id",
-                    "description": "A unique identifier for a `gtfs_pathways`.",
-                    "schema": {
-                        "type": "string"
-                    },
-                    "in": "path",
-                    "required": true
-                }
-            ]
-        },
-        "/api/v1.0/osw/update/{tdei_record_id}/": {
-            "summary": "Path used to update a single osw file.",
-            "description": "This endpoint is used to update a single instance of an osw file. The file is identified by tdei_record_id. The tdei_record_id of a file can be obtained by using the osw/list endpoint and is also returned when a file is uploaded. The primary intent of this endpoint is to allow an agency to invalidate a file that was found to be incorrect. The endpoint can also be used to update metadata for a previously uploaded file. ",
-            "put": {
-                "requestBody": {
-                    "description": "Updated `gtfs_pathways` information.",
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "$ref": "#/components/schemas/gtfs_pathways_upload"
-                            }
-                        }
-                    },
-                    "required": true
-                },
-                "responses": {
-                    "202": {
-                        "description": "Successful response."
-                    },
-                    "400": {
-                        "$ref": "#/components/responses/InvalidRequest"
-                    },
-                    "401": {
-                        "$ref": "#/components/responses/Unauthorized"
-                    },
-                    "404": {
-                        "$ref": "#/components/responses/PathwaysFileNotFound"
-                    },
-                    "500": {
-                        "$ref": "#/components/responses/InternalServerError"
-                    }
-                },
-                "security": [
-                    {
-                        "ApplicationId": []
-                    }
-                ],
-                "operationId": "update-osw-file",
-                "summary": "Update an osw file.",
-                "description": "Updates meta data for an an existing osw file. See endpoint description for detail. "
-            },
-            "parameters": [
-                {
-                    "name": "tdei_record_id",
-                    "description": "A unique identifier for a `gtfs_pathways`.",
-                    "schema": {
-                        "type": "string"
-                    },
-                    "in": "path",
-                    "required": true
-                }
-            ]
-        },
-        "/api/v1.0/osw/upload/": {
-            "summary": "Path used to upload/create a new osw data file.",
-            "description": "This path allows a user to upload or create a new osw file. The caller must provide metadata about the file - both osw-specific metadata and metadata for the tdei system.\ntdei required metadata includes information about how and when the data was collected and valid dates of the file. Returns the tdei_record_id of the file.",
-            "post": {
-                "requestBody": {
-                    "description": "meta-data and uri for pathways file",
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "$ref": "#/components/schemas/osw_upload"
-                            }
-                        }
-                    },
-                    "required": true
-                },
-                "responses": {
-                    "202": {
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "integer"
-                                }
-                            }
-                        },
-                        "description": "File creation accepted."
-                    },
-                    "400": {
-                        "$ref": "#/components/responses/InvalidRequest"
-                    },
-                    "401": {
-                        "$ref": "#/components/responses/Unauthorized"
-                    },
-                    "500": {
-                        "$ref": "#/components/responses/InternalServerError"
-                    }
-                },
-                "security": [
-                    {
-                        "ApplicationId": []
-                    }
-                ],
-                "operationId": "upload-osw-file",
-                "summary": "upload a new osw file",
-                "description": "Allows application to upload / create a new osw file. See endpoint description for detail."
-            }
-        },
-        "/api/v1.0/osw/list/{tdei_record_id}/": {
-            "summary": "Path used to retrieve a single gtfs flex file.",
-            "description": "This endpoint returns a single osw file. The file is identified by tdei_record_id. The tdei_record_id of a file can be obtained by using the osw/list endpoint and is also returned when a file is uploaded.",
-            "get": {
-                "responses": {
-                    "200": {
-                        "$ref": "#/components/responses/OSWResponse"
-                    },
-                    "401": {
-                        "$ref": "#/components/responses/Unauthorized"
-                    },
-                    "404": {
-                        "$ref": "#/components/responses/FileIdNotFound"
-                    },
-                    "500": {
-                        "$ref": "#/components/responses/InternalServerError"
-                    }
-                },
-                "security": [
-                    {
-                        "ApplicationId": []
-                    }
-                ],
-                "operationId": "get-osw-file",
-                "summary": "Get an osw file",
-                "description": "Gets the details of a single instance of a `gtfs_flex_file` file details. See endpoint description for detail. "
-            },
-            "parameters": [
-                {
-                    "name": "tdei_record_id",
-                    "description": "A unique identifier for a `flexDataFile`.",
-                    "schema": {
-                        "type": "string"
-                    },
-                    "in": "path",
-                    "required": true
-                }
-            ]
         }
     },
     "components": {
@@ -1001,656 +916,25 @@
             "versionList": {
                 "title": "Root Type for VersionList",
                 "description": "List of API Versions.",
+                "required": [
+                    "versions"
+                ],
                 "type": "object",
                 "properties": {
                     "versions": {
+                        "description": "A list of the versions of a data standard (GTFS-Flex, GTFS-Pathways, OSW) supported by TDEI.",
                         "type": "array",
                         "items": {
-                            "type": "string"
+                            "$ref": "#/components/schemas/versionSpec"
                         }
-                    }
-                },
-                "example": {
-                    "versions": [
-                        {
-                            "version": "v1.0",
-                            "documentation": "link to v1.0 documentation"
-                        },
-                        {
-                            "version": "v1.1",
-                            "documentation": "link to v1.1 documentation"
-                        }
-                    ]
-                }
-            },
-            "gtfs_flex_download": {
-                "title": "Root Type for gtfs_flex",
-                "description": "represents a gtfs_flex data file. same as in consumer api, same as gtfs_flex, adds uri",
-                "required": [
-                    "gtfs_flex_file",
-                    "url"
-                ],
-                "type": "object",
-                "properties": {
-                    "url": {
-                        "description": "url with link to file to be downloaded",
-                        "type": "string"
-                    },
-                    "gtfs_flex_file": {
-                        "$ref": "#/components/schemas/gtfs_flex_file",
-                        "description": "flex file md"
-                    }
-                },
-                "example": {
-                    "url": "some text",
-                    "gtfs_flex_file": {
-                        "agency": {
-                            "agency_id": 31,
-                            "agency_name": "some text",
-                            "agency_url": "some text",
-                            "agency_timezone": "some text",
-                            "agency_lang": "some text",
-                            "agency_phone": "some text",
-                            "agency_email": "some text",
-                            "tdei_agency_id": 75,
-                            "agency_polygon": "some text",
-                            "agency_fare_url": "some text"
-                        },
-                        "valid_from": "2018-01-17",
-                        "valid_to": "2018-01-17",
-                        "confidence_level": 99,
-                        "flex_schema_version": "some text",
-                        "data_record_id": 12
-                    }
-                }
-            },
-            "gtfs_flex_upload": {
-                "title": "Root Type for gtfs_flex",
-                "description": "represents meta data needed to upload a gtfs_flex data file",
-                "required": [
-                    "agency",
-                    "tdei_generator_metadata",
-                    "uri"
-                ],
-                "type": "object",
-                "properties": {
-                    "agency": {
-                        "$ref": "#/components/schemas/gtfs_agency",
-                        "description": "Information describing an agency. Based on GTFS but with geo-location information added."
-                    },
-                    "uri": {
-                        "description": "uri of the file to be uploaded",
-                        "type": "string"
-                    },
-                    "tdei_generator_metadata": {
-                        "$ref": "#/components/schemas/tdei_generator_metadata",
-                        "description": "metadata provided by the data generator."
-                    }
-                }
-            },
-            "gtfs_flex_file": {
-                "title": "Root Type for gtfs_flex",
-                "description": "represents a gtfs_flex data file. same as in consumer api, ",
-                "required": [
-                    "agency",
-                    "tdei_generator_metadata",
-                    "tdei_system_metadata"
-                ],
-                "type": "object",
-                "properties": {
-                    "agency": {
-                        "$ref": "#/components/schemas/agency",
-                        "description": "agency information"
-                    },
-                    "tdei_generator_metadata": {
-                        "$ref": "#/components/schemas/tdei_generator_metadata",
-                        "description": "Metadata provided by the data generator."
-                    },
-                    "tdei_system_metadata": {
-                        "$ref": "#/components/schemas/tdei_system_metadata",
-                        "description": "metadata provided by the tdei system."
-                    }
-                },
-                "example": {
-                    "agency": {
-                        "agency_id": 1,
-                        "agency_name": "King County Metro",
-                        "agency_url": "http://kingcounty.gov",
-                        "agency_timezone": "America/Los_Angeles",
-                        "agency_lang": "en",
-                        "agency_phone": "206-296-0100",
-                        "agency_fare_url": "https://kingcounty.gov/depts/transportation/metro/fares-orca.aspx",
-                        "agency_email": "https://blue.kingcounty.gov/about/contact/"
-                    },
-                    "valid_from": "05-19-2022",
-                    "valid_to": "05-20-2022",
-                    "confidence_level": 5,
-                    "tdei_record_id": 23,
-                    "flex_schema_version": 1
-                }
-            },
-            "gtfs_pathways_upload": {
-                "title": "Root Type for gtfs_pathways",
-                "description": "Describes a gtfs pathways file meta data. Same as gtfs_pathways, but adds uri.",
-                "required": [
-                    "station",
-                    "tdei_generator_metadata",
-                    "uri"
-                ],
-                "type": "object",
-                "properties": {
-                    "station": {
-                        "$ref": "#/components/schemas/gtfs_station",
-                        "description": "information about the associated transit station"
-                    },
-                    "uri": {
-                        "description": "uri of the file to be uploaded",
-                        "type": "string"
-                    },
-                    "tdei_generator_metadata": {
-                        "$ref": "#/components/schemas/tdei_generator_metadata",
-                        "description": "metadata provided by the data generator."
-                    }
-                },
-                "example": {
-                    "valid_from": "2018-01-17",
-                    "valid_to": "2018-01-17",
-                    "uri": "some text",
-                    "valid": "no",
-                    "station": {
-                        "stop_code": "some text",
-                        "stop_name": "some text",
-                        "tts_stop_name": "some text",
-                        "stop_desc": "some text",
-                        "stop_lat": "some text",
-                        "stop_lon": "some text",
-                        "zone_id": 95,
-                        "stop_url": "some text",
-                        "location_type": "some text",
-                        "parent_station": 49,
-                        "stop_timezone": "some text",
-                        "wheelchair_boarding": "some text",
-                        "level_id": 99,
-                        "platform_code": "some text",
-                        "tdei_stop_id": 31,
-                        "gtfs_stop_id": 99
-                    }
-                }
-            },
-            "gtfs_pathways_download": {
-                "title": "Root Type for gtfs_pathways",
-                "description": "Describes a gtfs pathways file meta data.",
-                "required": [
-                    "url",
-                    "gtfs_pathways_file"
-                ],
-                "type": "object",
-                "properties": {
-                    "url": {
-                        "description": "url from which the file can be downloaded",
-                        "type": "string"
-                    },
-                    "gtfs_pathways_file": {
-                        "$ref": "#/components/schemas/gtfs_pathways_file",
-                        "description": "Information about the gtfs pathways file to be downloaded."
-                    }
-                },
-                "example": {
-                    "agency_id": 1,
-                    "agency_name": "King County Metro",
-                    "confidence_level": 5,
-                    "data_record_id": 23,
-                    "pathways_schema_version": 1,
-                    "station_id": 4,
-                    "station_name": "Northgate",
-                    "valid_from": "05-19-2022",
-                    "valid_to": "05-20-2022"
-                }
-            },
-            "gtfs_pathways_file": {
-                "title": "Root Type for gtfs_pathways",
-                "description": "Describes a gtfs pathways file meta data.",
-                "required": [
-                    "station",
-                    "tdei_generator_metadata",
-                    "tdei_system_metadata"
-                ],
-                "type": "object",
-                "properties": {
-                    "station": {
-                        "$ref": "#/components/schemas/station",
-                        "description": "The (transit) station to which this file applies."
-                    },
-                    "tdei_generator_metadata": {
-                        "$ref": "#/components/schemas/tdei_generator_metadata",
-                        "description": "Metadata provided by the data generator"
-                    },
-                    "tdei_system_metadata": {
-                        "$ref": "#/components/schemas/tdei_system_metadata",
-                        "description": "Metadata provided by the tdei system."
-                    }
-                },
-                "example": {
-                    "valid_from": "2018-01-17",
-                    "valid_to": "2018-01-17",
-                    "confidence_level": 74,
-                    "tdei_record_id": 61,
-                    "pathways_schema_version": "some text",
-                    "station": {
-                        "stop_code": "some text",
-                        "stop_name": "some text",
-                        "tts_stop_name": "some text",
-                        "stop_desc": "some text",
-                        "stop_lat": "some text",
-                        "stop_lon": "some text",
-                        "zone_id": 24,
-                        "stop_url": "some text",
-                        "location_type": "some text",
-                        "parent_station": 1,
-                        "stop_timezone": "some text",
-                        "wheelchair_boarding": "some text",
-                        "level_id": 53,
-                        "platform_code": "some text",
-                        "tdei_stop_id": 68,
-                        "gtfs_stop_id": 61
-                    }
-                }
-            },
-            "osw_upload": {
-                "title": "Root Type for gtfs_pathways",
-                "description": "Describes a gtfs pathways file meta data. Same as gtfs_pathways, but adds uri.",
-                "required": [
-                    "osw_metadata",
-                    "tdei_generator_metadata",
-                    "uri"
-                ],
-                "type": "object",
-                "properties": {
-                    "osw_metadata": {
-                        "$ref": "#/components/schemas/osw_metadata",
-                        "description": "osw-specific meta-data"
-                    },
-                    "uri": {
-                        "description": "uri of the file to be uploaded",
-                        "type": "string"
-                    },
-                    "tdei_generator_metadata": {
-                        "$ref": "#/components/schemas/tdei_generator_metadata",
-                        "description": "metadata provided by the data generator"
-                    }
-                },
-                "example": {
-                    "valid_from": "2018-01-17",
-                    "valid_to": "2018-01-17",
-                    "uri": "some text",
-                    "valid": "no",
-                    "station": {
-                        "stop_code": "some text",
-                        "stop_name": "some text",
-                        "tts_stop_name": "some text",
-                        "stop_desc": "some text",
-                        "stop_lat": "some text",
-                        "stop_lon": "some text",
-                        "zone_id": 95,
-                        "stop_url": "some text",
-                        "location_type": "some text",
-                        "parent_station": 49,
-                        "stop_timezone": "some text",
-                        "wheelchair_boarding": "some text",
-                        "level_id": 99,
-                        "platform_code": "some text",
-                        "tdei_stop_id": 31,
-                        "gtfs_stop_id": 99
-                    }
-                }
-            },
-            "osw_metadata": {
-                "description": "Placeholder for meta-data specific to OSW files",
-                "required": [
-                    "bbox"
-                ],
-                "type": "object",
-                "properties": {
-                    "bbox": {
-                        "description": "Bounding box for this file.",
-                        "type": "string"
-                    }
-                }
-            },
-            "tdei_generator_metadata": {
-                "description": "Metadata required by TDEI and created by the data generator. This data is required to upload data and is provided when data is downloaded. ",
-                "required": [
-                    "collection_method",
-                    "collection_date",
-                    "collected_by",
-                    "valid",
-                    "valid_from"
-                ],
-                "type": "object",
-                "properties": {
-                    "collection_date": {
-                        "format": "date",
-                        "description": "date of collection or generation of this data",
-                        "type": "string"
-                    },
-                    "collection_method": {
-                        "description": "how data was collected",
-                        "enum": [
-                            "manual",
-                            "algorithmic"
-                        ],
-                        "type": "string"
-                    },
-                    "collected_by": {
-                        "description": "name of entity or agency or person who collected this data",
-                        "type": "string"
-                    },
-                    "valid": {
-                        "description": "Indicates if the file is valid or not. Used to invalidate a file.",
-                        "enum": [
-                            "yes",
-                            "no"
-                        ],
-                        "type": "string"
-                    },
-                    "valid_from": {
-                        "description": "date to which the file is valid",
-                        "type": "string"
-                    },
-                    "valid_to": {
-                        "description": "date to which the file is valid",
-                        "type": "string"
-                    }
-                }
-            },
-            "tdei_system_metadata": {
-                "description": "metadata generated by the tdei system. provided when a file is downloaded.",
-                "required": [
-                    "schema_version",
-                    "tdei_record_id",
-                    "confidence_level"
-                ],
-                "type": "object",
-                "properties": {
-                    "schema_version": {
-                        "description": "The version of the data schema associated with this file.",
-                        "type": "string"
-                    },
-                    "tdei_record_id": {
-                        "description": "tdei-assigned data record id",
-                        "type": "integer"
-                    },
-                    "confidence_level": {
-                        "description": "TDEI-assigned confidence level",
-                        "type": "integer"
-                    }
-                }
-            },
-            "osw_download": {
-                "title": "Root Type for gtfs_pathways",
-                "description": "Describes a gtfs pathways file meta data.",
-                "required": [
-                    "url",
-                    "osw_file"
-                ],
-                "type": "object",
-                "properties": {
-                    "url": {
-                        "description": "url from which the file can be downloaded",
-                        "type": "string"
-                    },
-                    "osw_file": {
-                        "$ref": "#/components/schemas/osw_file",
-                        "description": "infomation about an osw file"
-                    }
-                },
-                "example": {
-                    "agency_id": 1,
-                    "agency_name": "King County Metro",
-                    "confidence_level": 5,
-                    "data_record_id": 23,
-                    "pathways_schema_version": 1,
-                    "station_id": 4,
-                    "station_name": "Northgate",
-                    "valid_from": "05-19-2022",
-                    "valid_to": "05-20-2022"
-                }
-            },
-            "osw_file": {
-                "title": "Root Type for gtfs_pathways",
-                "description": "Describes a gtfs pathways file meta data.",
-                "required": [
-                    "tdei_generator_metadata",
-                    "tdei_system_metadata",
-                    "osw_metadata"
-                ],
-                "type": "object",
-                "properties": {
-                    "tdei_generator_metadata": {
-                        "$ref": "#/components/schemas/tdei_generator_metadata",
-                        "description": "Metadata provided by the data generator"
-                    },
-                    "tdei_system_metadata": {
-                        "$ref": "#/components/schemas/tdei_system_metadata",
-                        "description": "Metadata provided by the tdei system."
-                    },
-                    "osw_metadata": {
-                        "$ref": "#/components/schemas/osw_metadata",
-                        "description": "metadata about an osw file"
-                    }
-                },
-                "example": {
-                    "valid_from": "2018-01-17",
-                    "valid_to": "2018-01-17",
-                    "confidence_level": 74,
-                    "tdei_record_id": 61,
-                    "pathways_schema_version": "some text",
-                    "station": {
-                        "stop_code": "some text",
-                        "stop_name": "some text",
-                        "tts_stop_name": "some text",
-                        "stop_desc": "some text",
-                        "stop_lat": "some text",
-                        "stop_lon": "some text",
-                        "zone_id": 24,
-                        "stop_url": "some text",
-                        "location_type": "some text",
-                        "parent_station": 1,
-                        "stop_timezone": "some text",
-                        "wheelchair_boarding": "some text",
-                        "level_id": 53,
-                        "platform_code": "some text",
-                        "tdei_stop_id": 68,
-                        "gtfs_stop_id": 61
-                    }
-                }
-            },
-            "gtfs_agency": {
-                "title": "Root Type for Agency",
-                "description": "The gtfs agency information for an agency with data stored in tdei. Matches the gtfs spec for agency. ",
-                "required": [
-                    "agency_id",
-                    "agency_name",
-                    "agency_url",
-                    "agency_timezone",
-                    "tdei_agency_id",
-                    "agency_polygon"
-                ],
-                "type": "object",
-                "properties": {
-                    "agency_id": {
-                        "description": "The GTFS agency id.",
-                        "type": "integer"
-                    },
-                    "agency_name": {
-                        "description": "The GTFS Agency name",
-                        "type": "string"
-                    },
-                    "agency_url": {
-                        "description": "URL of the transit agency.",
-                        "type": "string"
-                    },
-                    "agency_timezone": {
-                        "description": "Timezone where transit agency is located.",
-                        "type": "string"
-                    },
-                    "agency_lang": {
-                        "description": "Primary language used by this transit agency. Should be provided to help GTFS consumers choose capitalization rules and other language-specific settings for the dataset.",
-                        "type": "string"
-                    },
-                    "agency_phone": {
-                        "description": "A voice telephone number for the specified agency. This field is a string value that presents the telephone number as typical for the agency's service area. It may contain punctuation marks to group the digits of the number. Dialable text (for example, TriMet's \"503-238-RIDE\") is permitted, but the field must not contain any other descriptive text.",
-                        "type": "string"
-                    },
-                    "agency_email": {
-                        "description": "Email address actively monitored by the agency’s customer service department. This email address should be a direct contact point where transit riders can reach a customer service representative at the agency.",
-                        "type": "string"
-                    },
-                    "tdei_agency_id": {
-                        "description": "TDEI-assigned agency id. Assigned by TDEI to avoid potential conflicts between GTFS agency ids.",
-                        "type": "integer"
-                    },
-                    "agency_polygon": {
-                        "description": "A polygon which represents the boundaries of the agency's service area. A polygon is specified by a string providing the lat/lon coordinates of the polygon. The last lat/lon in the string should be the same as the first lat/lon in the string.",
-                        "type": "string"
-                    },
-                    "agency_fare_url": {
-                        "description": "URL of fare information for the agency.",
-                        "type": "string"
-                    }
-                },
-                "example": {
-                    "agency_id": 1,
-                    "agency_name": "King County Metro",
-                    "agency_url": "http://kingcounty.gov",
-                    "agency_timezone": "America/Los_Angeles",
-                    "agency_lang": "en",
-                    "agency_phone": "206-296-0100",
-                    "agency_fare_url": "https://kingcounty.gov/depts/transportation/metro/fares-orca.aspx",
-                    "agency_email": "https://blue.kingcounty.gov/about/contact/",
-                    "tdei_agency_id": 5,
-                    "agency_polygon": "bbox"
-                }
-            },
-            "gtfs_station": {
-                "title": "Root Type for Agency",
-                "description": "The gtfs station information for an agency with data stored in tdei. Matches the gtfs spec for station. ",
-                "required": [
-                    "gtfs_stop_id",
-                    "stop_name",
-                    "stop_lat",
-                    "stop_lon",
-                    "tdei_stop_id"
-                ],
-                "type": "object",
-                "properties": {
-                    "stop_code": {
-                        "description": "Short text or a number that identifies the location for riders. These codes are often used in phone-based transit information systems or printed on signage to make it easier for riders to get information for a particular location. The stop_code may be the same as stop_id if it is public facing. This field should be left empty for locations without a code presented to riders.\n",
-                        "type": "string"
-                    },
-                    "stop_name": {
-                        "description": "Name of the location. The stop_name should match the agency's rider-facing name for the location as printed on a timetable, published online, or represented on signage. For translations into other languages, use translations.txt.\n\nWhen the location is a boarding area (location_type=4), the stop_name should contains the name of the boarding area as displayed by the agency. It could be just one letter (like on some European intercity railway stations), or text like “Wheelchair boarding area” (NYC’s Subway) or “Head of short trains” (Paris’ RER).\n\nConditionally Required:\n- Required for locations which are stops (location_type=0), stations (location_type=1) or entrances/exits (location_type=2).\n- Optional for locations which are generic nodes (location_type=3) or boarding areas (location_type=4).",
-                        "type": "string"
-                    },
-                    "tts_stop_name": {
-                        "description": "Readable version of the stop_name. See \"Text-to-speech field\" in the Term Definitions for more.",
-                        "type": "string"
-                    },
-                    "stop_desc": {
-                        "description": "Description of the location that provides useful, quality information. Should not be a duplicate of stop_name.",
-                        "type": "string"
-                    },
-                    "stop_lat": {
-                        "description": "Latitude of the location.\n\nFor stops/platforms (location_type=0) and boarding area (location_type=4), the coordinates must be the ones of the bus pole — if exists — and otherwise of where the travelers are boarding the vehicle (on the sidewalk or the platform, and not on the roadway or the track where the vehicle stops). \n\nConditionally Required:\n- Required for locations which are stops (location_type=0), stations (location_type=1) or entrances/exits (location_type=2).\n- Optional for locations which are generic nodes (location_type=3) or boarding areas (location_type=4).",
-                        "type": "string"
-                    },
-                    "stop_lon": {
-                        "description": "Longitude of the location.\n\nFor stops/platforms (location_type=0) and boarding area (location_type=4), the coordinates must be the ones of the bus pole — if exists — and otherwise of where the travelers are boarding the vehicle (on the sidewalk or the platform, and not on the roadway or the track where the vehicle stops). \n\nConditionally Required:\n- Required for locations which are stops (location_type=0), stations (location_type=1) or entrances/exits (location_type=2).\n- Optional for locations which are generic nodes (location_type=3) or boarding areas (location_type=4).",
-                        "type": "string"
-                    },
-                    "zone_id": {
-                        "description": "Identifies the fare zone for a stop. If this record represents a station or station entrance, the zone_id is ignored.\n\nConditionally Required:\n- Required if providing fare information using fare_rules.txt \n- Optional otherwise.",
-                        "type": "integer"
-                    },
-                    "stop_url": {
-                        "description": "URL of a web page about the location. This should be different from the agency.agency_url and the routes.route_url field values.",
-                        "type": "string"
-                    },
-                    "location_type": {
-                        "description": "Location type. Valid options are:\n\n0 (or blank) - Stop (or Platform). A location where passengers board or disembark from a transit vehicle. Is called a platform when defined within a parent_station.\n1 - Station. A physical structure or area that contains one or more platform.\n2 - Entrance/Exit. A location where passengers can enter or exit a station from the street. If an entrance/exit belongs to multiple stations, it may be linked by pathways to both, but the data provider must pick one of them as parent.\n3 - Generic Node. A location within a station, not matching any other location_type, that may be used to link together pathways define in pathways.txt.\n4 - Boarding Area. A specific location on a platform, where passengers can board and/or alight vehicles.",
-                        "type": "string"
-                    },
-                    "parent_station": {
-                        "description": "Defines hierarchy between the different locations defined in stops.txt. It contains the ID of the parent location, as followed:\n\n- Stop/platform (location_type=0): the parent_station field contains the ID of a station.\n- Station (location_type=1): this field must be empty.\n- Entrance/exit (location_type=2) or generic node (location_type=3): the parent_station field contains the ID of a station (location_type=1)\n- Boarding Area (location_type=4): the parent_station field contains ID of a platform.\n\nConditionally Required:\n- Required for locations which are entrances (location_type=2), generic nodes (location_type=3) or boarding areas (location_type=4).\n- Optional for stops/platforms (location_type=0).\n- Forbidden for stations (location_type=1).\n",
-                        "type": "integer"
-                    },
-                    "stop_timezone": {
-                        "description": "Timezone of the location. If the location has a parent station, it inherits the parent station’s timezone instead of applying its own. Stations and parentless stops with empty stop_timezone inherit the timezone specified by agency.agency_timezone. If stop_timezone values are provided, the times in stop_times.txt should be entered as the time since midnight in the timezone specified by agency.agency_timezone. This ensures that the time values in a trip always increase over the course of a trip, regardless of which timezones the trip crosses.",
-                        "type": "string"
-                    },
-                    "wheelchair_boarding": {
-                        "description": "Indicates whether wheelchair boardings are possible from the location. Valid options are: \n\nFor parentless stops:\n0 or empty - No accessibility information for the stop.\n1 - Some vehicles at this stop can be boarded by a rider in a wheelchair.\n2 - Wheelchair boarding is not possible at this stop. \n\nFor child stops: \n0 or empty - Stop will inherit its wheelchair_boarding behavior from the parent station, if specified in the parent.\n1 - There exists some accessible path from outside the station to the specific stop/platform.\n2 - There exists no accessible path from outside the station to the specific stop/platform.\n\nFor station entrances/exits: \n0 or empty - Station entrance will inherit its wheelchair_boarding behavior from the parent station, if specified for the parent.\n1 - Station entrance is wheelchair accessible.\n2 - No accessible path from station entrance to stops/platforms.",
-                        "type": "string"
-                    },
-                    "level_id": {
-                        "description": "Level of the location. The same level may be used by multiple unlinked stations.",
-                        "type": "integer"
-                    },
-                    "platform_code": {
-                        "description": "Platform identifier for a platform stop (a stop belonging to a station). This should be just the platform identifier (eg. \"G\" or \"3\"). Words like “platform” or \"track\" (or the feed’s language-specific equivalent) should not be included. This allows feed consumers to more easily internationalize and localize the platform identifier into other languages.",
-                        "type": "string"
-                    },
-                    "tdei_stop_id": {
-                        "description": "TDEI assigned stop id. Included to avoid potential duplicates in the gtfs stop_id.",
-                        "type": "integer"
-                    },
-                    "gtfs_stop_id": {
-                        "description": "stop_id from GTFS.\n\nIdentifies a location: stop/platform, station, entrance/exit, generic node or boarding area (see location_type). \n\nMultiple routes may use the same stop_id.",
-                        "type": "integer"
-                    }
-                },
-                "example": {
-                    "gtfs_stop_id": 990006,
-                    "stop_code": "stop code - need example",
-                    "stop_name": "Northgate Station",
-                    "tts_stop_name": "Northgate Station - need to verify",
-                    "stop_desc": "Northgate Transit station - need more detail",
-                    "stop_lat": "47.70312",
-                    "stop_lon": "-122.32839",
-                    "zone_id": "fare zoneid - need example",
-                    "stop_url": "https://www.soundtransit.org/ride-with-us/stops-stations/northgate-station",
-                    "location_type": "1",
-                    "parent_station": "not valid for Northgate, but will be valid for others",
-                    "stop_timezone": "America/Los_Angeles",
-                    "wheelchair_boarding": "1",
-                    "level_id": "level - need example",
-                    "platform_code": "not valid for northgate, but may valid for others",
-                    "tdei_stop_id": 23
-                }
-            },
-            "agency": {
-                "description": "Includes gtfs agency information and a tdei agency id. Necessary as gtfs agency id may not be unique across agencies.",
-                "required": [
-                    "gtfs_agency",
-                    "tdei_agency_id"
-                ],
-                "type": "object",
-                "properties": {
-                    "gtfs_agency": {
-                        "$ref": "#/components/schemas/gtfs_agency",
-                        "description": "gtfs agency metadata"
-                    },
-                    "tdei_agency_id": {
-                        "description": "tdei assigned agency id. Necessary to ensure that agency ids are unique.",
-                        "type": "integer"
                     }
                 }
             },
             "station": {
                 "description": "Includes gtfs station information and a tdei agency id. Necessary as gtfs station id may not be unique across agencies.",
                 "required": [
-                    "tdei_station_id",
-                    "gtfs_station"
+                    "station_name",
+                    "polygon"
                 ],
                 "type": "object",
                 "properties": {
@@ -1658,49 +942,863 @@
                         "description": "tdei assigned station id. Necessary to ensure that station ids are unique.",
                         "type": "integer"
                     },
-                    "gtfs_station": {
-                        "$ref": "#/components/schemas/gtfs_station",
-                        "description": "gtfs station metadata"
+                    "station_name": {
+                        "description": "typically the station_name used in GTFS files",
+                        "type": "string"
+                    },
+                    "polygon": {
+                        "$ref": "#/components/schemas/polygon",
+                        "description": "A polygon that defines the area of the station."
+                    }
+                },
+                "example": {
+                    "tdei_station_id": 30,
+                    "station_name": "Northgate",
+                    "polygon": {
+                        "type": "FeatureCollection",
+                        "features": [
+                            {
+                                "type": "Feature",
+                                "properties": {},
+                                "geometry": {
+                                    "type": "Polygon",
+                                    "coordinates": [
+                                        [
+                                            [
+                                                -122.20985412597656,
+                                                47.65868172346142
+                                            ],
+                                            [
+                                                -122.24418640136719,
+                                                47.65636923655089
+                                            ]
+                                        ]
+                                    ]
+                                }
+                            }
+                        ]
+                    }
+                }
+            },
+            "gtfs_flex_upload": {
+                "title": "Root Type for gtfs_flex",
+                "description": "represents a gtfs_flex data file. same as in consumer api, ",
+                "required": [
+                    "tdei_org_id",
+                    "collected_by",
+                    "collection_date",
+                    "collection_method",
+                    "valid_from",
+                    "flex_schema_version",
+                    "data_source",
+                    "tdei_service_id"
+                ],
+                "type": "object",
+                "properties": {
+                    "collected_by": {
+                        "description": "Description of who data was collected by. See Best Practices document for information on how to format this string.",
+                        "type": "string"
+                    },
+                    "collection_date": {
+                        "format": "date-time",
+                        "description": "Date-time that data was collected. If uploader includes time, time should be specified in UTC time. If uploader does not include time, time will be registered as 12:01am UTC time on the date specified.",
+                        "type": "string"
+                    },
+                    "collection_method": {
+                        "description": "Method by which the data was collected. See Best Practices document for information on how to format this string.",
+                        "type": "string"
+                    },
+                    "valid_from": {
+                        "format": "date-time",
+                        "description": "date from which this file is valid",
+                        "type": "string"
+                    },
+                    "valid_to": {
+                        "format": "date-time",
+                        "description": "date until which this data is valid",
+                        "type": "string"
+                    },
+                    "data_source": {
+                        "description": "Description of data source or sources from which the data was collected. See Best Practices document for information on how to format this string.",
+                        "type": "string"
+                    },
+                    "polygon": {
+                        "$ref": "#/components/schemas/polygon",
+                        "description": "Optional polygon that indicates the boundaries of data included in this file. "
+                    },
+                    "flex_schema_version": {
+                        "description": "version of gtfs flex schema this file conforms to",
+                        "type": "string"
+                    },
+                    "tdei_org_id": {
+                        "description": "tdei-assigned organization id. Represented as UUID. Organization ids can be retrieved using the /api/v1.0/organizations path.",
+                        "type": "string"
+                    },
+                    "tdei_service_id": {
+                        "description": "TDEI id of a GTFS Flex service",
+                        "type": "string"
+                    }
+                },
+                "example": "{\n    \"tdei_org_id\": \"5cfdf0f1-902b-4e2d-9297-b979b2d5d905\",\n    \"tdei_service_id\": \"\"29dd4f2e-981a-46dc-b00d-0dc1937b2e53,\n    \"collected_by\": \"See best practices document\",\n    \"collection_date\": \"2018-02-10T09:30Z\",\n    \"collection_method\": \"See best practices document\",\n    \"valid_from\": \"2018-02-10T09:30Z\",\n    \"valid_to\": \"2018-02-10T09:30Z\",\n    \"flex_schema_version\": \"v1.1\",\n    \"data_source\": \"See best practices document\",\n    \"polygon\": {\n        \"type\": \"FeatureCollection\",\n        \"features\": [\n            {\n                \"type\": \"Feature\",\n                \"properties\": {},\n                \"geometry\": {\n                    \"type\": \"Polygon\",\n                    \"coordinates\": [\n                        [\n                            [\n                                -122.20985412597656,\n                                47.65868172346142\n                            ],\n                            [\n                                -122.24418640136719,\n                                47.65636923655089\n                            ]\n                        ]\n                    ]\n                }\n            }\n        ]\n    }\n}"
+            },
+            "gtfs_pathways_upload": {
+                "title": "Root Type for gtfs_flex",
+                "description": "represents a gtfs_flex data file. same as in consumer api, ",
+                "required": [
+                    "tdei_org_id",
+                    "collected_by",
+                    "collection_date",
+                    "collection_method",
+                    "valid_from",
+                    "pathways_schema_version",
+                    "data_source",
+                    "tdei_station_id"
+                ],
+                "type": "object",
+                "properties": {
+                    "collected_by": {
+                        "description": "Description of who data was collected by. See Best Practices document for information on how to format this string.",
+                        "type": "string"
+                    },
+                    "collection_date": {
+                        "format": "date-time",
+                        "description": "Date-time that data was collected. If uploader includes time, time should be specified in UTC time. If uploader does not include time, time will be registered as 12:01am UTC time on the date specified.",
+                        "type": "string"
+                    },
+                    "collection_method": {
+                        "description": "Method by which the data was collected. See Best Practices document for information on how to format this string.",
+                        "type": "string"
+                    },
+                    "valid_from": {
+                        "format": "date-time",
+                        "description": "date from which this file is valid",
+                        "type": "string"
+                    },
+                    "valid_to": {
+                        "format": "date-time",
+                        "description": "date until which this data is valid",
+                        "type": "string"
+                    },
+                    "data_source": {
+                        "description": "Description of data source or sources from which the data was collected. See Best Practices document for information on how to format this string.",
+                        "type": "string"
+                    },
+                    "tdei_station_id": {
+                        "description": "tdei-assigned station id. Represented as UUID. Station ids can be retrieved using the /api/v1.0/stations path.",
+                        "type": "string"
+                    },
+                    "pathways_schema_version": {
+                        "description": "version of gtfs pathways schema this file conforms to",
+                        "type": "string"
+                    },
+                    "tdei_org_id": {
+                        "description": "tdei-assigned organization id. Represented as UUID. Organization ids can be retrieved using the /api/v1.0/organizations path.",
+                        "type": "string"
+                    }
+                },
+                "example": {
+                    "tdei_org_id": "5cfdf0f1-902b-4e2d-9297-b979b2d5d905",
+                    "tdei_station_id": "29dd4f2e-981a-46dc-b00d-0dc1937b2e53",
+                    "collected_by": "See best practices document",
+                    "collection_date": "2018-02-10T09:30Z",
+                    "collection_method": "See best practices document",
+                    "valid_from": "2018-02-10T09:30Z",
+                    "valid_to": "2018-02-10T09:30Z",
+                    "pathways_schema_version": "v1.1",
+                    "data_source": "See best practices document"
+                }
+            },
+            "osw_upload": {
+                "title": "Root Type for gtfs_flex",
+                "description": "represents a gtfs_flex data file. same as in consumer api, ",
+                "required": [
+                    "collected_by",
+                    "collection_date",
+                    "collection_method",
+                    "valid_from",
+                    "osw_schema_version",
+                    "data_source",
+                    "polygon",
+                    "tdei_org_id"
+                ],
+                "type": "object",
+                "properties": {
+                    "collected_by": {
+                        "description": "Description of who data was collected by. See Best Practices document for information on how to format this string.",
+                        "type": "string"
+                    },
+                    "collection_date": {
+                        "format": "date-time",
+                        "description": "Date-time that data was collected. If uploader includes time, time should be specified in UTC time. If uploader does not include time, time will be registered as 12:01am UTC time on the date specified.",
+                        "type": "string"
+                    },
+                    "collection_method": {
+                        "description": "Method by which the data was collected. See Best Practices document for information on how to format this string.",
+                        "type": "string"
+                    },
+                    "valid_from": {
+                        "format": "date-time",
+                        "description": "date from which this file is valid",
+                        "type": "string"
+                    },
+                    "valid_to": {
+                        "format": "date-time",
+                        "description": "date until which this data is valid",
+                        "type": "string"
+                    },
+                    "data_source": {
+                        "description": "Description of data source or sources from which the data was collected. See Best Practices document for information on how to format this string.",
+                        "type": "string"
+                    },
+                    "polygon": {
+                        "description": "Polygon that indicates the boundaries of data included in this file. ",
+                        "type": "string"
+                    },
+                    "osw_schema_version": {
+                        "description": "version of gtfs flex schema this file conforms to",
+                        "type": "string"
+                    },
+                    "tdei_org_id": {
+                        "description": "id of the organization which this file is for.",
+                        "type": "string"
+                    }
+                },
+                "example": {
+                    "collected_by": "See best practices document",
+                    "collection_date": "2018-02-10T09:30Z",
+                    "collection_method": "See best practices document",
+                    "valid_from": "2018-02-10T09:30Z",
+                    "valid_to": "2018-02-10T09:30Z",
+                    "osw_schema_version": "v1.1",
+                    "data_source": "See best practices document",
+                    "tdei_org_id": "4e991e7a-5c16-4ebf-ad31-3a3625bcca10",
+                    "polygon": {
+                        "type": "FeatureCollection",
+                        "features": [
+                            {
+                                "type": "Feature",
+                                "properties": {},
+                                "geometry": {
+                                    "type": "Polygon",
+                                    "coordinates": [
+                                        [
+                                            [
+                                                -122.20985412597656,
+                                                47.65868172346142
+                                            ],
+                                            [
+                                                -122.24418640136719,
+                                                47.65636923655089
+                                            ]
+                                        ]
+                                    ]
+                                }
+                            }
+                        ]
+                    }
+                }
+            },
+            "versionSpec": {
+                "title": "Root Type for versionSpec",
+                "description": "Specification for a data standards (GTFS-Flex, GTFS-Pathways, OSW) versions.",
+                "required": [
+                    "specification",
+                    "version",
+                    "documentation"
+                ],
+                "type": "object",
+                "properties": {
+                    "version": {
+                        "description": "version string",
+                        "type": "string"
+                    },
+                    "documentation": {
+                        "description": "link to the documentation",
+                        "type": "string"
+                    },
+                    "specification": {
+                        "description": "link to the specification for the data standard",
+                        "type": "string"
+                    }
+                },
+                "example": {
+                    "version": "v1.0",
+                    "documentation": "link to v1.0 documentation",
+                    "specification": "link to the v1.0 specification"
+                }
+            },
+            "pageable": {
+                "description": "provides information about pageability.",
+                "required": [
+                    "total_pages",
+                    "current_page",
+                    "total_items",
+                    "num_pages"
+                ],
+                "type": "object",
+                "properties": {
+                    "total_pages": {
+                        "description": "total number of pages in the response",
+                        "type": "integer"
+                    },
+                    "current_page": {
+                        "description": "the start page of the current response",
+                        "type": "integer"
+                    },
+                    "total_items": {
+                        "description": "The total number of items in this response.",
+                        "type": "integer"
+                    },
+                    "num_pages": {
+                        "description": "the number of pages provided in this response.",
+                        "type": "integer"
+                    }
+                },
+                "example": {
+                    "total_pages": 2,
+                    "current_page": 0,
+                    "total_items": 30,
+                    "num_pages": 20
+                }
+            },
+            "gtfs_flex_download_md": {
+                "title": "Root Type for gtfs_flex",
+                "description": "represents a gtfs_flex data file. same as in consumer api, ",
+                "required": [
+                    "tdei_org_id",
+                    "collected_by",
+                    "collection_date",
+                    "collection_method",
+                    "valid_from",
+                    "flex_schema_version",
+                    "confidence_level",
+                    "tdei_record_id",
+                    "data_source",
+                    "polygon",
+                    "download_url",
+                    "tdei_service_id"
+                ],
+                "type": "object",
+                "properties": {
+                    "collected_by": {
+                        "description": "Description of who data was collected by. See Best Practices document for information on how to format this string.",
+                        "type": "string"
+                    },
+                    "collection_date": {
+                        "format": "date-time",
+                        "description": "date-time that data was collected",
+                        "type": "string"
+                    },
+                    "collection_method": {
+                        "description": "Method by which the data was collected. See Best Practices document for information on how to format this string.",
+                        "type": "string"
+                    },
+                    "valid_from": {
+                        "format": "date-time",
+                        "description": "date from which this file is valid",
+                        "type": "string"
+                    },
+                    "valid_to": {
+                        "format": "date-time",
+                        "description": "date until which this data is valid",
+                        "type": "string"
+                    },
+                    "confidence_level": {
+                        "description": "tdei-generated confidence level. Confidence level range is: 0 (very low confidence) to 100 (very high confidence).",
+                        "type": "integer"
+                    },
+                    "data_source": {
+                        "description": "Description of data source or sources from which the data was collected. See Best Practices document for information on how to format this string.",
+                        "type": "string"
+                    },
+                    "polygon": {
+                        "$ref": "#/components/schemas/polygon",
+                        "description": "Polygon that indicates the boundaries of data included in this file. "
+                    },
+                    "tdei_record_id": {
+                        "description": "unique id identifying the file in the tdei system, can be used to retrieve the file itself.",
+                        "type": "string"
+                    },
+                    "flex_schema_version": {
+                        "description": "version of gtfs flex schema this file conforms to",
+                        "type": "string"
+                    },
+                    "download_url": {
+                        "description": "The url from which this file can be downloaded.",
+                        "type": "string"
+                    },
+                    "tdei_org_id": {
+                        "description": "tdei-assigned organization id. Represented as UUID. Organization ids can be retrieved using the /api/v1.0/organizations path.",
+                        "type": "string"
+                    },
+                    "tdei_service_id": {
+                        "description": "the id of the data service being downloaded from",
+                        "type": "string"
+                    }
+                },
+                "example": {
+                    "tdei_org_id": "5cfdf0f1-902b-4e2d-9297-b979b2d5d905",
+                    "tdei_feed_id": "29dd4f2e-981a-46dc-b00d-0dc1937b2e53",
+                    "collected_by": "See best practices document",
+                    "collection_date": "2018-02-10T09:30Z",
+                    "collection_method": "See best practices document",
+                    "valid_from": "2018-02-10T09:30Z",
+                    "valid_to": "2018-02-10T09:30Z",
+                    "flex_schema_version": "v1.1",
+                    "confidence_level": 41,
+                    "data_source": "See best practices document",
+                    "polygon": {
+                        "type": "FeatureCollection",
+                        "features": [
+                            {
+                                "type": "Feature",
+                                "properties": {},
+                                "geometry": {
+                                    "type": "Polygon",
+                                    "coordinates": [
+                                        [
+                                            [
+                                                -122.20985412597656,
+                                                47.65868172346142
+                                            ],
+                                            [
+                                                -122.24418640136719,
+                                                47.65636923655089
+                                            ]
+                                        ]
+                                    ]
+                                }
+                            }
+                        ]
+                    },
+                    "tdei_record_id": "4e991e7a-5c16-4ebf-ad31-3a3625bcca10",
+                    "download_url": "/api/v1/gtfs-flex/{tdei_record_id}"
+                }
+            },
+            "gtfs_flex_download": {
+                "description": "information included when providing a list of gtfs flex files.",
+                "required": [
+                    "pageable",
+                    "gtfs_flex_metadata"
+                ],
+                "type": "object",
+                "properties": {
+                    "pageable": {
+                        "$ref": "#/components/schemas/pageable",
+                        "description": "pageability information"
+                    },
+                    "gtfs_flex_metadata": {
+                        "description": "metadata about gtfs flex files",
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/gtfs_pathways_download_md"
+                        }
+                    }
+                }
+            },
+            "gtfs_pathways_download_md": {
+                "title": "Root Type for gtfs_flex",
+                "description": "represents a gtfs_flex data file. same as in consumer api, ",
+                "required": [
+                    "tdei_org_id",
+                    "collected_by",
+                    "collection_date",
+                    "collection_method",
+                    "valid_from",
+                    "pathways_schema_version",
+                    "confidence_level",
+                    "tdei_record_id",
+                    "data_source",
+                    "tdei_station_id",
+                    "download_url"
+                ],
+                "type": "object",
+                "properties": {
+                    "collected_by": {
+                        "description": "Description of who data was collected by. See Best Practices document for information on how to format this string.",
+                        "type": "string"
+                    },
+                    "collection_date": {
+                        "format": "date-time",
+                        "description": "date-time that data was collected",
+                        "type": "string"
+                    },
+                    "collection_method": {
+                        "description": "Method by which the data was collected. See Best Practices document for information on how to format this string.",
+                        "type": "string"
+                    },
+                    "valid_from": {
+                        "format": "date-time",
+                        "description": "date from which this file is valid",
+                        "type": "string"
+                    },
+                    "valid_to": {
+                        "format": "date-time",
+                        "description": "date until which this data is valid",
+                        "type": "string"
+                    },
+                    "confidence_level": {
+                        "description": "tdei-generated confidence level. Confidence level range is: 0 (very low confidence) to 100 (very high confidence).",
+                        "type": "integer"
+                    },
+                    "data_source": {
+                        "description": "Description of data source or sources from which the data was collected. See Best Practices document for information on how to format this string.",
+                        "type": "string"
+                    },
+                    "tdei_station_id": {
+                        "description": "tdei-assigned station id. Represented as UUID. Station ids can be retrieved using the /api/v1.0/stations path.",
+                        "type": "string"
+                    },
+                    "tdei_record_id": {
+                        "description": "unique id identifying the file in the tdei system, can be used to retrieve the file itself.",
+                        "type": "string"
+                    },
+                    "pathways_schema_version": {
+                        "description": "version of gtfs pathways schema this file conforms to",
+                        "type": "string"
+                    },
+                    "download_url": {
+                        "description": "The url from which this file can be downloaded.",
+                        "type": "string"
+                    },
+                    "tdei_org_id": {
+                        "description": "tdei-assigned organization id. Represented as UUID. Organization ids can be retrieved using the /api/v1.0/organizations path.",
+                        "type": "string"
+                    }
+                },
+                "example": "{\n    \"collected_by\": \"See best practices document\",\n    \"collection_date\": \"2018-02-10T09:30Z\",\n    \"collection_method\": \"See best practices document\",\n    \"confidence_level\": 41,\n    \"data_source\": \"See best practices document\",\n    \"download_url\": \"/api/v1/gtfs-pathways/{tdei_record_id}\",\n    \"pathways_schema_version\": \"v1.1\",\n    \"tdei_org_id\": \"5cfdf0f1-902b-4e2d-9297-b979b2d5d905\",\n    \"tdei_station_id\": \"29dd4f2e-981a-46dc-b00d-0dc1937b2e53\",\n    \"valid_from\": \"2018-02-10T09:30Z\",\n    \"valid_to\": \"2018-02-10T09:30Z\",\n    \"tdei_record_id\": \"4e991e7a-5c16-4ebf-ad31-3a3625bcca10\",\n}"
+            },
+            "gtfs_pathways_download": {
+                "description": "information to be provided along with a list of pathways files",
+                "required": [
+                    "pageable",
+                    "gtfs_pathways_metadata"
+                ],
+                "type": "object",
+                "properties": {
+                    "pageable": {
+                        "$ref": "#/components/schemas/pageable",
+                        "description": "pageability information"
+                    },
+                    "gtfs_pathways_metadata": {
+                        "description": "metadata about gtfs pathways files",
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/gtfs_pathways_download_md"
+                        }
+                    }
+                }
+            },
+            "osw_download_md": {
+                "title": "Root Type for gtfs_flex",
+                "description": "represents a gtfs_flex data file. same as in consumer api, ",
+                "required": [
+                    "collected_by",
+                    "collection_date",
+                    "collection_method",
+                    "valid_from",
+                    "osw_schema_version",
+                    "tdei_record_id",
+                    "data_source",
+                    "polygon",
+                    "confidence_level",
+                    "download_url"
+                ],
+                "type": "object",
+                "properties": {
+                    "collected_by": {
+                        "description": "Description of who data was collected by. See Best Practices document for information on how to format this string.",
+                        "type": "string"
+                    },
+                    "collection_date": {
+                        "format": "date-time",
+                        "description": "date-time that data was collected",
+                        "type": "string"
+                    },
+                    "collection_method": {
+                        "description": "Method by which the data was collected. See Best Practices document for information on how to format this string.",
+                        "type": "string"
+                    },
+                    "valid_from": {
+                        "format": "date-time",
+                        "description": "date from which this file is valid",
+                        "type": "string"
+                    },
+                    "valid_to": {
+                        "format": "date-time",
+                        "description": "date until which this data is valid",
+                        "type": "string"
+                    },
+                    "data_source": {
+                        "description": "Description of data source or sources from which the data was collected. See Best Practices document for information on how to format this string.",
+                        "type": "string"
+                    },
+                    "polygon": {
+                        "$ref": "#/components/schemas/polygon",
+                        "description": "Polygon that indicates the boundaries of data included in this file. ",
+                        "example": ""
+                    },
+                    "confidence_level": {
+                        "description": "tdei-generated confidence level. Confidence level range is: 0 (very low confidence) to 100 (very high confidence).",
+                        "type": "integer"
+                    },
+                    "tdei_record_id": {
+                        "description": "unique id identifying the file in the tdei system, can be used to retrieve the file itself.",
+                        "type": "string"
+                    },
+                    "osw_schema_version": {
+                        "description": "version of gtfs flex schema this file conforms to",
+                        "type": "string"
+                    },
+                    "download_url": {
+                        "description": "The url from which this file can be downloaded.",
+                        "type": "string"
+                    },
+                    "tdei_org_id": {
+                        "description": "id of the organization with which this file is associated",
+                        "type": "string"
+                    }
+                },
+                "example": {
+                    "collected_by": "See best practices document",
+                    "collection_date": "2018-02-10T09:30Z",
+                    "collection_method": "See best practices document",
+                    "valid_from": "2018-02-10T09:30Z",
+                    "valid_to": "2018-02-10T09:30Z",
+                    "osw_schema_version": "v1.1",
+                    "confidence_level": 41,
+                    "data_source": "See best practices document",
+                    "tdei_org_id": "4e991e7a-5c16-4ebf-ad31-3a3625bcca10",
+                    "tdei_record_id": "4e991e7a-5c16-4ebf-ad31-3a3625bcca10",
+                    "download_url": "/api/v1/osw/{tdei_record_id}",
+                    "polygon": {
+                        "type": "FeatureCollection",
+                        "features": [
+                            {
+                                "type": "Feature",
+                                "properties": {},
+                                "geometry": {
+                                    "type": "Polygon",
+                                    "coordinates": [
+                                        [
+                                            [
+                                                -122.20985412597656,
+                                                47.65868172346142
+                                            ],
+                                            [
+                                                -122.24418640136719,
+                                                47.65636923655089
+                                            ]
+                                        ]
+                                    ]
+                                }
+                            }
+                        ]
+                    }
+                }
+            },
+            "osw_download": {
+                "description": "information provided with a list of osw files to be downloaded",
+                "required": [
+                    "pageable",
+                    "osw_metadata"
+                ],
+                "type": "object",
+                "properties": {
+                    "pageable": {
+                        "$ref": "#/components/schemas/pageable",
+                        "description": "pageability information"
+                    },
+                    "osw_metadata": {
+                        "description": "metadata about the osw files",
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/osw_download_md"
+                        }
+                    }
+                }
+            },
+            "polygon": {
+                "title": "Root Type for polygon",
+                "description": "geo-json polygon",
+                "type": "object",
+                "properties": {
+                    "type": {
+                        "type": "string"
+                    },
+                    "features": {
+                        "type": "array",
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "type": {
+                                    "type": "string"
+                                },
+                                "properties": {
+                                    "type": "object"
+                                },
+                                "geometry": {
+                                    "type": "object",
+                                    "properties": {
+                                        "type": {
+                                            "type": "string"
+                                        },
+                                        "coordinates": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "array",
+                                                "items": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "format": "double",
+                                                        "type": "number"
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "example": {
+                    "type": "FeatureCollection",
+                    "features": [
+                        {
+                            "type": "Feature",
+                            "properties": {},
+                            "geometry": {
+                                "type": "Polygon",
+                                "coordinates": [
+                                    [
+                                        [
+                                            -122.20985412597656,
+                                            47.65868172346142
+                                        ],
+                                        [
+                                            -122.24418640136719,
+                                            47.65636923655089
+                                        ]
+                                    ]
+                                ]
+                            }
+                        }
+                    ]
+                }
+            },
+            "organization": {
+                "description": "Includes gtfs agency information and a tdei agency id. Necessary as gtfs agency id may not be unique across agencies.",
+                "required": [
+                    "org_name",
+                    "polygon"
+                ],
+                "type": "object",
+                "properties": {
+                    "org_name": {
+                        "description": "Organization name. For transit agencies, typically the agency name used in GTFS releases.",
+                        "type": "string"
+                    },
+                    "tdei_org_id": {
+                        "description": "tdei-assigned organization id. Necessary to ensure that organization ids are unique. Represented as a UUID.",
+                        "type": "string"
+                    },
+                    "polygon": {
+                        "$ref": "#/components/schemas/polygon",
+                        "description": "Polygon that defines the service area of the organization."
+                    },
+                    "description": {
+                        "description": "A one-sentence description of this organization.",
+                        "type": "string"
+                    }
+                },
+                "example": {
+                    "tdei_org_id": "29dd4f2e-981a-46dc-b00d-0dc1937b2e53",
+                    "org_name": "King County Metro",
+                    "description": "King County Metro provides transit services to King County, WA",
+                    "polygon": {
+                        "type": "FeatureCollection",
+                        "features": [
+                            {
+                                "type": "Feature",
+                                "properties": {},
+                                "geometry": {
+                                    "type": "Polygon",
+                                    "coordinates": [
+                                        [
+                                            [
+                                                -122.20985412597656,
+                                                47.65868172346142
+                                            ],
+                                            [
+                                                -122.24418640136719,
+                                                47.65636923655089
+                                            ]
+                                        ]
+                                    ]
+                                }
+                            }
+                        ]
+                    }
+                }
+            },
+            "service": {
+                "description": "Includes name and tdei id of a gtfs flex service. ",
+                "required": [
+                    "service_name",
+                    "polygon"
+                ],
+                "type": "object",
+                "properties": {
+                    "service_name": {
+                        "description": "name of the gtfs-flex service",
+                        "type": "string"
+                    },
+                    "tdei_service_id": {
+                        "description": "tdei assigned service id. Necessary to ensure that service ids are unique.",
+                        "type": "integer"
+                    },
+                    "polygon": {
+                        "$ref": "#/components/schemas/polygon",
+                        "description": "A polygon that defines the service area for this service."
+                    }
+                },
+                "example": {
+                    "tdei_service_id": "29dd4f2e-981a-46dc-b00d-0dc1937b2e53",
+                    "service_name": "Hyde Shuttle",
+                    "polygon": {
+                        "type": "FeatureCollection",
+                        "features": [
+                            {
+                                "type": "Feature",
+                                "properties": {},
+                                "geometry": {
+                                    "type": "Polygon",
+                                    "coordinates": [
+                                        [
+                                            [
+                                                -122.20985412597656,
+                                                47.65868172346142
+                                            ],
+                                            [
+                                                -122.24418640136719,
+                                                47.65636923655089
+                                            ]
+                                        ]
+                                    ]
+                                }
+                            }
+                        ]
                     }
                 }
             }
         },
         "responses": {
             "Unauthorized": {
-                "description": "This request is unauthorized. appID is invalid. Please obtain a valid application ID (appID)."
+                "description": "This request is unauthorized. The API key or Authorization token provided is not valid."
             },
             "InternalServerError": {
                 "description": "An server error occurred."
-            },
-            "FlexResponse": {
-                "content": {
-                    "application/json": {
-                        "schema": {
-                            "$ref": "#/components/schemas/gtfs_flex_download"
-                        }
-                    }
-                },
-                "description": "Response object for returning flex data. Includes metadata about flex file and uri to flex file."
-            },
-            "PathwaysResponse": {
-                "content": {
-                    "application/json": {
-                        "schema": {
-                            "$ref": "#/components/schemas/gtfs_pathways_download"
-                        }
-                    }
-                },
-                "description": "A list of urls with gtfs pathways data. "
-            },
-            "OSWResponse": {
-                "content": {
-                    "application/json": {
-                        "schema": {
-                            "$ref": "#/components/schemas/osw_download"
-                        }
-                    }
-                },
-                "description": "A url to a gzip'd geojson OSW file."
             },
             "PathwaysFileNotFound": {
                 "description": "A GTFS pathways file that matches the specified parameters (combination of agencyid, stationid, confidence level, and version) was not found."
@@ -1715,7 +1813,7 @@
                 "description": "OSW data meeting the specifications (version and bounding box) was not found.Data is expected to be available for King and Snohomish counties in Washington, Multnomah and Columbia counties in Oregon, and Baltimore and Harford counties in Maryland."
             },
             "InvalidRequest": {
-                "description": "The request was invalid. For example, trying to do a meta-data update that is not allowed."
+                "description": "The request was invalid. For example, the meta-data may not be valid."
             }
         },
         "securitySchemes": {
