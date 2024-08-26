@@ -1634,7 +1634,7 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "Returns the single zip file containing dataset.zip, metadata.json, changeset.txt (optional).",
+                        "description": "Returns the single zip file containing dataset.zip, metadata.json, changeset.zip (optional).",
                         "content": {
                             "application/octet-stream": {}
                         }
@@ -2214,7 +2214,7 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "Returns the single zip file containing dataset.zip, metadata.json, changeset.txt (optional).",
+                        "description": "Returns the single zip file containing dataset.zip, metadata.json, changeset.zip (optional).",
                         "content": {
                             "application/octet-stream": {}
                         }
@@ -2539,7 +2539,7 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "Returns the single zip file containing dataset.zip, metadata.json, changeset.txt (optional).",
+                        "description": "Returns the single zip file containing dataset.zip, metadata.json, changeset.zip (optional).",
                         "content": {
                             "application/octet-stream": {}
                         }
