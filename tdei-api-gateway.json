@@ -1437,29 +1437,28 @@
                 ],
                 "requestBody": {
                     "content": {
-                        "multipart/form-data":{
-                           "schema":{
-                               "type":"object",
-                               "properties":{
-                                   "file": {
-                                       "type":"string",
-                                       "format":"binary",
-                                       "description": "(Optional) GeoJSON polygon file to be used to calculate Quality Metric"
-                                   },
-                                   "algorithm" :{
-                                       "type":"string",
-                                       "enum":[
-                                           "ixn",
-                                           "fixed"
-                                       ],
-                                       "default":"ixn",
-                                       "description":"Algorithm to be used to calculate Quality Metric"
-                                   }
-                               }
-                           }
-           
+                        "multipart/form-data": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "file": {
+                                        "type": "string",
+                                        "format": "binary",
+                                        "description": "(Optional) GeoJSON polygon file to be used to calculate Quality Metric"
+                                    },
+                                    "algorithm": {
+                                        "type": "string",
+                                        "enum": [
+                                            "ixn",
+                                            "fixed"
+                                        ],
+                                        "default": "ixn",
+                                        "description": "Algorithm to be used to calculate Quality Metric"
+                                    }
+                                }
+                            }
                         }
-                     }
+                    }
                 },
                 "responses": {
                     "202": {
@@ -2842,6 +2841,84 @@
                     }
                 ]
             }
+        },
+        "/api/v1/system-metrics": {
+            "get": {
+                "tags": [
+                    "Metrics"
+                ],
+                "summary": "Gets the system metrics",
+                "description": "Gets the system metrics",
+                "operationId": "system-metrics",
+                "responses": {
+                    "200": {
+                        "description": "Successful response - Returns the system metrics.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "title": "SystemMetricsResponse",
+                                    "type": "object",
+                                    "$ref": "#/components/schemas/SystemMetrics",
+                                    "description": "Holds the response data"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated request"
+                    },
+                    "500": {
+                        "description": "Internal server error."
+                    }
+                },
+                "security": [
+                    {
+                        "ApiKey": []
+                    },
+                    {
+                        "AuthorizationToken": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/data-metrics": {
+            "get": {
+                "tags": [
+                    "Metrics"
+                ],
+                "summary": "Gets the data metrics",
+                "description": "Gets the data metrics",
+                "operationId": "data-metrics",
+                "responses": {
+                    "200": {
+                        "description": "Successful response - Returns the data metrics.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "title": "DataMetricsResponse",
+                                    "type": "object",
+                                    "$ref": "#/components/schemas/DataMetrics",
+                                    "description": "Holds the response data"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated request"
+                    },
+                    "500": {
+                        "description": "Internal server error."
+                    }
+                },
+                "security": [
+                    {
+                        "ApiKey": []
+                    },
+                    {
+                        "AuthorizationToken": []
+                    }
+                ]
+            }
         }
     },
     "components": {
@@ -3546,6 +3623,173 @@
                     "total_entity_count",
                     "overall_quality_metric",
                     "metric_details"
+                ]
+            },
+            "SystemMetrics": {
+                "type": "object",
+                "properties": {
+                    "systemMetrics": {
+                        "type": "object",
+                        "properties": {
+                            "totalUsers": {
+                                "type": "number"
+                            },
+                            "totalServices": {
+                                "type": "number"
+                            },
+                            "totalProjectGroups": {
+                                "type": "number"
+                            },
+                            "servicesByType": {
+                                "type": "object",
+                                "properties": {
+                                    "osw": {
+                                        "type": "number"
+                                    },
+                                    "flex": {
+                                        "type": "number"
+                                    },
+                                    "pathways": {
+                                        "type": "number"
+                                    }
+                                },
+                                "required": [
+                                    "osw",
+                                    "flex",
+                                    "pathways"
+                                ]
+                            }
+                        },
+                        "required": [
+                            "totalUsers",
+                            "totalServices",
+                            "totalProjectGroups",
+                            "servicesByType"
+                        ]
+                    },
+                    "datasetMetrics": {
+                        "type": "object",
+                        "properties": {
+                            "totalUploads": {
+                                "type": "object",
+                                "properties": {
+                                    "count": {
+                                        "type": "number"
+                                    },
+                                    "totalSizeMB": {
+                                        "type": "number"
+                                    }
+                                },
+                                "required": [
+                                    "count",
+                                    "totalSizeMB"
+                                ]
+                            }
+                        },
+                        "required": [
+                            "totalUploads"
+                        ]
+                    }
+                }
+            },
+            "DataMetrics": {
+                "type": "object",
+                "properties": {
+                    "dataMetrics": {
+                        "type": "object",
+                        "properties": {
+                            "datasetByType": {
+                                "type": "object",
+                                "properties": {
+                                    "osw": {
+                                        "type": "object",
+                                        "properties": {
+                                            "totalDatasets": {
+                                                "type": "number"
+                                            },
+                                            "totalSizeMB": {
+                                                "type": "number"
+                                            },
+                                            "aggregatedStats": {
+                                                "type": "object",
+                                                "properties": {
+                                                    "num_crossings": {
+                                                        "type": "number"
+                                                    },
+                                                    "length_of_sidewalks_km": {
+                                                        "type": "number"
+                                                    },
+                                                    "num_edges": {
+                                                        "type": "number"
+                                                    },
+                                                    "num_nodes": {
+                                                        "type": "number"
+                                                    },
+                                                    "concave_hull_area_km2": {
+                                                        "type": "number"
+                                                    }
+                                                },
+                                                "required": [
+                                                    "num_crossings",
+                                                    "length_of_sidewalks_km",
+                                                    "num_edges",
+                                                    "num_nodes",
+                                                    "concave_hull_area_km2"
+                                                ]
+                                            }
+                                        },
+                                        "required": [
+                                            "totalDatasets",
+                                            "totalSizeMB",
+                                            "aggregatedStats"
+                                        ]
+                                    },
+                                    "flex": {
+                                        "type": "object",
+                                        "properties": {
+                                            "totalDatasets": {
+                                                "type": "number"
+                                            },
+                                            "totalSizeMB": {
+                                                "type": "number"
+                                            }
+                                        },
+                                        "required": [
+                                            "totalDatasets",
+                                            "totalSizeMB"
+                                        ]
+                                    },
+                                    "pathways": {
+                                        "type": "object",
+                                        "properties": {
+                                            "totalDatasets": {
+                                                "type": "number"
+                                            },
+                                            "totalSizeMB": {
+                                                "type": "number"
+                                            }
+                                        },
+                                        "required": [
+                                            "totalDatasets",
+                                            "totalSizeMB"
+                                        ]
+                                    }
+                                },
+                                "required": [
+                                    "osw",
+                                    "flex",
+                                    "pathways"
+                                ]
+                            }
+                        },
+                        "required": [
+                            "datasetByType"
+                        ]
+                    }
+                },
+                "required": [
+                    "dataMetrics",
+                    "datasetMetrics"
                 ]
             }
         },
