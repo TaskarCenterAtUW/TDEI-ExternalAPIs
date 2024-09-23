@@ -95,6 +95,9 @@
                     "401": {
                         "description": "This request is unauthenticated."
                     },
+                    "403": {
+                        "description": "Email is not verified."
+                    },
                     "500": {
                         "description": "An server error occurred."
                     }
