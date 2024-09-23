@@ -800,7 +800,7 @@
                         "description": "The request was invalid."
                     },
                     "401": {
-                        "description": "This request is unauthenticated."
+                        "description": "Unauthenticated request. Check your access token."
                     },
                     "403": {
                         "description": "User unauthorized to clone the dataset."
@@ -926,7 +926,10 @@
                         }
                     },
                     "401": {
-                        "description": "This request is unauthenticated."
+                        "description": "Unauthenticated request. Check your access token."
+                    }, 
+                    "404": {
+                        "description": "job_id or tdei_project_group_id doesn't exist in the system"
                     },
                     "500": {
                         "description": "An Internal server error occured"
@@ -3441,7 +3444,7 @@
                     },
                     "current_stage": {
                         "type": "string",
-                        "description": "current stage of the job request"
+                        "description": "current processing stage of the job request"
                     },
                     "progress": {
                         "$ref": "#/components/schemas/JobProgress"
@@ -3458,7 +3461,7 @@
                     },
                     "current_stage": {
                         "type": "string",
-                        "description": "description of the current stage of the job"
+                        "description": "description of the current processing stage of the job"
                     },
                     "completed_stages": {
                         "type": "integer",
@@ -3479,7 +3482,7 @@
                     },
                     "last_updated_at": {
                         "type": "string",
-                        "description": "date-time that job was last updated",
+                        "description": "date-time when the job was last updated",
                         "example": "2024-06-17T06:32:35.842Z"
                     }
                 }
