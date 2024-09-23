@@ -733,7 +733,7 @@
                     "Common APIs"
                 ],
                 "summary": "Clones the provided dataset to the designated project group and service.",
-                "description": "Cloning of a dataset lets one to use the dataset being cloned as the base for a new dataset without having to upload the dataset. This operation clones the datafiles in the dataset `tdei_dataset_id` to the designated project group `tdei_project_group_id` and service `tdei_service_id`, and uses the metadata file provided as the metadata. Returns cloned dataset id if the action is successful. ",
+                "description": "Cloning of a dataset lets one to use the dataset being cloned as the base for a new dataset without having to upload the dataset. This operation clones the datafiles in the dataset `tdei_dataset_id` to the designated project group `tdei_project_group_id` and service `tdei_service_id`, and uses the metadata file provided along with the API as the metadata. Returns cloned dataset id if the action is successful. ",
                 "operationId": "cloneDataset",
                 "parameters": [
                     {
@@ -786,7 +786,7 @@
                 },
                 "responses": {
                     "200": {
-                        "description": "Cloning of the dataset successful.",
+                        "description": "Cloning of the dataset successful. ID of the newly cloned dataset returned.",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -803,10 +803,10 @@
                         "description": "This request is unauthenticated."
                     },
                     "403": {
-                        "description": "This request is unauthorized."
+                        "description": "User unauthorized to clone the dataset."
                     },
                     "404": {
-                        "description": "This request is unauthorized."
+                        "description": "tdei_dataset_id, tdei_project_group_id or tdei_service_id doesn't exist in the system"
                     },
                     "500": {
                         "description": "An Internal server error occured"
@@ -824,15 +824,24 @@
                 "tags": [
                     "Common APIs"
                 ],
-                "summary": "List job details.",
-                "description": "This endpoint returns a list of jobs with status and request details.",
+                "summary": "Shows the details of the jobs that the user has access to.",
+                "description": "Returns a list of jobs including request and reponse details. By default only shows the jobs that are submitted by the user.",
                 "operationId": "listJobs",
                 "parameters": [
                     {
                         "name": "job_id",
                         "in": "query",
-                        "description": "job_id uniquely identifies the job request.",
+                        "description": "Get the details for the job with id=job_id only.",
                         "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "tdei_project_group_id",
+                        "in": "query",
+                        "description": "project group id of the user for which the jobs are listed for.",
+                        "required": true,
                         "schema": {
                             "type": "string"
                         }
@@ -840,7 +849,7 @@
                     {
                         "name": "show_group_jobs",
                         "in": "query",
-                        "description": "Show all the jobs within the project group.",
+                        "description": "Make this `true` to see the jobs submitted by others also in the given project group",
                         "required": false,
                         "schema": {
                             "type": "boolean",
@@ -850,7 +859,7 @@
                     {
                         "name": "job_type",
                         "in": "query",
-                        "description": "job_type of the job.",
+                        "description": "Use this to filter for a specific type of job",
                         "required": false,
                         "schema": {
                             "type": "string",
@@ -868,7 +877,7 @@
                     {
                         "name": "status",
                         "in": "query",
-                        "description": "Status of the job.",
+                        "description": "Status of the job. Use this to filter jobs by a specific status",
                         "required": false,
                         "schema": {
                             "type": "string",
@@ -880,18 +889,9 @@
                         }
                     },
                     {
-                        "name": "tdei_project_group_id",
-                        "in": "query",
-                        "description": "project group id. Represented as a UUID.",
-                        "required": false,
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    {
                         "name": "page_no",
                         "in": "query",
-                        "description": "Integer, defaults to 1.",
+                        "description": "Pagination: page number to start the list from. Defaults to 1.",
                         "required": false,
                         "schema": {
                             "type": "integer",
@@ -3379,7 +3379,7 @@
                     },
                     "message": {
                         "type": "string",
-                        "description": "message of the job request"
+                        "description": "Response message from the job process. In case of an error, shows the error messages here."
                     },
                     "status": {
                         "type": "string",
@@ -3404,26 +3404,26 @@
                     },
                     "tdei_project_group_id": {
                         "type": "string",
-                        "description": "tdei project group id of the requested user",
+                        "description": "tdei project group id under which the job was requested",
                         "example": "4e991e7a-5c16-4ebf-ad31-3a3625bcca10"
                     },
                     "tdei_project_group_name": {
                         "type": "string",
-                        "description": "tdei project group name of the requested user",
+                        "description": "tdei project group nunder which the job was requested",
                         "example": "King County Metro"
                     },
                     "requested_by": {
                         "type": "string",
-                        "description": "requested by username of the job request",
+                        "description": "User who requested this job",
                         "example": "John.Doe@transit.com"
                     },
                     "request_input": {
                         "type": "object",
-                        "description": "request input of the job request"
+                        "description": "Inputs that were provided whlie requesting this job"
                     },
                     "response_props": {
                         "type": "object",
-                        "description": "response properties of the job request"
+                        "description": "Dynamic response object type that depends on the job_type"
                     },
                     "created_at": {
                         "type": "string",
