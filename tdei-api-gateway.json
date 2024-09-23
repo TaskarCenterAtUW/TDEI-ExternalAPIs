@@ -2919,6 +2919,40 @@
                     }
                 ]
             }
+        },
+        "/api/v1/recover-password": {
+            "post": {
+                "tags": [
+                    "Authentication"
+                ],
+                "summary": "Request for password recovery",
+                "description": "Request for password recovery, sends an email with a link to reset the password.",
+                "operationId": "recoverPassword",
+                "requestBody": {
+                    "content": {
+                        "text/plain": {
+                            "schema": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "Request for password recovery was successful. An email with a link to reset the password has been sent."
+                    },
+                    "401": {
+                        "description": "This request is unauthenticated."
+                    },
+                    "404": {
+                        "description": "User not found."
+                    },
+                    "500": {
+                        "description": "An server error occurred."
+                    }
+                }
+            }
         }
     },
     "components": {
