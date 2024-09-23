@@ -2926,7 +2926,7 @@
                     "Authentication"
                 ],
                 "summary": "Request for password recovery",
-                "description": "Request for password recovery, sends an email with a link to reset the password.",
+                "description": "Request for password recovery, sends an email with a link to reset the password for given email.",
                 "operationId": "recoverPassword",
                 "requestBody": {
                     "content": {
@@ -2941,6 +2941,40 @@
                 "responses": {
                     "200": {
                         "description": "Request for password recovery was successful. An email with a link to reset the password has been sent."
+                    },
+                    "401": {
+                        "description": "This request is unauthenticated."
+                    },
+                    "404": {
+                        "description": "User not found."
+                    },
+                    "500": {
+                        "description": "An server error occurred."
+                    }
+                }
+            }
+        },
+        "/api/v1/verify-email": {
+            "post": {
+                "tags": [
+                    "Authentication"
+                ],
+                "summary": "Request for email verification link",
+                "description": "Request for email verification link, sends an email verification link for given email",
+                "operationId": "verifyEmail",
+                "requestBody": {
+                    "content": {
+                        "text/plain": {
+                            "schema": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "Request for email verification was successful. An email verification link has been sent."
                     },
                     "401": {
                         "description": "This request is unauthenticated."
