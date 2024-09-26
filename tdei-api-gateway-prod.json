@@ -95,6 +95,9 @@
                     "401": {
                         "description": "This request is unauthenticated."
                     },
+                    "403": {
+                        "description": "Email is not verified."
+                    },
                     "500": {
                         "description": "An server error occurred."
                     }
@@ -659,129 +662,6 @@
                 ]
             }
         },
-        "/api/v1/jobs": {
-            "get": {
-                "tags": [
-                    "General"
-                ],
-                "summary": "List job details.",
-                "description": "This endpoint returns a list of jobs with status and request details.",
-                "operationId": "listJobs",
-                "parameters": [
-                    {
-                        "name": "job_id",
-                        "in": "query",
-                        "description": "job_id uniquely identifies the job request.",
-                        "required": false,
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    {
-                        "name": "show_group_jobs",
-                        "in": "query",
-                        "description": "Show all the jobs within the project group.",
-                        "required": false,
-                        "schema": {
-                            "type": "boolean",
-                            "default": false
-                        }
-                    },
-                    {
-                        "name": "job_type",
-                        "in": "query",
-                        "description": "job_type of the job.",
-                        "required": false,
-                        "schema": {
-                            "type": "string",
-                            "enum": [
-                                "Confidence-Calculate",
-                                "Dataset-Reformat",
-                                "Dataset-Upload",
-                                "Dataset-Publish",
-                                "Dataset-Validate",
-                                "Dataset-Queries",
-                                "Quality-Metric"
-                            ]
-                        }
-                    },
-                    {
-                        "name": "status",
-                        "in": "query",
-                        "description": "Status of the job.",
-                        "required": false,
-                        "schema": {
-                            "type": "string",
-                            "enum": [
-                                "COMPLETED",
-                                "FAILED",
-                                "IN-PROGRESS"
-                            ]
-                        }
-                    },
-                    {
-                        "name": "tdei_project_group_id",
-                        "in": "query",
-                        "description": "project group id. Represented as a UUID.",
-                        "required": false,
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    {
-                        "name": "page_no",
-                        "in": "query",
-                        "description": "Integer, defaults to 1.",
-                        "required": false,
-                        "schema": {
-                            "type": "integer",
-                            "format": "int32",
-                            "default": 1
-                        }
-                    },
-                    {
-                        "name": "page_size",
-                        "in": "query",
-                        "description": "page size. integer, between 1 to 50, defaults to 10.",
-                        "required": false,
-                        "schema": {
-                            "type": "integer",
-                            "format": "int32",
-                            "default": 10
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Successful response - returns an array of [JobDetails](#/components/schemas/JobDetails) entities.",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "array",
-                                    "items": {
-                                        "$ref": "#/components/schemas/JobDetails"
-                                    }
-                                }
-                            }
-                        }
-                    },
-                    "401": {
-                        "description": "This request is unauthenticated."
-                    },
-                    "500": {
-                        "description": "An server error occurred."
-                    }
-                },
-                "security": [
-                    {
-                        "ApiKey": []
-                    },
-                    {
-                        "AuthorizationToken": []
-                    }
-                ]
-            }
-        },
         "/api/v1/metadata/{tdei_dataset_id}": {
             "put": {
                 "tags": [
@@ -927,6 +807,129 @@
                     }
                 },
                 "security": [
+                    {
+                        "AuthorizationToken": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/jobs": {
+            "get": {
+                "tags": [
+                    "General"
+                ],
+                "summary": "List job details.",
+                "description": "This endpoint returns a list of jobs with status and request details.",
+                "operationId": "listJobs",
+                "parameters": [
+                    {
+                        "name": "job_id",
+                        "in": "query",
+                        "description": "job_id uniquely identifies the job request.",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "show_group_jobs",
+                        "in": "query",
+                        "description": "Show all the jobs within the project group.",
+                        "required": false,
+                        "schema": {
+                            "type": "boolean",
+                            "default": false
+                        }
+                    },
+                    {
+                        "name": "job_type",
+                        "in": "query",
+                        "description": "job_type of the job.",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "Confidence-Calculate",
+                                "Dataset-Reformat",
+                                "Dataset-Upload",
+                                "Dataset-Publish",
+                                "Dataset-Validate",
+                                "Dataset-Queries",
+                                "Quality-Metric"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "status",
+                        "in": "query",
+                        "description": "Status of the job.",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "COMPLETED",
+                                "FAILED",
+                                "IN-PROGRESS"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "tdei_project_group_id",
+                        "in": "query",
+                        "description": "project group id. Represented as a UUID.",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "page_no",
+                        "in": "query",
+                        "description": "Integer, defaults to 1.",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int32",
+                            "default": 1
+                        }
+                    },
+                    {
+                        "name": "page_size",
+                        "in": "query",
+                        "description": "page size. integer, between 1 to 50, defaults to 10.",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int32",
+                            "default": 10
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful response - returns an array of [JobDetails](#/components/schemas/JobDetails) entities.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/JobDetails"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "This request is unauthenticated."
+                    },
+                    "500": {
+                        "description": "An server error occurred."
+                    }
+                },
+                "security": [
+                    {
+                        "ApiKey": []
+                    },
                     {
                         "AuthorizationToken": []
                     }
@@ -1387,7 +1390,7 @@
                 },
                 "responses": {
                     "202": {
-                        "description": "The request has been accepted for processing. returns the job_id, unique identifier for convert job request.",
+                        "description": "The request has been accepted for processing. returns the job_id, unique identifier for confidence job request.",
                         "content": {
                             "application/text": {
                                 "schema": {
@@ -1437,9 +1440,25 @@
                 ],
                 "requestBody": {
                     "content": {
-                        "application/json": {
+                        "multipart/form-data": {
                             "schema": {
-                                "$ref": "#/components/schemas/QualityMetricRequest"
+                                "type": "object",
+                                "properties": {
+                                    "file": {
+                                        "type": "string",
+                                        "format": "binary",
+                                        "description": "(Optional) GeoJSON polygon file to be used to calculate Quality Metric"
+                                    },
+                                    "algorithm": {
+                                        "type": "string",
+                                        "enum": [
+                                            "ixn",
+                                            "fixed"
+                                        ],
+                                        "default": "ixn",
+                                        "description": "Algorithm to be used to calculate Quality Metric"
+                                    }
+                                }
                             }
                         }
                     }
@@ -2825,6 +2844,152 @@
                     }
                 ]
             }
+        },
+        "/api/v1/system-metrics": {
+            "get": {
+                "tags": [
+                    "Metrics"
+                ],
+                "summary": "Gets the system metrics",
+                "description": "Gets the system metrics",
+                "operationId": "system-metrics",
+                "responses": {
+                    "200": {
+                        "description": "Successful response - Returns the system metrics.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "title": "SystemMetricsResponse",
+                                    "type": "object",
+                                    "$ref": "#/components/schemas/SystemMetrics",
+                                    "description": "Holds the response data"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated request"
+                    },
+                    "500": {
+                        "description": "Internal server error."
+                    }
+                },
+                "security": [
+                    {
+                        "ApiKey": []
+                    },
+                    {
+                        "AuthorizationToken": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/data-metrics": {
+            "get": {
+                "tags": [
+                    "Metrics"
+                ],
+                "summary": "Gets the data metrics",
+                "description": "Gets the data metrics",
+                "operationId": "data-metrics",
+                "responses": {
+                    "200": {
+                        "description": "Successful response - Returns the data metrics.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "title": "DataMetricsResponse",
+                                    "type": "object",
+                                    "$ref": "#/components/schemas/DataMetrics",
+                                    "description": "Holds the response data"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated request"
+                    },
+                    "500": {
+                        "description": "Internal server error."
+                    }
+                },
+                "security": [
+                    {
+                        "ApiKey": []
+                    },
+                    {
+                        "AuthorizationToken": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/recover-password": {
+            "post": {
+                "tags": [
+                    "Authentication"
+                ],
+                "summary": "Request for password recovery",
+                "description": "Request for password recovery, sends an email with a link to reset the password for given email.",
+                "operationId": "recoverPassword",
+                "requestBody": {
+                    "content": {
+                        "text/plain": {
+                            "schema": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "Request for password recovery was successful. An email with a link to reset the password has been sent."
+                    },
+                    "401": {
+                        "description": "This request is unauthenticated."
+                    },
+                    "404": {
+                        "description": "User not found."
+                    },
+                    "500": {
+                        "description": "An server error occurred."
+                    }
+                }
+            }
+        },
+        "/api/v1/verify-email": {
+            "post": {
+                "tags": [
+                    "Authentication"
+                ],
+                "summary": "Request for email verification link",
+                "description": "Request for email verification link, sends an email verification link for given email",
+                "operationId": "verifyEmail",
+                "requestBody": {
+                    "content": {
+                        "text/plain": {
+                            "schema": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "Request for email verification was successful. An email verification link has been sent."
+                    },
+                    "401": {
+                        "description": "This request is unauthenticated."
+                    },
+                    "404": {
+                        "description": "User not found."
+                    },
+                    "500": {
+                        "description": "An server error occurred."
+                    }
+                }
+            }
         }
     },
     "components": {
@@ -3529,6 +3694,173 @@
                     "total_entity_count",
                     "overall_quality_metric",
                     "metric_details"
+                ]
+            },
+            "SystemMetrics": {
+                "type": "object",
+                "properties": {
+                    "systemMetrics": {
+                        "type": "object",
+                        "properties": {
+                            "totalUsers": {
+                                "type": "number"
+                            },
+                            "totalServices": {
+                                "type": "number"
+                            },
+                            "totalProjectGroups": {
+                                "type": "number"
+                            },
+                            "servicesByType": {
+                                "type": "object",
+                                "properties": {
+                                    "osw": {
+                                        "type": "number"
+                                    },
+                                    "flex": {
+                                        "type": "number"
+                                    },
+                                    "pathways": {
+                                        "type": "number"
+                                    }
+                                },
+                                "required": [
+                                    "osw",
+                                    "flex",
+                                    "pathways"
+                                ]
+                            }
+                        },
+                        "required": [
+                            "totalUsers",
+                            "totalServices",
+                            "totalProjectGroups",
+                            "servicesByType"
+                        ]
+                    },
+                    "datasetMetrics": {
+                        "type": "object",
+                        "properties": {
+                            "totalUploads": {
+                                "type": "object",
+                                "properties": {
+                                    "count": {
+                                        "type": "number"
+                                    },
+                                    "totalSizeMB": {
+                                        "type": "number"
+                                    }
+                                },
+                                "required": [
+                                    "count",
+                                    "totalSizeMB"
+                                ]
+                            }
+                        },
+                        "required": [
+                            "totalUploads"
+                        ]
+                    }
+                }
+            },
+            "DataMetrics": {
+                "type": "object",
+                "properties": {
+                    "dataMetrics": {
+                        "type": "object",
+                        "properties": {
+                            "datasetByType": {
+                                "type": "object",
+                                "properties": {
+                                    "osw": {
+                                        "type": "object",
+                                        "properties": {
+                                            "totalDatasets": {
+                                                "type": "number"
+                                            },
+                                            "totalSizeMB": {
+                                                "type": "number"
+                                            },
+                                            "aggregatedStats": {
+                                                "type": "object",
+                                                "properties": {
+                                                    "num_crossings": {
+                                                        "type": "number"
+                                                    },
+                                                    "length_of_sidewalks_km": {
+                                                        "type": "number"
+                                                    },
+                                                    "num_edges": {
+                                                        "type": "number"
+                                                    },
+                                                    "num_nodes": {
+                                                        "type": "number"
+                                                    },
+                                                    "concave_hull_area_km2": {
+                                                        "type": "number"
+                                                    }
+                                                },
+                                                "required": [
+                                                    "num_crossings",
+                                                    "length_of_sidewalks_km",
+                                                    "num_edges",
+                                                    "num_nodes",
+                                                    "concave_hull_area_km2"
+                                                ]
+                                            }
+                                        },
+                                        "required": [
+                                            "totalDatasets",
+                                            "totalSizeMB",
+                                            "aggregatedStats"
+                                        ]
+                                    },
+                                    "flex": {
+                                        "type": "object",
+                                        "properties": {
+                                            "totalDatasets": {
+                                                "type": "number"
+                                            },
+                                            "totalSizeMB": {
+                                                "type": "number"
+                                            }
+                                        },
+                                        "required": [
+                                            "totalDatasets",
+                                            "totalSizeMB"
+                                        ]
+                                    },
+                                    "pathways": {
+                                        "type": "object",
+                                        "properties": {
+                                            "totalDatasets": {
+                                                "type": "number"
+                                            },
+                                            "totalSizeMB": {
+                                                "type": "number"
+                                            }
+                                        },
+                                        "required": [
+                                            "totalDatasets",
+                                            "totalSizeMB"
+                                        ]
+                                    }
+                                },
+                                "required": [
+                                    "osw",
+                                    "flex",
+                                    "pathways"
+                                ]
+                            }
+                        },
+                        "required": [
+                            "datasetByType"
+                        ]
+                    }
+                },
+                "required": [
+                    "dataMetrics",
+                    "datasetMetrics"
                 ]
             }
         },
