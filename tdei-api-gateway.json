@@ -95,6 +95,9 @@
                     "401": {
                         "description": "This request is unauthenticated."
                     },
+                    "403": {
+                        "description": "Email is not verified."
+                    },
                     "500": {
                         "description": "An server error occurred."
                     }
@@ -852,7 +855,8 @@
                                 "Dataset-Publish",
                                 "Dataset-Validate",
                                 "Dataset-Queries",
-                                "Quality-Metric"
+                                "Quality-Metric",
+                                "Dataset-Incline-Tag"
                             ]
                         }
                     },
@@ -1416,13 +1420,13 @@
                 }
             }
         },
-        "/api/v1/osw/quality-metric/{tdei_dataset_id}": {
+        "/api/v1/osw/quality-metric/ixn/{tdei_dataset_id}": {
             "post": {
                 "tags": [
                     "OSW"
                 ],
-                "summary": "Initiate Quality metric calculation for a dataset",
-                "description": "Initiates the Quality calculation for requested tdei_dataset_id with list of algorithms and optional persistence. Returns the job_id for quality metric calculation request. For checking the status, refer to the Location header in the response, which contains the URL for the status API endpoint.",
+                "summary": "Initiate Intersection Quality metric calculation for a dataset",
+                "description": "Initiates the Intersection Quality calculation for requested tdei_dataset_id with optional intersection polygon file. Returns the job_id for quality metric calculation request. For checking the status, refer to the Location header in the response, which contains the URL for the status API endpoint.",
                 "operationId": "oswQualityCalculate",
                 "parameters": [
                     {
@@ -1437,9 +1441,16 @@
                 ],
                 "requestBody": {
                     "content": {
-                        "application/json": {
+                        "multipart/form-data": {
                             "schema": {
-                                "$ref": "#/components/schemas/QualityMetricRequest"
+                                "type": "object",
+                                "properties": {
+                                    "file": {
+                                        "type": "string",
+                                        "format": "binary",
+                                        "description": "(Optional) GeoJSON intersection polygon file to be used to calculate Quality Metric"
+                                    }
+                                }
                             }
                         }
                     }
@@ -1947,6 +1958,64 @@
                     {
                         "ApiKey": []
                     },
+                    {
+                        "AuthorizationToken": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/osw/dataset-inclination/{tdei_dataset_id}": {
+            "post": {
+                "tags": [
+                    "OSW"
+                ],
+                "summary": "Adds the incline tag to the dataset",
+                "description": "Adds the \"incline\" tag to a specified dataset identified by the tdei_dataset_id. It takes the dataset ID as a parameter, processes the dataset to calculate the incline information, and updates the dataset with the incline tag. Returns the job_id for the incline calculation request.",
+                "operationId": "datasetTagIncline",
+                "parameters": [
+                    {
+                        "name": "tdei_dataset_id",
+                        "in": "path",
+                        "description": "tdei_dataset_id for a dataset, represented as a uuid",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "202": {
+                        "description": "The request has been accepted for processing. returns the job_id, unique identifier for the request.",
+                        "content": {
+                            "application/text": {
+                                "schema": {
+                                    "type": "string"
+                                }
+                            }
+                        },
+                        "headers": {
+                            "Location": {
+                                "schema": {
+                                    "type": "string"
+                                },
+                                "description": "Location api to find the status of request processing"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "The request was invalid."
+                    },
+                    "401": {
+                        "description": "This request is unauthenticated."
+                    },
+                    "403": {
+                        "description": "This request is unauthorized."
+                    },
+                    "500": {
+                        "description": "An server error occurred."
+                    }
+                },
+                "security": [
                     {
                         "AuthorizationToken": []
                     }
@@ -2825,6 +2894,152 @@
                     }
                 ]
             }
+        },
+        "/api/v1/system-metrics": {
+            "get": {
+                "tags": [
+                    "Metrics"
+                ],
+                "summary": "Gets the system metrics",
+                "description": "Gets the system metrics",
+                "operationId": "system-metrics",
+                "responses": {
+                    "200": {
+                        "description": "Successful response - Returns the system metrics.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "title": "SystemMetricsResponse",
+                                    "type": "object",
+                                    "$ref": "#/components/schemas/SystemMetrics",
+                                    "description": "Holds the response data"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated request"
+                    },
+                    "500": {
+                        "description": "Internal server error."
+                    }
+                },
+                "security": [
+                    {
+                        "ApiKey": []
+                    },
+                    {
+                        "AuthorizationToken": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/data-metrics": {
+            "get": {
+                "tags": [
+                    "Metrics"
+                ],
+                "summary": "Gets the data metrics",
+                "description": "Gets the data metrics",
+                "operationId": "data-metrics",
+                "responses": {
+                    "200": {
+                        "description": "Successful response - Returns the data metrics.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "title": "DataMetricsResponse",
+                                    "type": "object",
+                                    "$ref": "#/components/schemas/DataMetrics",
+                                    "description": "Holds the response data"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated request"
+                    },
+                    "500": {
+                        "description": "Internal server error."
+                    }
+                },
+                "security": [
+                    {
+                        "ApiKey": []
+                    },
+                    {
+                        "AuthorizationToken": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/recover-password": {
+            "post": {
+                "tags": [
+                    "Authentication"
+                ],
+                "summary": "Request for password recovery",
+                "description": "Request for password recovery, sends an email with a link to reset the password for given email.",
+                "operationId": "recoverPassword",
+                "requestBody": {
+                    "content": {
+                        "text/plain": {
+                            "schema": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "Request for password recovery was successful. An email with a link to reset the password has been sent."
+                    },
+                    "401": {
+                        "description": "This request is unauthenticated."
+                    },
+                    "404": {
+                        "description": "User not found."
+                    },
+                    "500": {
+                        "description": "An server error occurred."
+                    }
+                }
+            }
+        },
+        "/api/v1/verify-email": {
+            "post": {
+                "tags": [
+                    "Authentication"
+                ],
+                "summary": "Request for email verification link",
+                "description": "Request for email verification link, sends an email verification link for given email",
+                "operationId": "verifyEmail",
+                "requestBody": {
+                    "content": {
+                        "text/plain": {
+                            "schema": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "Request for email verification was successful. An email verification link has been sent."
+                    },
+                    "401": {
+                        "description": "This request is unauthenticated."
+                    },
+                    "404": {
+                        "description": "User not found."
+                    },
+                    "500": {
+                        "description": "An server error occurred."
+                    }
+                }
+            }
         }
     },
     "components": {
@@ -3529,6 +3744,173 @@
                     "total_entity_count",
                     "overall_quality_metric",
                     "metric_details"
+                ]
+            },
+            "SystemMetrics": {
+                "type": "object",
+                "properties": {
+                    "systemMetrics": {
+                        "type": "object",
+                        "properties": {
+                            "totalUsers": {
+                                "type": "number"
+                            },
+                            "totalServices": {
+                                "type": "number"
+                            },
+                            "totalProjectGroups": {
+                                "type": "number"
+                            },
+                            "servicesByType": {
+                                "type": "object",
+                                "properties": {
+                                    "osw": {
+                                        "type": "number"
+                                    },
+                                    "flex": {
+                                        "type": "number"
+                                    },
+                                    "pathways": {
+                                        "type": "number"
+                                    }
+                                },
+                                "required": [
+                                    "osw",
+                                    "flex",
+                                    "pathways"
+                                ]
+                            }
+                        },
+                        "required": [
+                            "totalUsers",
+                            "totalServices",
+                            "totalProjectGroups",
+                            "servicesByType"
+                        ]
+                    },
+                    "datasetMetrics": {
+                        "type": "object",
+                        "properties": {
+                            "totalUploads": {
+                                "type": "object",
+                                "properties": {
+                                    "count": {
+                                        "type": "number"
+                                    },
+                                    "totalSizeMB": {
+                                        "type": "number"
+                                    }
+                                },
+                                "required": [
+                                    "count",
+                                    "totalSizeMB"
+                                ]
+                            }
+                        },
+                        "required": [
+                            "totalUploads"
+                        ]
+                    }
+                }
+            },
+            "DataMetrics": {
+                "type": "object",
+                "properties": {
+                    "dataMetrics": {
+                        "type": "object",
+                        "properties": {
+                            "datasetByType": {
+                                "type": "object",
+                                "properties": {
+                                    "osw": {
+                                        "type": "object",
+                                        "properties": {
+                                            "totalDatasets": {
+                                                "type": "number"
+                                            },
+                                            "totalSizeMB": {
+                                                "type": "number"
+                                            },
+                                            "aggregatedStats": {
+                                                "type": "object",
+                                                "properties": {
+                                                    "num_crossings": {
+                                                        "type": "number"
+                                                    },
+                                                    "length_of_sidewalks_km": {
+                                                        "type": "number"
+                                                    },
+                                                    "num_edges": {
+                                                        "type": "number"
+                                                    },
+                                                    "num_nodes": {
+                                                        "type": "number"
+                                                    },
+                                                    "concave_hull_area_km2": {
+                                                        "type": "number"
+                                                    }
+                                                },
+                                                "required": [
+                                                    "num_crossings",
+                                                    "length_of_sidewalks_km",
+                                                    "num_edges",
+                                                    "num_nodes",
+                                                    "concave_hull_area_km2"
+                                                ]
+                                            }
+                                        },
+                                        "required": [
+                                            "totalDatasets",
+                                            "totalSizeMB",
+                                            "aggregatedStats"
+                                        ]
+                                    },
+                                    "flex": {
+                                        "type": "object",
+                                        "properties": {
+                                            "totalDatasets": {
+                                                "type": "number"
+                                            },
+                                            "totalSizeMB": {
+                                                "type": "number"
+                                            }
+                                        },
+                                        "required": [
+                                            "totalDatasets",
+                                            "totalSizeMB"
+                                        ]
+                                    },
+                                    "pathways": {
+                                        "type": "object",
+                                        "properties": {
+                                            "totalDatasets": {
+                                                "type": "number"
+                                            },
+                                            "totalSizeMB": {
+                                                "type": "number"
+                                            }
+                                        },
+                                        "required": [
+                                            "totalDatasets",
+                                            "totalSizeMB"
+                                        ]
+                                    }
+                                },
+                                "required": [
+                                    "osw",
+                                    "flex",
+                                    "pathways"
+                                ]
+                            }
+                        },
+                        "required": [
+                            "datasetByType"
+                        ]
+                    }
+                },
+                "required": [
+                    "dataMetrics",
+                    "datasetMetrics"
                 ]
             }
         },
