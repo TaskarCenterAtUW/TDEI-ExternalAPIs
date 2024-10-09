@@ -243,6 +243,15 @@
                         }
                     },
                     {
+                        "name": "tdei_service_id",
+                        "in": "query",
+                        "description": "tdei service id.",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
                         "name": "valid_from",
                         "in": "query",
                         "description": "Valid from date time. date-time for which the caller is interested in obtaining files.",
@@ -628,6 +637,37 @@
                             "type": "integer",
                             "format": "int32",
                             "default": 10
+                        }
+                    },
+                    {
+                        "name": "sort_field",
+                        "in": "query",
+                        "description": "Sort field. By default, it is by uploaded timestamp.",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "status",
+                                "valid_from",
+                                "valid_to",
+                                "uploaded_timestamp",
+                                "project_group_name"
+                            ],
+                            "default": "uploaded_timestamp"
+                        }
+                    },
+                    {
+                        "name": "sort_order",
+                        "in": "query",
+                        "description": "Sort order. By default, it is in descending order.",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "asc",
+                                "desc"
+                            ],
+                            "default": "desc"
                         }
                     }
                 ],
