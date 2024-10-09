@@ -1169,7 +1169,7 @@
                     {
                         "name": "tdei_dataset_id",
                         "in": "path",
-                        "description": "tdei_dataset_id for a file, represented as a uuid",
+                        "description": "Dataset id of the dataset to be published. ",
                         "required": true,
                         "schema": {
                             "type": "string"
@@ -1178,7 +1178,7 @@
                 ],
                 "responses": {
                     "202": {
-                        "description": "The request has been accepted for processing. returns the job_id, unique identifier for publish request.",
+                        "description": "The publish request has been accepted for processing. It returns a `job_id`, a unique identifier for the published request, which can be used to track the status of the request. The endpoint to check the status is provided in the location header of the response.",
                         "content": {
                             "application/text": {
                                 "schema": {
@@ -1196,16 +1196,16 @@
                         }
                     },
                     "400": {
-                        "description": "The request was invalid."
+                        "description": "The request fails to match the publish criteria."
                     },
                     "401": {
-                        "description": "This request is unauthenticated."
+                        "description": "Unauthenticated request. Check your access token."
                     },
                     "403": {
-                        "description": "This request is unauthorized."
+                        "description": "User unauthorized to publish the dataset."
                     },
                     "404": {
-                        "description": "A file with the specified tdei_dataset_id was not found. Use the [GET] /api/v1/osw endpoint to find valid file ids.",
+                        "description": "Dataset with the specified tdei_dataset_id was not found. Use the [GET] /api/v1/osw endpoint to find valid dataset ids.",
                         "content": {
                             "text/plain": {}
                         }
@@ -1243,7 +1243,8 @@
                                 "properties": {
                                     "dataset": {
                                         "type": "string",
-                                        "format": "binary"
+                                        "format": "binary",
+                                        "description":"OSW file which is expected to be a zip file, internally has {nodes, edges, points}.geojson. If the extensions are present, then the zip file will have {nodes, edges, points}.extension.geojson files"
                                     }
                                 }
                             }
@@ -1253,7 +1254,7 @@
                 },
                 "responses": {
                     "202": {
-                        "description": "The request has been accepted for processing. returns the job_id, unique identifier for validation job request.",
+                        "description": "The validate request has been accepted for processing. It returns a `job_id`, a unique identifier for the validate request, which can be used to track the status of the request. The endpoint to check the status is provided in the location header of the response.",
                         "content": {
                             "application/text": {
                                 "schema": {
@@ -1271,13 +1272,13 @@
                         }
                     },
                     "400": {
-                        "description": "The request was invalid."
+                        "description": "Dataset input file not found."
                     },
                     "401": {
-                        "description": "This request is unauthenticated."
+                        "description": "Unauthenticated request. Check your access token."
                     },
                     "403": {
-                        "description": "This request is unauthorized."
+                        "description": "User unauthorized to validate the dataset."
                     },
                     "500": {
                         "description": "An Internal server error occured"
@@ -1608,14 +1609,14 @@
                 "tags": [
                     "OSW"
                 ],
-                "summary": "downloads the OSW files as zip",
-                "description": "returns a specific osw file as zip containing metadata, dataset, and changeset identified by the tdei_dataset_id",
+                "summary": "Downloads the OSW dataset",
+                "description": "Downloads a specific OSW dataset as a zip file, which includes `{nodes, edges, points}.geojson` files. If file extensions are specified, the zip will contain `{nodes, edges, points}.extension.geojson` files, as well as metadata and a changeset file, if available.",
                 "operationId": "getOswFile",
                 "parameters": [
                     {
                         "name": "tdei_dataset_id",
                         "in": "path",
-                        "description": "tdei_dataset_id for a file, represented as a uuid",
+                        "description": "Dataset id of the dataset to be downloaded.",
                         "required": true,
                         "schema": {
                             "type": "string"
@@ -1624,7 +1625,7 @@
                     {
                         "name": "format",
                         "in": "query",
-                        "description": "File format to download. Default to osw",
+                        "description": "The system maintains two formats for the OSW dataset: OSW and OSM. By default, the OSW format is downloaded.",
                         "required": false,
                         "schema": {
                             "type": "string",
@@ -1638,7 +1639,7 @@
                     {
                         "name": "file_version",
                         "in": "query",
-                        "description": "File version to download. Default to latest",
+                        "description": "The system supports two versions for the OSW dataset: Latest and Original.The Latest version includes any recent modifications, while the Original version is the one initially uploaded when creating the dataset. By default, the latest version is downloaded.",
                         "required": false,
                         "schema": {
                             "type": "string",
@@ -1652,16 +1653,19 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "Returns the single zip file containing dataset.zip, metadata.json, changeset.zip (optional).",
+                        "description": "Streams the dataset zip file.",
                         "content": {
                             "application/octet-stream": {}
                         }
                     },
+                    "400":{
+                      "description": "File version requested is invalid/ tdei_dataset_id is not of type OSW."
+                    },
                     "401": {
-                        "description": "This request is unauthenticated."
+                        "description": "Unauthenticated request. Check your access token."
                     },
                     "404": {
-                        "description": "A file with the specified tdei_dataset_id was not found. Use the /api/v1/osw endpoints to find valid file ids.",
+                        "description": "A file with the specified tdei_dataset_id was not found. Use the /api/v1/osw endpoints to find valid file ids or Request file format not found.",
                         "content": {
                             "application/json": {}
                         }
@@ -2087,13 +2091,13 @@
                     "GTFS Flex"
                 ],
                 "summary": "Publishes the GTFS Flex dataset for the tdei_dataset_id",
-                "description": "Publishes an GTFS Flex dataset that was previously uploaded via the [POST] /gtfs-flex endpoint, marking it as an official release for the mobility service. This official release status ensures visibility to all TDEI data consumers. Returns the job_id of the uploaded file. For checking the status of the upload, refer to the Location header in the response, which contains the URL for the status API endpoint.",
+                "description": "Publishes a GTFS Flex dataset that was previously uploaded via the [POST] /gtfs-flex endpoint, marking it as an official release for the mobility service. This official release status ensures visibility to all TDEI data consumers. Returns the job_id of the uploaded file. For checking the status of the upload, refer to the Location header in the response, which contains the URL for the status API endpoint.",
                 "operationId": "publishGtfsFlexFile",
                 "parameters": [
                     {
                         "name": "tdei_dataset_id",
                         "in": "path",
-                        "description": "tdei_dataset_id for a file, represented as a uuid",
+                        "description": "Dataset id of the dataset to be published",
                         "required": true,
                         "schema": {
                             "type": "string"
@@ -2102,7 +2106,7 @@
                 ],
                 "responses": {
                     "202": {
-                        "description": "The request has been accepted for processing. returns the job_id, unique identifier for publish request.",
+                        "description": "The publish request has been accepted for processing. It returns a `job_id`, a unique identifier for the published request, which can be used to track the status of the request. The endpoint to check the status is provided in the location header of the response.",
                         "content": {
                             "application/text": {
                                 "schema": {
@@ -2120,16 +2124,16 @@
                         }
                     },
                     "400": {
-                        "description": "The request was invalid."
+                        "description": "The request fails to match the publish criteria."
                     },
                     "401": {
-                        "description": "This request is unauthenticated."
+                        "description": "Unauthenticated request. Check your access token."
                     },
                     "403": {
-                        "description": "This request is unauthorized."
+                        "description": "User unauthorized to publish the dataset."
                     },
                     "404": {
-                        "description": "A file with the specified tdei_dataset_id was not found. Use the [GET] /api/v1/gtfs-flex endpoint to find valid file ids.",
+                        "description": "Dataset with the specified tdei_dataset_id was not found. Use the [GET] /api/v1/gtfs-flex endpoint to find valid dataset ids.",
                         "content": {
                             "text/plain": {}
                         }
@@ -2167,7 +2171,8 @@
                                 "properties": {
                                     "dataset": {
                                         "type": "string",
-                                        "format": "binary"
+                                        "format": "binary",
+                                        "description":"GTFS Flex file which is expected to be a zip file. It typically includes .txt files that define details such as service areas and stops for flexible transit routes."
                                     }
                                 }
                             }
@@ -2177,7 +2182,7 @@
                 },
                 "responses": {
                     "202": {
-                        "description": "The request has been accepted for processing. returns the job_id, unique identifier for validation job request.",
+                        "description": "The validate request has been accepted for processing. It returns a `job_id`, a unique identifier for the validate request, which can be used to track the status of the validate request. The endpoint to check the status is provided in the location header of the response.",
                         "content": {
                             "application/text": {
                                 "schema": {
@@ -2195,13 +2200,13 @@
                         }
                     },
                     "400": {
-                        "description": "The request was invalid."
+                        "description": "Dataset input file not found."
                     },
                     "401": {
-                        "description": "This request is unauthenticated."
+                        "description": "Unauthenticated request. Check your access token."
                     },
                     "403": {
-                        "description": "This request is unauthorized."
+                        "description": "User unauthorized to validate the dataset."
                     },
                     "500": {
                         "description": "An Internal server error occured"
@@ -2219,14 +2224,14 @@
                 "tags": [
                     "GTFS Flex"
                 ],
-                "summary": "downloads the GTFS Flex files as zip",
-                "description": "returns a specific GTFS Flex file as zip containing metadata, dataset, and changeset identified by the tdei_dataset_id",
+                "summary": "Downloads the GTFS Flex dataset",
+                "description": "Downloads a specific GTFS Flex dataset as zip containing .txt files that define details such as service areas and stops for flexible transit routes.",
                 "operationId": "getGtfsFlexFile",
                 "parameters": [
                     {
                         "name": "tdei_dataset_id",
                         "in": "path",
-                        "description": "tdei_dataset_id for a file, represented as a uuid",
+                        "description": "Dataset id of the dataset to be downloaded.",
                         "required": true,
                         "schema": {
                             "type": "string"
@@ -2235,13 +2240,16 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "Returns the single zip file containing dataset.zip, metadata.json, changeset.zip (optional).",
+                        "description": "Streams the dataset zip file.",
                         "content": {
                             "application/octet-stream": {}
                         }
                     },
+                    "400":{
+                      "description": "tdei_dataset_id is not of type GTFS-Flex."
+                    },
                     "401": {
-                        "description": "This request is unauthenticated."
+                        "description": "Unauthenticated request. Check your access token."
                     },
                     "404": {
                         "description": "A file with the specified tdei_dataset_id was not found. Use the /api/v1/gtfs-flex endpoints to find valid file ids.",
@@ -2421,7 +2429,7 @@
                     {
                         "name": "tdei_dataset_id",
                         "in": "path",
-                        "description": "tdei_dataset_id for a file, represented as a uuid",
+                        "description": "Dataset id of the dataset to be published.",
                         "required": true,
                         "schema": {
                             "type": "string"
@@ -2430,7 +2438,7 @@
                 ],
                 "responses": {
                     "202": {
-                        "description": "The request has been accepted for processing. returns the job_id, unique identifier for publish request.",
+                        "description": "The publish request has been accepted for processing. It returns a `job_id`, a unique identifier for the published request, which can be used to track the status of the request. The endpoint to check the status is provided in the location header of the response.",
                         "content": {
                             "application/text": {
                                 "schema": {
@@ -2448,16 +2456,16 @@
                         }
                     },
                     "400": {
-                        "description": "The request was invalid."
+                        "description": "The request fails to match the publish criteria."
                     },
                     "401": {
-                        "description": "This request is unauthenticated."
+                        "description": "Unauthenticated request. Check your access token."
                     },
                     "403": {
-                        "description": "This request is unauthorized."
+                        "description": "User unauthorized to publish the dataset."
                     },
                     "404": {
-                        "description": "A file with the specified tdei_dataset_id was not found. Use the [GET] /api/v1/gtfs-pathways endpoint to find valid file ids.",
+                        "description": "Dataset with the specified tdei_dataset_id was not found. Use the [GET] /api/v1/gtfs-pathways endpoint to find valid dataset ids.",
                         "content": {
                             "text/plain": {}
                         }
@@ -2495,7 +2503,8 @@
                                 "properties": {
                                     "dataset": {
                                         "type": "string",
-                                        "format": "binary"
+                                        "format": "binary",
+                                        "description":"GTFS Pathways file which is expected to be a zip file, internally has .txt files that represent transit details."
                                     }
                                 }
                             }
@@ -2505,7 +2514,7 @@
                 },
                 "responses": {
                     "202": {
-                        "description": "The request has been accepted for processing. returns the job_id, unique identifier for validation job request.",
+                        "description": "The validate request has been accepted for processing. It returns a `job_id`, a unique identifier for the validate request, which can be used to track the status of the validate request. The endpoint to check the status is provided in the location header of the response.",
                         "content": {
                             "application/text": {
                                 "schema": {
@@ -2523,13 +2532,13 @@
                         }
                     },
                     "400": {
-                        "description": "The request was invalid."
+                        "description": "Dataset input file not found."
                     },
                     "401": {
-                        "description": "This request is unauthenticated."
+                        "description": "Unauthenticated request. Check your access token."
                     },
                     "403": {
-                        "description": "This request is unauthorized."
+                        "description": "User unauthorized to validate the dataset."
                     },
                     "500": {
                         "description": "An Internal server error occured"
@@ -2547,14 +2556,14 @@
                 "tags": [
                     "GTFS Pathways"
                 ],
-                "summary": "downloads the GTFS Pathways files as zip",
-                "description": "returns a specific GTFS Pathways file as zip containing metadata, dataset, and changeset identified by the tdei_dataset_id",
+                "summary": "Downloads the GTFS Pathways dataset",
+                "description": "Download a specific GTFS Pathways dataset as zip containing .txt files that represent transit details.",
                 "operationId": "getGtfsPathwaysFile",
                 "parameters": [
                     {
                         "name": "tdei_dataset_id",
                         "in": "path",
-                        "description": "tdei_dataset_id for a file, represented as a uuid",
+                        "description": "Dataset id of the dataset to be downloaded.",
                         "required": true,
                         "schema": {
                             "type": "string"
@@ -2562,14 +2571,17 @@
                     }
                 ],
                 "responses": {
-                    "200": {
-                        "description": "Returns the single zip file containing dataset.zip, metadata.json, changeset.zip (optional).",
+                  "200": {
+                        "description": "Streams the dataset zip file.",
                         "content": {
                             "application/octet-stream": {}
                         }
                     },
+                    "400":{
+                      "description": "Dataset id of the dataset to be downloaded."
+                    },
                     "401": {
-                        "description": "This request is unauthenticated."
+                        "description": "Unauthenticated request. Check your access token."
                     },
                     "404": {
                         "description": "A file with the specified tdei_dataset_id was not found. Use the /api/v1/gtfs-pathways endpoints to find valid file ids.",
