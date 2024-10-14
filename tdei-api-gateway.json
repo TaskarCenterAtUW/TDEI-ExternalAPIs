@@ -1093,7 +1093,7 @@
                     "OSW"
                 ],
                 "summary": "Upload a OSW dataset.",
-                "description": "This endpoint enables users to upload an OSW dataset. The request must include the required parameters to complete the upload. Upon successful submission, it returns the `job_id` of the uploaded file. To check the upload status, refer to the `location` header in the response, which provides the URL for the status API endpoint. By default, the dataset's status will be set to 'pre-release.' The dataset can be published using the `/publish` endpoint.",
+                "description": "This endpoint enables users to upload an OSW dataset. The request must include the required parameters to complete the upload. The response includes a `job_id` for tracking the request.To check the request status, refer to the location header in the response, which provides the URL for the status API endpoint. By default, the dataset's status will be set to 'pre-release.' The dataset can be published using the `/publish` endpoint.",
                 "operationId": "uploadOswFile",
                 "parameters": [
                     {
@@ -1203,7 +1203,7 @@
                     "OSW"
                 ],
                 "summary": "Publishes the OSW dataset for the tdei_dataset_id",
-                "description": "Publishes an OSW dataset that was previously uploaded via the [POST] /osw endpoint, marking it as an official release for the mobility service. This official release status ensures visibility to all TDEI data consumers. Returns the job_id of the uploaded file. For checking the status of the upload, refer to the Location header in the response, which contains the URL for the status API endpoint.",
+                "description": "Publishes an OSW dataset that was previously uploaded via the [POST] /osw endpoint, marking it as an official release for the mobility service. This official release status ensures visibility to all TDEI data consumers.The response includes a `job_id` for tracking the request.To check the request status, refer to the location header in the response, which provides the URL for the status API endpoint.",
                 "operationId": "publishOswFile",
                 "parameters": [
                     {
@@ -1270,7 +1270,7 @@
                     "OSW"
                 ],
                 "summary": "Validates the osw dataset.",
-                "description": "Allows a user to validate osw dataset to check the correctness of data. Returns the job_id for validation request. For checking the status, refer to the Location header in the response, which contains the URL for the status API endpoint.",
+                "description": "Allows a user to validate osw dataset to check the correctness of data. The response includes a `job_id` for tracking the request.To check the request status, refer to the location header in the response, which provides the URL for the status API endpoint.",
                 "operationId": "validateOswFile",
                 "requestBody": {
                     "content": {
@@ -1337,7 +1337,7 @@
                     "OSW"
                 ],
                 "summary": "OSW dataset conversion on demand",
-                "description": "This request facilitates the conversion of an OSW dataset to OSM format, or vice versa. Upon submission, it returns a `job_id` for tracking the conversion request. To check the status of the conversion, refer to the Location header in the response, which provides the URL for the status API endpoint.",
+                "description": "This request facilitates the conversion of an OSW dataset to OSM format, or vice versa. The response includes a `job_id` for tracking the request.To check the request status, refer to the location header in the response, which provides the URL for the status API endpoint.",
                 "operationId": "oswOnDemandFormat",
                 "requestBody": {
                     "content": {
@@ -1549,13 +1549,13 @@
                     "OSW"
                 ],
                 "summary": "Calculates the quality metric on a dataset element tags",
-                "description": "Calculates the quality metric on a dataset element tags for requested tdei_dataset_id. Returns the tag quality metric for the dataset element tags.",
+                "description": "Calculates the quality metric on a dataset element tags for requested tdei_dataset_id. Tags are the specific attributes or characteristics relevant to the OSW data entity. For example entities like Footway, Crossing, and Sidewalk have tags such as surface, width, incline, and length, indicating attributes like the material, size, slope, and distance. Returns the tag quality metric for the dataset element tags.",
                 "operationId": "qualityMetricTag",
                 "parameters": [
                     {
                         "name": "tdei_dataset_id",
                         "in": "path",
-                        "description": "tdei_dataset_id for a dataset, represented as a uuid",
+                        "description": "Dataset ID for calculating the quality metrics of element tags.",
                         "required": true,
                         "schema": {
                             "type": "string"
@@ -1574,7 +1574,7 @@
                                     "file": {
                                         "type": "string",
                                         "format": "binary",
-                                        "description": "OSW dataset element tag list for which quality metric to be calculated. Example file format: [tag-quality.json](https://raw.githubusercontent.com/TaskarCenterAtUW/TDEI-osw-datasvc-ts/dev/schema/tag-quality.json). OSW Schema tag definition [osw-tag-definition.json](https://github.com/OpenSidewalks/OpenSidewalks-Schema/blob/Audiom/opensidewalks.schema.json#L5)"
+                                        "description": "OSW dataset element tag list. Example file format: [tag-quality.json](https://raw.githubusercontent.com/TaskarCenterAtUW/TDEI-osw-datasvc-ts/dev/schema/tag-quality.json). OSW  tag schema definition [osw-tag-definition.json](https://github.com/OpenSidewalks/OpenSidewalks-Schema/blob/Audiom/opensidewalks.schema.json#L5)"
                                     }
                                 }
                             }
@@ -1584,7 +1584,7 @@
                 },
                 "responses": {
                     "200": {
-                        "description": "Successful response - returns the tag quality metric for the dataset element tags.",
+                        "description": "Successful response - returns the tag quality metric for the given input parameters.",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -1595,13 +1595,13 @@
                         }
                     },
                     "400": {
-                        "description": "The request was invalid."
+                        "description": "Empty tag list or unknown entity type or tag."
                     },
                     "401": {
-                        "description": "This request is unauthenticated."
+                        "description": "Unauthenticated request. Check your access token.."
                     },
-                    "403": {
-                        "description": "This request is unauthorized."
+                    "404": {
+                        "description": "tdei_dataset_id doesn't exist in the system."
                     },
                     "500": {
                         "description": "An Internal server error occured"
@@ -1738,14 +1738,14 @@
                 "tags": [
                     "OSW"
                 ],
-                "summary": "Given a dataset tdei_dataset_id returns the subgraph within a given bounding box.",
-                "description": "Given a dataset tdei_dataset_id returns the subgraph within a given bounding box (xmin, ymin, ymax, xmax). Returns the job_id for convert request. For checking the status, refer to the Location header in the response, which contains the URL for the status API endpoint.",
+                "summary":"Returns a subgraph dataset that falls within a specified bounding box",
+                "description": "When provided with a tdei_dataset_id, this request returns a subgraph dataset that falls within a specified bounding box defined by the coordinates (xmin, ymin, ymax, xmax). The response includes a `job_id` for tracking the request.To check the request status, refer to the location header in the response, which provides the URL for the status API endpoint.",
                 "operationId": "datasetBbox",
                 "parameters": [
                     {
                         "name": "tdei_dataset_id",
                         "in": "query",
-                        "description": "tdei_dataset_id for a file, represented as a uuid",
+                        "description": "Dataset ID to which the bounding box will be applied.",
                         "required": true,
                         "schema": {
                             "type": "string"
@@ -1754,7 +1754,7 @@
                     {
                         "name": "file_type",
                         "in": "query",
-                        "description": "Output file type for a file",
+                        "description": "Dataset output file type.",
                         "required": true,
                         "schema": {
                             "type": "string",
@@ -1767,7 +1767,7 @@
                     {
                         "name": "bbox",
                         "in": "query",
-                        "description": "A bounding box which specifies the area to be searched. A bounding box is specified by a string providing the lat/lon coordinates of the corners of the bounding box. Coordinate should be specified as west, south, east, north.",
+                        "description": "A bounding box defines the search area by specifying the latitude and longitude coordinates of its corners. These coordinates should be provided as a string in the order: west (longitude), south (latitude), east (longitude), north (latitude). This format outlines the geographical area to be searched within the defined perimeter.",
                         "required": true,
                         "schema": {
                             "maxItems": 4,
@@ -1788,7 +1788,7 @@
                 ],
                 "responses": {
                     "202": {
-                        "description": "The request has been accepted for processing. returns the job_id, unique identifier for the request.",
+                        "description": "The request has been accepted for processing. It returns a `job_id`, a unique identifier for the uploaded request, which can be used to track the status of the upload. The endpoint to check the status is provided in the location header of the response.",
                         "content": {
                             "application/text": {
                                 "schema": {
@@ -1806,13 +1806,13 @@
                         }
                     },
                     "400": {
-                        "description": "The request was invalid."
+                        "description": "Missing input."
                     },
                     "401": {
-                        "description": "This request is unauthenticated."
+                        "description": "Unauthenticated request. Check your access token."
                     },
-                    "403": {
-                        "description": "This request is unauthorized."
+                    "404":{
+                      "description": "tdei_dataset_id doesn't exist in the system."
                     },
                     "500": {
                         "description": "An Internal server error occured"
@@ -2088,7 +2088,7 @@
                     "GTFS Flex"
                 ],
                 "summary": "Upload a GTFS Flex dataset.",
-                "description": "This endpoint enables users to upload a GTFS-Flex dataset. The request must include the required parameters to complete the upload. Upon successful submission, it returns the job_id of the uploaded file. To check the upload status, refer to the location header in the response, which provides the URL for the status API endpoint. By default, the dataset's status will be set to 'pre-release.' The dataset can be published using the /publish endpoint.",
+                "description": "This endpoint enables users to upload a GTFS-Flex dataset. The request must include the required parameters to complete the upload. The response includes a `job_id` for tracking the request.To check the request status, refer to the location header in the response, which provides the URL for the status API endpoint. By default, the dataset's status will be set to 'pre-release.' The dataset can be published using the /publish endpoint.",
                 "operationId": "uploadGtfsFlexFile",
                 "parameters": [
                     {
@@ -2198,7 +2198,7 @@
                     "GTFS Flex"
                 ],
                 "summary": "Publishes the GTFS Flex dataset for the tdei_dataset_id",
-                "description": "Publishes a GTFS Flex dataset that was previously uploaded via the [POST] /gtfs-flex endpoint, marking it as an official release for the mobility service. This official release status ensures visibility to all TDEI data consumers. Returns the job_id of the uploaded file. For checking the status of the upload, refer to the Location header in the response, which contains the URL for the status API endpoint.",
+                "description": "Publishes a GTFS Flex dataset that was previously uploaded via the [POST] /gtfs-flex endpoint, marking it as an official release for the mobility service. This official release status ensures visibility to all TDEI data consumers. The response includes a `job_id` for tracking the request.To check the request status, refer to the location header in the response, which provides the URL for the status API endpoint.",
                 "operationId": "publishGtfsFlexFile",
                 "parameters": [
                     {
@@ -2265,7 +2265,7 @@
                     "GTFS Flex"
                 ],
                 "summary": "Validates the GTFS Flex dataset.",
-                "description": "Allows a user to validate GTFS Flex dataset to check the correctness of data. Returns the job_id for validation request. For checking the status, refer to the Location header in the response, which contains the URL for the status API endpoint.",
+                "description": "Allows a user to validate GTFS Flex dataset to check the correctness of data. The response includes a `job_id` for tracking the request.To check the request status, refer to the location header in the response, which provides the URL for the status API endpoint.",
                 "operationId": "validateGtfsFlexFile",
                 "requestBody": {
                     "content": {
@@ -2420,7 +2420,7 @@
                     "GTFS Pathways"
                 ],
                 "summary": "upload a pre-release of GTFS Pathways dataset.",
-                "description": "This endpoint enables users to upload a GTFS-Pathways dataset. The request must include the required parameters to complete the upload. Upon successful submission, it returns the job_id of the uploaded file. To check the upload status, refer to the location header in the response, which provides the URL for the status API endpoint. By default, the dataset's status will be set to 'pre-release.' The dataset can be published using the /publish endpoint.",
+                "description": "This endpoint enables users to upload a GTFS-Pathways dataset. The request must include the required parameters to complete the upload. The response includes a `job_id` for tracking the request.To check the request status, refer to the location header in the response, which provides the URL for the status API endpoint. By default, the dataset's status will be set to 'pre-release.' The dataset can be published using the /publish endpoint.",
                 "operationId": "uploadGtfsPathwaysFile",
                 "parameters": [
                                         {
@@ -2530,7 +2530,7 @@
                     "GTFS Pathways"
                 ],
                 "summary": "Publishes the GTFS Pathways dataset for the tdei_dataset_id",
-                "description": "Publishes an GTFS Pathways dataset that was previously uploaded via the [POST] /gtfs-pathways endpoint, marking it as an official release for the mobility service. This official release status ensures visibility to all TDEI data consumers. Returns the job_id of the uploaded file. For checking the status of the upload, refer to the Location header in the response, which contains the URL for the status API endpoint.",
+                "description": "Publishes an GTFS Pathways dataset that was previously uploaded via the [POST] /gtfs-pathways endpoint, marking it as an official release for the mobility service. This official release status ensures visibility to all TDEI data consumers. The response includes a `job_id` for tracking the request.To check the request status, refer to the location header in the response, which provides the URL for the status API endpoint.",
                 "operationId": "publishGtfsPathwaysFile",
                 "parameters": [
                     {
@@ -2597,7 +2597,7 @@
                     "GTFS Pathways"
                 ],
                 "summary": "Validates the GTFS Pathways dataset.",
-                "description": "Allows a user to validate GTFS Pathways dataset to check the correctness of data. Returns the job_id for validation request. For checking the status, refer to the Location header in the response, which contains the URL for the status API endpoint.",
+                "description": "Allows a user to validate GTFS Pathways dataset to check the correctness of data. The response includes a `job_id` for tracking the request.To check the request status, refer to the location header in the response, which provides the URL for the status API endpoint.",
                 "operationId": "validateGtfsPathwaysFile",
                 "requestBody": {
                     "content": {
