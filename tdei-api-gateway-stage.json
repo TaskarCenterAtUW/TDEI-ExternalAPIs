@@ -889,16 +889,19 @@
                         "schema": {
                             "type": "string",
                             "enum": [
+                                "Clone-Dataset",
                                 "Confidence-Calculate",
-                                "Dataset-Reformat",
-                                "Dataset-Upload",
-                                "Dataset-Publish",
-                                "Dataset-Validate",
-                                "Quality-Metric",
-                                "Dataset-Road-Tag",
                                 "Dataset-BBox",
+                                "Dataset-Incline-Tag",
+                                "Dataset-Publish",
+                                "Dataset-Reformat",
+                                "Dataset-Road-Tag",
                                 "Dataset-Spatial-Join",
-                                "Dataset-Union"
+                                "Dataset-Union",
+                                "Dataset-Upload",
+                                "Dataset-Validate",
+                                "Edit-Metadata",
+                                "Quality-Metric"
                             ]
                         }
                     },
@@ -3715,16 +3718,19 @@
                         "type": "string",
                         "description": "job_type of the job request",
                         "enum": [
+                            "Clone-Dataset",
                             "Confidence-Calculate",
-                            "Dataset-Reformat",
-                            "Dataset-Upload",
-                            "Dataset-Publish",
-                            "Dataset-Validate",
-                            "Quality-Metric",
-                            "Dataset-Road-Tag",
                             "Dataset-BBox",
+                            "Dataset-Incline-Tag",
+                            "Dataset-Publish",
+                            "Dataset-Reformat",
+                            "Dataset-Road-Tag",
                             "Dataset-Spatial-Join",
-                            "Dataset-Union"
+                            "Dataset-Union",
+                            "Dataset-Upload",
+                            "Dataset-Validate",
+                            "Edit-Metadata",
+                            "Quality-Metric"
                         ]
                     },
                     "tdei_project_group_id": {
