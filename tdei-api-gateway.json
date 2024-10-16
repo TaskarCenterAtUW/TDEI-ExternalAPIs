@@ -894,9 +894,11 @@
                                 "Dataset-Upload",
                                 "Dataset-Publish",
                                 "Dataset-Validate",
-                                "Dataset-Queries",
                                 "Quality-Metric",
-                                "Dataset-Incline-Tag"
+                                "Dataset-Road-Tag",
+                                "Dataset-BBox",
+                                "Dataset-Spatial-Join",
+                                "Dataset-Union"
                             ]
                         }
                     },
@@ -3718,7 +3720,11 @@
                             "Dataset-Upload",
                             "Dataset-Publish",
                             "Dataset-Validate",
-                            "Dataset-Queries"
+                            "Quality-Metric",
+                            "Dataset-Road-Tag",
+                            "Dataset-BBox",
+                            "Dataset-Spatial-Join",
+                            "Dataset-Union"
                         ]
                     },
                     "tdei_project_group_id": {
