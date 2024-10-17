@@ -889,14 +889,19 @@
                         "schema": {
                             "type": "string",
                             "enum": [
+                                "Clone-Dataset",
                                 "Confidence-Calculate",
-                                "Dataset-Reformat",
-                                "Dataset-Upload",
+                                "Dataset-BBox",
+                                "Dataset-Incline-Tag",
                                 "Dataset-Publish",
+                                "Dataset-Reformat",
+                                "Dataset-Road-Tag",
+                                "Dataset-Spatial-Join",
+                                "Dataset-Union",
+                                "Dataset-Upload",
                                 "Dataset-Validate",
-                                "Dataset-Queries",
-                                "Quality-Metric",
-                                "Dataset-Incline-Tag"
+                                "Edit-Metadata",
+                                "Quality-Metric"
                             ]
                         }
                     },
@@ -2056,6 +2061,82 @@
                     }
                 },
                 "security": [
+                    {
+                        "AuthorizationToken": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/osw/union": {
+            "post": {
+                "tags": [
+                    "OSW"
+                ],
+                "summary": "Performs union of the two input OSW dataset.",
+                "description": "Performs union of the two input OSW dataset. Returns the job_id for the union request. To check the status, refer to the Location header in the response, which includes the URL for the status API endpoint.",
+                "operationId": "osw-union",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "tdei_dataset_id_one": {
+                                        "type": "string",
+                                        "example": "fa8e12ea-6b0c-4d3e-8b38-5b87b268e76b",
+                                        "description": "Dataset id defined to be unioned"
+                                    },
+                                    "tdei_dataset_id_two": {
+                                        "type": "string",
+                                        "example": "0d661b69495d47fb838862edf699fe09",
+                                        "description": "Dataset id defined to be unioned"
+                                    }
+                                },
+                                "required": [
+                                    "tdei_dataset_id_one",
+                                    "tdei_dataset_id_two"
+                                ]
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "202": {
+                        "description": "The request has been accepted for processing. returns the job_id, unique identifier for union job request.",
+                        "content": {
+                            "application/text": {
+                                "schema": {
+                                    "type": "string"
+                                }
+                            }
+                        },
+                        "headers": {
+                            "Location": {
+                                "schema": {
+                                    "type": "string"
+                                },
+                                "description": "Location api to find the status of request processing"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "The request body is empty."
+                    },
+                    "401": {
+                        "description": "This request is unauthenticated."
+                    },
+                    "404": {
+                        "description": "Dataset not found for either tdei_dataset_id_one or tdei_dataset_id_two."
+                    },
+                    "500": {
+                        "description": "An server error occurred."
+                    }
+                },
+                "security": [
+                    {
+                        "ApiKey": []
+                    },
                     {
                         "AuthorizationToken": []
                     }
@@ -3637,12 +3718,19 @@
                         "type": "string",
                         "description": "job_type of the job request",
                         "enum": [
+                            "Clone-Dataset",
                             "Confidence-Calculate",
-                            "Dataset-Reformat",
-                            "Dataset-Upload",
+                            "Dataset-BBox",
+                            "Dataset-Incline-Tag",
                             "Dataset-Publish",
+                            "Dataset-Reformat",
+                            "Dataset-Road-Tag",
+                            "Dataset-Spatial-Join",
+                            "Dataset-Union",
+                            "Dataset-Upload",
                             "Dataset-Validate",
-                            "Dataset-Queries"
+                            "Edit-Metadata",
+                            "Quality-Metric"
                         ]
                     },
                     "tdei_project_group_id": {
