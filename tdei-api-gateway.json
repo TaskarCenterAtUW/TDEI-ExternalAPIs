@@ -1416,14 +1416,14 @@
                 "tags": [
                     "OSW"
                 ],
-                "summary": "Initiate Confidence calculation for a dataset",
-                "description": "Initiates the confidence calculation for requested tdei_dataset_id with optional sub-regions. Returns the job_id for confidence calculation request. For checking the status, refer to the Location header in the response, which contains the URL for the status API endpoint.",
+                "summary": "Initiate confidence calculation for a dataset",
+                "description": "Initiates the confidence calculation for requested tdei_dataset_id with optional sub-regions.Sub-regions file can be a GeoJSON file containing one or more polygons.If the sub-region file is given as an input, the confidence score of each polygon inside the sub-region file will be calculated.Returns the job_id for confidence calculation request. The response includes a `job_id` for tracking the request.To check the request status, refer to the location header in the response, which provides the URL for the status API endpoint.",
                 "operationId": "oswConfidenceCalculate",
                 "parameters": [
                     {
                         "name": "tdei_dataset_id",
                         "in": "path",
-                        "description": "tdei_dataset_id for a file, represented as a uuid",
+                        "description": "Dataset id of the dataset for which confidence is to be calculated.",
                         "required": true,
                         "schema": {
                             "type": "string"
@@ -1439,7 +1439,7 @@
                                     "file": {
                                         "type": "string",
                                         "format": "binary",
-                                        "description": "Sub regions geojson file for which confidence to be calculated"
+                                        "description": "Sub regions GeoJSON file for which confidence to be calculated"
                                     }
                                 }
                             }
@@ -1448,7 +1448,7 @@
                 },
                 "responses": {
                     "202": {
-                        "description": "The request has been accepted for processing. returns the job_id, unique identifier for confidence job request.",
+                        "description": "The confidence request has been accepted for processing. It returns a `job_id`, a unique identifier for the request, which can be used to track the status of the request. The endpoint to check the status is provided in the location header of the response.",
                         "content": {
                             "application/text": {
                                 "schema": {
@@ -1465,11 +1465,14 @@
                             }
                         }
                     },
+                    "400": {
+                        "description": "Bad Request or Invalid sub-region file."
+                    },
                     "401": {
-                        "description": "This request is unauthenticated."
+                        "description": "Unauthenticated request. Check your access token."
                     },
                     "404": {
-                        "description": "tdei_dataset_id is not found"
+                        "description": "tdei_dataset_id doesn't exist in the system."
                     },
                     "500": {
                         "description": "An Internal server error occured"
@@ -1483,13 +1486,13 @@
                     "OSW"
                 ],
                 "summary": "Initiate Intersection Quality metric calculation for a dataset",
-                "description": "Initiates the Intersection Quality calculation for requested tdei_dataset_id with optional intersection polygon file. Returns the job_id for quality metric calculation request. For checking the status, refer to the Location header in the response, which contains the URL for the status API endpoint.",
+                "description": "Initiates the Intersection Quality calculation for requested `tdei_dataset_id` with optional intersection polygon file.Intersection polygon file can be a GeoJSON file containing one or more polygons.If intersection polygon file is not given the system creates vornoi polygons based on the dataset area.It is recommended to add intersection polygon file for better performance. It returns a `job_id`, a unique identifier for the request, which can be used to track the status of the request. The endpoint to check the status is provided in the location header of the response.",
                 "operationId": "oswQualityCalculate",
                 "parameters": [
                     {
                         "name": "tdei_dataset_id",
                         "in": "path",
-                        "description": "tdei_dataset_id for a file, represented as a uuid",
+                        "description": "Dataset id of the dataset for which Intersection Quality metric is to be calculated.",
                         "required": true,
                         "schema": {
                             "type": "string"
@@ -1505,7 +1508,7 @@
                                     "file": {
                                         "type": "string",
                                         "format": "binary",
-                                        "description": "(Optional) GeoJSON intersection polygon file to be used to calculate Quality Metric"
+                                        "description": "(Optional) GeoJSON intersection polygon file to be used to calculate intersection quality metric."
                                     }
                                 }
                             }
@@ -1514,7 +1517,7 @@
                 },
                 "responses": {
                     "202": {
-                        "description": "The request has been accepted for processing. returns the job_id, unique identifier for quality metric job request.",
+                        "description": "The request has been accepted for processing. returns the `job_id`, unique identifier for quality metric job request.",
                         "content": {
                             "application/text": {
                                 "schema": {
@@ -1531,11 +1534,14 @@
                             }
                         }
                     },
+                     "400": {
+                        "description": "Bad Request or Invalid intersection file."
+                    },
                     "401": {
-                        "description": "This request is unauthenticated."
+                        "description": "Unauthenticated request. Check your access token."
                     },
                     "404": {
-                        "description": "tdei_dataset_id is not found"
+                        "description": "tdei_dataset_id doesn't exist in the system."
                     },
                     "500": {
                         "description": "An Internal server error occured"
@@ -2030,13 +2036,13 @@
                     "OSW"
                 ],
                 "summary": "Adds the incline tag to the dataset",
-                "description": "Adds the \"incline\" tag to a specified dataset identified by the tdei_dataset_id. It takes the dataset ID as a parameter, processes the dataset to calculate the incline information, and updates the dataset with the incline tag. Returns the job_id for the incline calculation request.",
+                "description": "Adds the **incline** tag to a specified dataset identified by the tdei_dataset_id. It takes the dataset ID as a parameter, processes the dataset to calculate the incline information, and updates the dataset with the incline tag.The original data of the dataset will be modified in this request.If the original data already has incline tag, it will be replaced. The response includes a `job_id` for tracking the request.To check the request status, refer to the location header in the response, which provides the URL for the status API endpoint.",
                 "operationId": "datasetTagIncline",
                 "parameters": [
                     {
                         "name": "tdei_dataset_id",
                         "in": "path",
-                        "description": "tdei_dataset_id for a dataset, represented as a uuid",
+                        "description": "Dataset ID for calculating the dataset inclination.",
                         "required": true,
                         "schema": {
                             "type": "string"
@@ -2045,7 +2051,7 @@
                 ],
                 "responses": {
                     "202": {
-                        "description": "The request has been accepted for processing. returns the job_id, unique identifier for the request.",
+                        "description": "The request has been accepted for processing. It returns a `job_id`, a unique identifier for the request, which can be used to track the status of the request. The endpoint to check the status is provided in the location header of the response.",
                         "content": {
                             "application/text": {
                                 "schema": {
@@ -2062,14 +2068,14 @@
                             }
                         }
                     },
-                    "400": {
-                        "description": "The request was invalid."
-                    },
                     "401": {
-                        "description": "This request is unauthenticated."
+                        "description": "Unauthenticated request. Check your access token."
                     },
                     "403": {
-                        "description": "This request is unauthorized."
+                        "description": "Unauthenticated request. Check your access token."
+                    },
+                    "404": {
+                        "description": "tdei_dataset_id doesn't exist in the system."
                     },
                     "500": {
                         "description": "An server error occurred."
