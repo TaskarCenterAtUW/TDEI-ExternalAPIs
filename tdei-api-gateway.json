@@ -12,7 +12,7 @@
     },
     "servers": [
         {
-            "url": "https://tdei-api-gateway-spec.azurewebsites.net/",
+            "url": "https://tdei-api-dev.azurewebsites.net/",
             "description": "TDEI API Dev Gateway"
         }
     ],
@@ -683,7 +683,7 @@
                             }
                         }
                     },
-                     "400": {
+                    "400": {
                         "description": "Bad input request."
                     },
                     "401": {
@@ -978,7 +978,7 @@
                     },
                     "401": {
                         "description": "Unauthenticated request. Check your access token."
-                    }, 
+                    },
                     "404": {
                         "description": "job_id or tdei_project_group_id doesn't exist in the system"
                     },
@@ -1081,7 +1081,7 @@
                             "application/json": {}
                         }
                     },
-                      "404": {
+                    "404": {
                         "description": "Dataset not found."
                     },
                     "500": {
@@ -1192,7 +1192,7 @@
                         "description": "User unauthorized to upload the dataset."
                     },
                     "404": {
-                     "description": "derived_from_dataset_id, tdei_project_group_id or tdei_service_id doesn't exist in the system"
+                        "description": "derived_from_dataset_id, tdei_project_group_id or tdei_service_id doesn't exist in the system"
                     },
                     "500": {
                         "description": "An Internal server error occured"
@@ -1292,7 +1292,7 @@
                                     "dataset": {
                                         "type": "string",
                                         "format": "binary",
-                                        "description":"OSW file which is expected to be a zip file, internally has {nodes, edges, points}.geojson. If the extensions are present, then the zip file will have {nodes, edges, points}.extension.geojson files"
+                                        "description": "OSW file which is expected to be a zip file, internally has {nodes, edges, points}.geojson. If the extensions are present, then the zip file will have {nodes, edges, points}.extension.geojson files"
                                     }
                                 }
                             }
@@ -1358,10 +1358,10 @@
                                 ],
                                 "type": "object",
                                 "properties": {
-                                  "file": {
+                                    "file": {
                                         "type": "string",
                                         "format": "binary",
-                                        "description":"OSW dataset file which is to be converted.Supported formats are : .zip, .pbf, .osm,.xml"
+                                        "description": "OSW dataset file which is to be converted.Supported formats are : .zip, .pbf, .osm,.xml"
                                     },
                                     "source_format": {
                                         "type": "string",
@@ -1381,7 +1381,6 @@
                                             "osw"
                                         ]
                                     }
-                                    
                                 }
                             }
                         }
@@ -1542,7 +1541,7 @@
                             }
                         }
                     },
-                     "400": {
+                    "400": {
                         "description": "Missing tdei_dataset_id or dataset type is not OSW or Invalid intersection file."
                     },
                     "401": {
@@ -1721,8 +1720,8 @@
                             "application/octet-stream": {}
                         }
                     },
-                    "400":{
-                      "description": "File version requested is invalid/ tdei_dataset_id is not of type OSW."
+                    "400": {
+                        "description": "File version requested is invalid/ tdei_dataset_id is not of type OSW."
                     },
                     "401": {
                         "description": "Unauthenticated request. Check your access token."
@@ -1752,7 +1751,7 @@
                 "tags": [
                     "OSW"
                 ],
-                "summary":"Returns a subgraph dataset that falls within a specified bounding box",
+                "summary": "Returns a subgraph dataset that falls within a specified bounding box",
                 "description": "When provided with a tdei_dataset_id, this request returns a subgraph dataset that falls within a specified bounding box defined by the coordinates (xmin, ymin, ymax, xmax). The response includes a `job_id` for tracking the request.To check the request status, refer to the location header in the response, which provides the URL for the status API endpoint.",
                 "operationId": "datasetBbox",
                 "parameters": [
@@ -1825,8 +1824,8 @@
                     "401": {
                         "description": "Unauthenticated request. Check your access token."
                     },
-                    "404":{
-                      "description": "tdei_dataset_id doesn't exist in the system."
+                    "404": {
+                        "description": "tdei_dataset_id doesn't exist in the system."
                     },
                     "500": {
                         "description": "An Internal server error occured"
@@ -2241,7 +2240,7 @@
                     "required": true
                 },
                 "responses": {
-   "202": {
+                    "202": {
                         "description": "The upload request has been accepted for processing. It returns a `job_id`, a unique identifier for the uploaded request, which can be used to track the status of the upload. The endpoint to check the status is provided in the `location` header of the response.",
                         "content": {
                             "application/text": {
@@ -2269,7 +2268,7 @@
                         "description": "User unauthorized to upload the dataset."
                     },
                     "404": {
-                     "description": "derived_from_dataset_id, tdei_project_group_id or tdei_service_id doesn't exist in the system"
+                        "description": "derived_from_dataset_id, tdei_project_group_id or tdei_service_id doesn't exist in the system"
                     },
                     "500": {
                         "description": "An Internal server error occured"
@@ -2369,7 +2368,7 @@
                                     "dataset": {
                                         "type": "string",
                                         "format": "binary",
-                                        "description":"GTFS Flex file which is expected to be a zip file. It typically includes .txt files that define details such as service areas and stops for flexible transit routes."
+                                        "description": "GTFS Flex file which is expected to be a zip file. It typically includes .txt files that define details such as service areas and stops for flexible transit routes."
                                     }
                                 }
                             }
@@ -2442,8 +2441,8 @@
                             "application/octet-stream": {}
                         }
                     },
-                    "400":{
-                      "description": "tdei_dataset_id is not of type GTFS-Flex."
+                    "400": {
+                        "description": "tdei_dataset_id is not of type GTFS-Flex."
                     },
                     "401": {
                         "description": "Unauthenticated request. Check your access token."
@@ -2513,7 +2512,7 @@
                 "description": "This endpoint enables users to upload a GTFS-Pathways dataset. The request must include the required parameters to complete the upload. The response includes a `job_id` for tracking the request.To check the request status, refer to the location header in the response, which provides the URL for the status API endpoint. By default, the dataset's status will be set to 'pre-release.' The dataset can be published using the /publish endpoint.",
                 "operationId": "uploadGtfsPathwaysFile",
                 "parameters": [
-                                        {
+                    {
                         "name": "tdei_project_group_id",
                         "in": "path",
                         "description": "Project group id to which the dataset would be uploaded",
@@ -2556,7 +2555,7 @@
                                         "format": "binary",
                                         "description": "GTFS Pathways file which is expected to be a zip file, internally has .txt files that represent transit details."
                                     },
-                                   "metadata": {
+                                    "metadata": {
                                         "type": "string",
                                         "format": "binary",
                                         "description": "Metadata information for the GTFS-Pathways dataset. This is a JSON file that includes details on how and when the data was collected, the file's valid dates, and other relevant information about the dataset. For more details, refer to the [metadata schema](https://raw.githubusercontent.com/TaskarCenterAtUW/TDEI-osw-datasvc-ts/dev/schema/metadata.schema.json)."
@@ -2573,7 +2572,7 @@
                     "required": true
                 },
                 "responses": {
-                     "202": {
+                    "202": {
                         "description": "The upload request has been accepted for processing. It returns a `job_id`, a unique identifier for the uploaded request, which can be used to track the status of the upload. The endpoint to check the status is provided in the `location` header of the response.",
                         "content": {
                             "application/text": {
@@ -2601,7 +2600,7 @@
                         "description": "User unauthorized to upload the dataset."
                     },
                     "404": {
-                     "description": "derived_from_dataset_id, tdei_project_group_id or tdei_service_id doesn't exist in the system"
+                        "description": "derived_from_dataset_id, tdei_project_group_id or tdei_service_id doesn't exist in the system"
                     },
                     "500": {
                         "description": "An Internal server error occured"
@@ -2701,7 +2700,7 @@
                                     "dataset": {
                                         "type": "string",
                                         "format": "binary",
-                                        "description":"GTFS Pathways file which is expected to be a zip file, internally has .txt files that represent transit details."
+                                        "description": "GTFS Pathways file which is expected to be a zip file, internally has .txt files that represent transit details."
                                     }
                                 }
                             }
@@ -2768,14 +2767,14 @@
                     }
                 ],
                 "responses": {
-                  "200": {
+                    "200": {
                         "description": "Streams the dataset zip file.",
                         "content": {
                             "application/octet-stream": {}
                         }
                     },
-                    "400":{
-                      "description": "Dataset id of the dataset to be downloaded."
+                    "400": {
+                        "description": "Dataset id of the dataset to be downloaded."
                     },
                     "401": {
                         "description": "Unauthenticated request. Check your access token."
@@ -2925,14 +2924,14 @@
                             }
                         }
                     },
-                     "400": {
+                    "400": {
                         "description": "Service type invalid."
                     },
                     "401": {
                         "description": "Unauthenticated request. Check your access token."
                     },
                     "404": {
-                      "description": "tdei_service_id or tdei_project_group_id doesn't exist in the system."
+                        "description": "tdei_service_id or tdei_project_group_id doesn't exist in the system."
                     },
                     "500": {
                         "description": "An Internal server error occured"
@@ -3015,7 +3014,7 @@
                     "401": {
                         "description": "Unauthenticated request. Check your access token."
                     },
-                     "404": {
+                    "404": {
                         "description": "tdei_project_group_id doesn't exist in the system."
                     },
                     "500": {
@@ -3168,7 +3167,7 @@
                     "200": {
                         "description": "Request for password recovery was successful. An email with a link to reset the password has been sent."
                     },
-                     "400": {
+                    "400": {
                         "description": "Request failed due to an invalid or missing email address."
                     },
                     "401": {
