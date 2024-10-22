@@ -107,14 +107,14 @@
                 "tags": [
                     "Common APIs"
                 ],
-                "summary": "List datasets that satisfy the provided criteria.",
-                "description": "Returns a list of urls to zipped dataset files that satisfy the specified criteria. Selection criteria could be: dataset_type, release_status, dataset name, dataset version, data source, tdei_dataset_id, a bounding box, etc. Any field that is part of the metadata of the dataset could be used for selection criteria.",
+                "summary": "Lists the TDEI datasets in the system.",
+                "description": "This API lists all TDEI datasets, allowing users to efficiently search with sorting and filtering features. Each dataset entry is uniquely identified by `tdei_dataset_id` and also provide detailed information including metadata, associated project group, service details, download URL, and status. Users can sort datasets by 'valid_to', 'valid_from', 'uploaded date', 'project group name', and 'status'. Filtering options are provided for enhanced discoverability of the datasets.By default all released datasets are visible to all user. Pre-release datasets are only visible to user affiliated with the project groups.",
                 "operationId": "listDatasetFiles",
                 "parameters": [
                     {
                         "name": "data_type",
                         "in": "query",
-                        "description": "Filter by dataset type: osw, flex, or pathways",
+                        "description": "Type of the dataset.",
                         "required": false,
                         "schema": {
                             "type": "string",
@@ -128,7 +128,7 @@
                     {
                         "name": "status",
                         "in": "query",
-                        "description": "Request datasets according to their status. By default, when the setting is 'All', it displays all datasets. If set to 'Pre-Release' or 'Publish', it includes Pre-Release or Publish datasets for the project groups the user is a part of.",
+                        "description": "This filter allows users to request datasets based on their status. When set to 'All', the filter displays all available datasets by default. If specified as 'Pre-Release' or 'Publish', it shows only the datasets that are in the Pre-Release or Publish stages, respectively, for the project groups the user is affiliated with.",
                         "required": false,
                         "schema": {
                             "type": "string",
@@ -143,7 +143,7 @@
                     {
                         "name": "name",
                         "in": "query",
-                        "description": "dataset name or title.",
+                        "description": "Dataset name or title",
                         "required": false,
                         "schema": {
                             "type": "string"
@@ -152,7 +152,7 @@
                     {
                         "name": "version",
                         "in": "query",
-                        "description": "dataset version.",
+                        "description": "Dataset version.",
                         "required": false,
                         "schema": {
                             "type": "string"
@@ -161,7 +161,7 @@
                     {
                         "name": "data_source",
                         "in": "query",
-                        "description": "data source of the dataset.",
+                        "description": "Data source of the dataset.",
                         "required": false,
                         "schema": {
                             "type": "string",
@@ -199,7 +199,7 @@
                     {
                         "name": "derived_from_dataset_id",
                         "in": "query",
-                        "description": "Derived from dataset id.",
+                        "description": "Dataset id from which this dataset was derived.",
                         "required": false,
                         "schema": {
                             "type": "string"
@@ -225,7 +225,7 @@
                     {
                         "name": "schema_version",
                         "in": "query",
-                        "description": "version name of the data type schema version that the application requests. list of versions can be found with /api/v1/{data_type}/versions.",
+                        "description": "Version name of the data type schema version that the application requests. list of versions can be found with /api/v1/{data_type}/versions.",
                         "required": false,
                         "schema": {
                             "type": "string"
@@ -234,7 +234,7 @@
                     {
                         "name": "tdei_project_group_id",
                         "in": "query",
-                        "description": "tdei-assigned project group id. Represented as a UUID.",
+                        "description": "TDEI project group id of the datasets to be retrieved.",
                         "required": false,
                         "schema": {
                             "type": "string"
@@ -243,7 +243,7 @@
                     {
                         "name": "tdei_service_id",
                         "in": "query",
-                        "description": "tdei service id.",
+                        "description": "TDEI service id of the datasets to be retrieved.",
                         "required": false,
                         "schema": {
                             "type": "string"
@@ -252,7 +252,7 @@
                     {
                         "name": "valid_from",
                         "in": "query",
-                        "description": "Valid from date time. date-time for which the caller is interested in obtaining files.",
+                        "description": "Valid from date time. Date-time for which datasets to be retrieved.",
                         "required": false,
                         "schema": {
                             "type": "string"
@@ -261,7 +261,7 @@
                     {
                         "name": "valid_to",
                         "in": "query",
-                        "description": "date-time for which the caller is interested in obtaining files. all files that are valid at the specified date-time and meet the other criteria will be returned.",
+                        "description": "Valid to date time. Date-time for which datasets to be retrieved.",
                         "required": false,
                         "schema": {
                             "type": "string"
@@ -270,7 +270,7 @@
                     {
                         "name": "tdei_dataset_id",
                         "in": "query",
-                        "description": "tdei_dataset_id, unique id represents file.",
+                        "description": "tdei_dataset_id of the dataset to be retrieved.",
                         "required": false,
                         "schema": {
                             "type": "string"
@@ -618,7 +618,7 @@
                     {
                         "name": "page_no",
                         "in": "query",
-                        "description": "Integer, defaults to 1.",
+                        "description": "Integer, defaults to 1. Retrieves the results in pages.",
                         "required": false,
                         "schema": {
                             "type": "integer",
@@ -629,7 +629,7 @@
                     {
                         "name": "page_size",
                         "in": "query",
-                        "description": "page size. integer, between 1 to 50, defaults to 10.",
+                        "description": "Page size. integer, between 1 to 50, defaults to 10.Specifies total records per page.",
                         "required": false,
                         "schema": {
                             "type": "integer",
@@ -671,7 +671,7 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "Successful response - returns an array of [DatasetItem](#/components/schemas/DatasetItem) entities.",
+                        "description": "Successful response - returns an array of dataset entities.",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -683,8 +683,11 @@
                             }
                         }
                     },
+                     "400": {
+                        "description": "Bad input request."
+                    },
                     "401": {
-                        "description": "This request is unauthenticated."
+                        "description": "Unauthenticated request. Check your access token."
                     },
                     "500": {
                         "description": "An Internal server error occured"
