@@ -1417,7 +1417,7 @@
                     "OSW"
                 ],
                 "summary": "Initiate confidence calculation for a dataset",
-                "description": "Initiates the confidence calculation for requested tdei_dataset_id with optional sub-regions.Sub-regions file can be a GeoJSON file containing one or more polygons.If the sub-region file is given as an input, the confidence score of each polygon inside the sub-region file will be calculated.Returns the job_id for confidence calculation request. The response includes a `job_id` for tracking the request.To check the request status, refer to the location header in the response, which provides the URL for the status API endpoint.",
+                "description": "Initiates the confidence calculation for requested tdei_dataset_id with optional sub-regions.Sub-regions file is a GeoJSON file containing one or more polygons.If the sub-region file is given as an input, the confidence score of each polygon inside the sub-region file will be calculated.The response includes a `job_id` for tracking the request.To check the request status, refer to the location header in the response, which provides the URL for the status API endpoint.",
                 "operationId": "oswConfidenceCalculate",
                 "parameters": [
                     {
@@ -1466,7 +1466,7 @@
                         }
                     },
                     "400": {
-                        "description": "Bad Request or Invalid sub-region file."
+                        "description": "Missing tdei_dataset_id or dataset type is not OSW or invalid sub-region file."
                     },
                     "401": {
                         "description": "Unauthenticated request. Check your access token."
@@ -1486,7 +1486,7 @@
                     "OSW"
                 ],
                 "summary": "Initiate Intersection Quality metric calculation for a dataset",
-                "description": "Initiates the Intersection Quality calculation for requested `tdei_dataset_id` with optional intersection polygon file.Intersection polygon file can be a GeoJSON file containing one or more polygons.If intersection polygon file is not given the system creates vornoi polygons based on the dataset area.It is recommended to add intersection polygon file for better performance. It returns a `job_id`, a unique identifier for the request, which can be used to track the status of the request. The endpoint to check the status is provided in the location header of the response.",
+                "description": "Initiates the Intersection Quality calculation for requested `tdei_dataset_id` with optional intersection polygon file.Intersection polygon file can be a GeoJSON file containing one or more polygons.If intersection polygon file is not given the system creates vornoi polygons based on the dataset area.It is recommended to add intersection polygon file for better performance. The response includes a `job_id` for tracking the request.To check the request status, refer to the location header in the response, which provides the URL for the status API endpoint.",
                 "operationId": "oswQualityCalculate",
                 "parameters": [
                     {
@@ -1517,7 +1517,7 @@
                 },
                 "responses": {
                     "202": {
-                        "description": "The request has been accepted for processing. returns the `job_id`, unique identifier for quality metric job request.",
+                        "description": "The request has been accepted for processing. It returns a `job_id`, a unique identifier for the request, which can be used to track the status of the request. The endpoint to check the status is provided in the location header of the response.",
                         "content": {
                             "application/text": {
                                 "schema": {
@@ -1535,7 +1535,7 @@
                         }
                     },
                      "400": {
-                        "description": "Bad Request or Invalid intersection file."
+                        "description": "Missing tdei_dataset_id or dataset type is not OSW or Invalid intersection file."
                     },
                     "401": {
                         "description": "Unauthenticated request. Check your access token."
@@ -1794,7 +1794,7 @@
                 ],
                 "responses": {
                     "202": {
-                        "description": "The request has been accepted for processing. It returns a `job_id`, a unique identifier for the uploaded request, which can be used to track the status of the upload. The endpoint to check the status is provided in the location header of the response.",
+                        "description": "The request has been accepted for processing. It returns a `job_id`, a unique identifier for the request, which can be used to track the status of the request. The endpoint to check the status is provided in the location header of the response.",
                         "content": {
                             "application/text": {
                                 "schema": {
@@ -1839,8 +1839,8 @@
                 "tags": [
                     "OSW"
                 ],
-                "summary": "Given a target dataset, tags the sidewalks with the road network from source dataset.",
-                "description": "Given a target dataset, tags the sidewalks with the road network from source dataset which is within the buffer of 5 meters from the sidewalk.",
+                "summary": "Tags the sidewalks with the road network within proximity.",
+                "description": "This process involves associating sidewalks from a target dataset with the road network from a source dataset based on proximity. Specifically, any part of the road network that is within a 5-meter buffer zone around the sidewalks in the target dataset gets tagged accordingly. This method ensures that sidewalks are accurately mapped in relation to nearby roads, facilitating better data integration and analysis between different geographic datasets.The response includes a `job_id` for tracking the request.To check the request status, refer to the location header in the response, which provides the URL for the status API endpoint.",
                 "operationId": "datasetTagRoad",
                 "parameters": [
                     {
@@ -1864,7 +1864,7 @@
                 ],
                 "responses": {
                     "202": {
-                        "description": "The request has been accepted for processing. returns the job_id, unique identifier for the request.",
+                        "description": "The request has been accepted for processing. It returns a `job_id`, a unique identifier for the request, which can be used to track the status of the request. The endpoint to check the status is provided in the location header of the response.",
                         "content": {
                             "application/text": {
                                 "schema": {
@@ -1882,13 +1882,13 @@
                         }
                     },
                     "400": {
-                        "description": "The request was invalid."
+                        "description": "Missing input or dataset not in pre-release state."
                     },
                     "401": {
-                        "description": "This request is unauthenticated."
+                        "description": "Unauthenticated request. Check your access token."
                     },
                     "403": {
-                        "description": "This request is unauthorized."
+                        "description": "User unauthorized to perform the action."
                     },
                     "500": {
                         "description": "An Internal server error occured"
@@ -1906,8 +1906,8 @@
                 "tags": [
                     "OSW"
                 ],
-                "summary": "Performs the spatial join operation on the OSW dataset.",
-                "description": "Executes a spatial join operation on the OSW dataset. Based on the provided spatial join input parameters, the system runs the query and generates a downloadable dataset. Returns the job_id for the spatial join request. The geometry column for data elements is specified as `geometry_target` and `geometry_source`. To check the status, refer to the Location header in the response, which includes the URL for the status API endpoint.",
+                "summary": "Performs a spatial join operation between two datasets within the TDEI system.",
+                "description": "Performs a spatial join operation between two datasets within the TDEI system. It involves two datasets, target and source, specifying the spatial dimension entities of each to be joined, such as edges, nodes, zones, points, lines, or polygons. The join operation is guided by specified conditions that define how the geometries of the two datasets interact, typically involving spatial functions like intersections. Additionally, filters can be applied to both datasets to refine the data involved in the join. Aggregate functions are also defined to associate the attributes from source to target dataset entity.The geometry column for data elements is specified as `geometry_target` and `geometry_source`.Eg: Find all light poles in source dataset within 5 m of an edge in target dataset, and associate the attribute highway from source dataset with each edge in target dataset. The response includes a `job_id` for tracking the request.To check the request status, refer to the location header in the response, which provides the URL for the status API endpoint.",
                 "operationId": "osw-spatial-join",
                 "requestBody": {
                     "content": {
@@ -1990,7 +1990,7 @@
                 },
                 "responses": {
                     "202": {
-                        "description": "The request has been accepted for processing. returns the job_id, unique identifier for validation job request.",
+                        "description": "The request has been accepted for processing. It returns a `job_id`, a unique identifier for the request, which can be used to track the status of the request. The endpoint to check the status is provided in the location header of the response.",
                         "content": {
                             "application/text": {
                                 "schema": {
@@ -2008,13 +2008,16 @@
                         }
                     },
                     "400": {
-                        "description": "The request was invalid."
+                        "description": "Missing input or target dataset or source dataset type is not OSW."
                     },
                     "401": {
-                        "description": "This request is unauthenticated."
+                        "description": "Unauthenticated request. Check your access token."
                     },
                     "403": {
-                        "description": "This request is unauthorized."
+                        "description": "User unauthorized to perform the action."
+                    },
+                    "404": {
+                        "description": "source_dataset_id or target_dataset_id doesn't exist in the system."
                     },
                     "500": {
                         "description": "An Internal server error occured"
@@ -2069,9 +2072,6 @@
                         }
                     },
                     "401": {
-                        "description": "Unauthenticated request. Check your access token."
-                    },
-                    "403": {
                         "description": "Unauthenticated request. Check your access token."
                     },
                     "404": {
