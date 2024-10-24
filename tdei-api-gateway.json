@@ -2101,8 +2101,8 @@
                 "tags": [
                     "OSW"
                 ],
-                "summary": "Performs union of the two input OSW dataset.",
-                "description": "Performs union of the two input OSW dataset. Returns the job_id for the union request. To check the status, refer to the Location header in the response, which includes the URL for the status API endpoint.",
+                "summary": "Performs a union of the two input OSW datasets.",
+                "description": "This operation performs a union of two specified OSW datasets, effectively merging their data into a single dataset.The response includes a `job_id` for tracking the request.To check the request status, refer to the location header in the response, which provides the URL for the status API endpoint.",
                 "operationId": "osw-union",
                 "requestBody": {
                     "content": {
@@ -2132,7 +2132,7 @@
                 },
                 "responses": {
                     "202": {
-                        "description": "The request has been accepted for processing. returns the job_id, unique identifier for union job request.",
+                        "description": "The request has been accepted for processing. It returns a `job_id`, a unique identifier for the request, which can be used to track the status of the request. The endpoint to check the status is provided in the location header of the response.",
                         "content": {
                             "application/text": {
                                 "schema": {
@@ -2153,13 +2153,13 @@
                         "description": "The request body is empty."
                     },
                     "401": {
-                        "description": "This request is unauthenticated."
+                        "description": "Unauthenticated request. Check your access token."
                     },
                     "404": {
                         "description": "Dataset not found for either tdei_dataset_id_one or tdei_dataset_id_two."
                     },
                     "500": {
-                        "description": "An server error occurred."
+                        "description": "An Internal server error occured."
                     }
                 },
                 "security": [
@@ -3074,7 +3074,7 @@
                     "Metrics"
                 ],
                 "summary": "Gets the system metrics",
-                "description": "Gets the system metrics",
+                "description": "Retrieves metrics related to the system and datasets within the TDEI platform. This endpoint provides an overview of usage statistics including the total number of users, services, and project groups, as well as a breakdown of services by type. Additionally, it gives details on dataset uploads, such as the total number of uploads and their cumulative size in megabytes.",
                 "operationId": "system-metrics",
                 "responses": {
                     "200": {
@@ -3113,7 +3113,7 @@
                     "Metrics"
                 ],
                 "summary": "Gets the data metrics",
-                "description": "Gets the data metrics",
+                "description": "This endpoint provides detailed metrics about datasets categorized by type within the TDEI platform. It includes the total number of datasets and their cumulative size in megabytes for each type, such as osw, flex, and pathways. For the osw type, additional aggregated statistics like the number of crossings, length of sidewalks in kilometers, number of edges and nodes, and the area covered by the concave hull in square kilometers are also provided.",
                 "operationId": "data-metrics",
                 "responses": {
                     "200": {
