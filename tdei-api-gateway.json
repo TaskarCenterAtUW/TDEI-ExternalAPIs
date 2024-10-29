@@ -54,8 +54,14 @@
                             }
                         }
                     },
+                    "400": {
+                        "description": "Password does not satisfiy with password policy."
+                    },
                     "401": {
                         "description": "Authentication failed - Check username and password."
+                    },
+                    "404": {
+                        "description": "User not found."
                     },
                     "500": {
                         "description": "An Internal server error occured"
@@ -833,7 +839,8 @@
                             "application/json": {
                                 "schema": {
                                     "type": "string",
-                                    "description": "Cloned dataset ID"
+                                    "description": "Cloned dataset ID",
+                                    "example": "5f7b1b3b-7b7b-4b7b-8b7b-9b7b1b3b7b7b"
                                 }
                             }
                         }
@@ -2774,7 +2781,7 @@
                         }
                     },
                     "400": {
-                        "description": "Dataset id of the dataset to be downloaded."
+                        "description": "tdei_dataset_id is not of type GTFS Pathways."
                     },
                     "401": {
                         "description": "Unauthenticated request. Check your access token."
@@ -3241,6 +3248,12 @@
                         "format": "int64",
                         "description": "value is in seconds"
                     }
+                },
+                "example": {
+                    "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c",
+                    "expires_in": 1740,
+                    "refresh_expires_in": 1800,
+                    "refresh_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c"
                 }
             },
             "Feature": {
