@@ -385,7 +385,7 @@
                         }
                     },
                     {
-                        "name": "key_limitations_of_the_dataset",
+                        "name": "key_limitations",
                         "in": "query",
                         "description": "Key limitations of the dataset",
                         "required": false,
@@ -1708,13 +1708,12 @@
                     {
                         "name": "file_version",
                         "in": "query",
-                        "description": "The system supports two versions for the OSW dataset: Latest and Original.The Latest version includes any recent modifications, while the Original version is the one initially uploaded when creating the dataset. By default, the latest version is downloaded.",
+                        "description": "The Latest version includes any recent modifications.",
                         "required": false,
                         "schema": {
                             "type": "string",
                             "enum": [
-                                "latest",
-                                "original"
+                                "latest"
                             ],
                             "default": "latest"
                         }
@@ -1826,7 +1825,7 @@
                         }
                     },
                     "400": {
-                        "description": "Missing input."
+                        "description": "Missing input/Dataset type is not of type OSW/Invalid bbox input."
                     },
                     "401": {
                         "description": "Unauthenticated request. Check your access token."
@@ -1903,6 +1902,9 @@
                     },
                     "403": {
                         "description": "User unauthorized to perform the action."
+                    },
+                    "404": {
+                        "description": "source_dataset_id/target_dataset_id doesn't exist in the system."
                     },
                     "500": {
                         "description": "An Internal server error occured"
