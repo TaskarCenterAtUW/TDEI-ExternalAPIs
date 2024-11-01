@@ -394,6 +394,15 @@
                         }
                     },
                     {
+                        "name": "release_notes",
+                        "in": "query",
+                        "description": "Release notes",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
                         "name": "challenges",
                         "in": "query",
                         "description": "Challenges faced in collecting the data",
@@ -3465,9 +3474,13 @@
                                 "type": "string",
                                 "description": "Name of the county"
                             },
-                            "key_limitations_of_the_dataset": {
+                            "key_limitations": {
                                 "type": "string",
                                 "description": "Key limitations of the dataset"
+                            },
+                            "release_notes": {
+                                "type": "string",
+                                "description": "Release notes"
                             },
                             "challenges": {
                                 "type": "string",
