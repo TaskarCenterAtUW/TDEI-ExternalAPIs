@@ -1947,6 +1947,7 @@
                                     },
                                     "target_dimension": {
                                         "type": "string",
+                                        "description": "Valid opensidewalks core entity on which the join operation is to be performed",
                                         "enum": [
                                             "edge",
                                             "node",
@@ -1960,6 +1961,7 @@
                                     },
                                     "source_dimension": {
                                         "type": "string",
+                                        "description": "Valid opensidewalks core entity on which the join operation is to be performed",
                                         "enum": [
                                             "edge",
                                             "node",
@@ -1977,17 +1979,17 @@
                                     },
                                     "join_filter_target": {
                                         "type": "string",
-                                        "description": "Target attribute filters",
+                                        "description": "Target attribute filters. These can be any valid attributes defined in the OpenSidewalks schema for the entity.",
                                         "default": "highway='footway' AND footway='sidewalk'"
                                     },
                                     "join_filter_source": {
                                         "type": "string",
-                                        "description": "Source attribute filters",
+                                        "description": "Source attribute filters, These can be any valid attributes defined in the OpenSidewalks schema for the entity",
                                         "default": "highway='street_lamp'"
                                     },
                                     "aggregate": {
                                         "type": "array",
-                                        "description": "Agrregate function for attribute.all attribute_name/alias will be prefixed with 'ext:'",
+                                        "description": "Agrregate function for attribute. Attribute information to be pulled along from source and attach to target dataset entity. All attribute_name/alias will be prefixed with 'ext:'",
                                         "items": {
                                             "type": "string"
                                         },
@@ -2119,7 +2121,7 @@
                     "OSW"
                 ],
                 "summary": "Performs a union of the two input OSW datasets.",
-                "description": "This operation performs a union of two specified OSW datasets, effectively merging their data into a single dataset.The response includes a `job_id` for tracking the request.To check the request status, refer to the location header in the response, which provides the URL for the status API endpoint.",
+                "description": "This function merges spatial data from two datasets by unifying overlapping nodes, edges, and polygons into consolidated geometries. It identifies equivalent nodes based on proximity, aligns and merges overlapping edges, and combines adjacent polygons. The function outputs a single cohesive dataset.The response includes a `job_id` for tracking the request.To check the request status, refer to the location header in the response, which provides the URL for the status API endpoint.",
                 "operationId": "osw-union",
                 "requestBody": {
                     "content": {
