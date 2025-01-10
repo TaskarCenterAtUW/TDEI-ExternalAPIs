@@ -5,14 +5,14 @@
         "description": "This is an API for interacting with the Transportation Data Equity Initiative (TDEI) system. It is intended for applications submitting data to and consuming data from the TDEI system. We currently support GTFS-Pathways, GTFS-Flex and OpenSidewalks (OSW) data schemas.",
         "contact": {
             "name": "TDEI",
-            "url": "https://transitequity.cs.washington.edu/",
-            "email": "tdei@uw.edu"
+            "url": "http://www.tdei.us/",
+            "email": "admin@tdei.us"
         },
         "version": "v0.1"
     },
     "servers": [
         {
-            "url": "https://tdei-api-dev.azurewebsites.net/",
+            "url": "https://api-dev.tdei.us/",
             "description": "TDEI API Dev Gateway"
         }
     ],
