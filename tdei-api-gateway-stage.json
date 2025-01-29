@@ -1969,7 +1969,8 @@
                                             "zone",
                                             "point",
                                             "line",
-                                            "polygon"
+                                            "polygon",
+                                            "extension"
                                         ],
                                         "default": "point"
                                     },
