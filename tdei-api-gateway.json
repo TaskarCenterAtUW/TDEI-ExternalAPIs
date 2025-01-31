@@ -1969,7 +1969,8 @@
                                             "zone",
                                             "point",
                                             "line",
-                                            "polygon"
+                                            "polygon",
+                                            "extension"
                                         ],
                                         "default": "point"
                                     },
@@ -2139,6 +2140,11 @@
                                         "type": "string",
                                         "example": "0d661b69495d47fb838862edf699fe09",
                                         "description": "Dataset id defined to be unioned"
+                                    },
+                                    "proximity": {
+                                        "type": "number",
+                                        "example": "0.5",
+                                        "description": "Proximity value to identify equivalent nodes in meters. Default value is 0.5 meters."
                                     }
                                 },
                                 "required": [
