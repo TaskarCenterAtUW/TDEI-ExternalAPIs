@@ -3209,6 +3209,17 @@
                 "summary": "Gets the Service metrics",
                 "description": "This endpoint provides detailed metrics about datasets categorized by Project Group ID within the TDEI platform. It includes the total number of datasets and their cumulative size in megabytes for each type, such as osw, flex, and pathways.",
                 "operationId": "service-metrics",
+                "parameters": [
+                    {
+                        "name": "tdei_project_group_id",
+                        "in": "path",
+                        "description": "Project Group id of the dataset.",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "Successful response - Returns the service metrics.",
