@@ -127,7 +127,7 @@
                         "description": "Unauthenticated request. Check your access token."
                     },
                     "500": {
-                        "description": "An Internal server error occured"
+                        "description": "An Internal server error occurred"
                     }
                 },
                 "security": [
@@ -3207,7 +3207,7 @@
                     "Metrics"
                 ],
                 "summary": "Gets the Service metrics",
-                "description": "This endpoint provides detailed metrics about datasets categorized by Project Group ID within the TDEI platform. It includes the total number of datasets and their cumulative size in megabytes for each type, such as osw, flex, and pathways.",
+                "description": "This endpoint provides detailed metrics about dataset categorized by Service within the chosen Project Group. It includes the total number of datasets and their cumulative size in megabytes.",
                 "operationId": "service-metrics",
                 "parameters": [
                     {
@@ -3236,6 +3236,9 @@
                     },
                     "401": {
                         "description": "Unauthenticated request"
+                    },
+                    "400": {
+                        "description": "Invalid project group id."
                     },
                     "404": {
                         "description": "Not found error."
@@ -4290,6 +4293,22 @@
             "ServiceMetrics": {
                 "type": "object",
                 "properties": {
+                    "project_group": {
+                        "type": "object",
+                        "properties": {
+                            "id": {
+                                "type": "string",
+                                "format": "uuid"
+                            },
+                            "name": {
+                                "type": "string"
+                            }
+                        },
+                        "required": [
+                            "id",
+                            "name"
+                        ]
+                    },
                     "services": {
                         "type": "array",
                         "items": {
@@ -4321,6 +4340,7 @@
                     }
                 },
                 "required": [
+                    "project_group",
                     "services"
                 ]
             }
