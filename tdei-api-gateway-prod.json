@@ -108,6 +108,35 @@
                 }
             }
         },
+        "/api/v1/regenerate-api-key": {
+            "post": {
+                "tags": [
+                    "Authentication"
+                ],
+                "summary": "Regenerates the API key for the user.",
+                "description": "Regenerates the API key for the user. The old API key will be invalidated and a new API key will be generated.",
+                "operationId": "regenerateApiKey",
+                "responses": {
+                    "200": {
+                        "description": "Regeneration of API key successful - Returns the new API key.",
+                        "content": {
+                            "text/plain": {}
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated request. Check your access token."
+                    },
+                    "500": {
+                        "description": "An Internal server error occured"
+                    }
+                },
+                "security": [
+                    {
+                        "AuthorizationToken": []
+                    }
+                ]
+            }
+        },
         "/api/v1/datasets": {
             "get": {
                 "tags": [

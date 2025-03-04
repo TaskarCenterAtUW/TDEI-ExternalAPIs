@@ -108,6 +108,35 @@
                 }
             }
         },
+        "/api/v1/regenerate-api-key": {
+            "post": {
+                "tags": [
+                    "Authentication"
+                ],
+                "summary": "Regenerates the API key for the user.",
+                "description": "Regenerates the API key for the user. The old API key will be invalidated and a new API key will be generated.",
+                "operationId": "regenerateApiKey",
+                "responses": {
+                    "200": {
+                        "description": "Regeneration of API key successful - Returns the new API key.",
+                        "content": {
+                            "text/plain": {}
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated request. Check your access token."
+                    },
+                    "500": {
+                        "description": "An Internal server error occurred"
+                    }
+                },
+                "security": [
+                    {
+                        "AuthorizationToken": []
+                    }
+                ]
+            }
+        },
         "/api/v1/datasets": {
             "get": {
                 "tags": [
@@ -3172,6 +3201,62 @@
                 ]
             }
         },
+        "/api/v1/service-metrics/{tdei_project_group_id}": {
+            "get": {
+                "tags": [
+                    "Metrics"
+                ],
+                "summary": "Gets the Service metrics",
+                "description": "This endpoint provides detailed metrics about dataset categorized by Service within the chosen Project Group. It includes the total number of datasets and their cumulative size in megabytes.",
+                "operationId": "service-metrics",
+                "parameters": [
+                    {
+                        "name": "tdei_project_group_id",
+                        "in": "path",
+                        "description": "Project Group id of the dataset.",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful response - Returns the service metrics.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "title": "ServiceMetricsResponse",
+                                    "type": "object",
+                                    "$ref": "#/components/schemas/ServiceMetrics",
+                                    "description": "Holds the response data"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated request"
+                    },
+                    "400": {
+                        "description": "Invalid project group id."
+                    },
+                    "404": {
+                        "description": "Not found error."
+                    },
+                    "500": {
+                        "description": "Internal server error."
+                    }
+                },
+                "security": [
+                    {
+                        "ApiKey": []
+                    },
+                    {
+                        "AuthorizationToken": []
+                    }
+                ]
+            }
+        },
         "/api/v1/recover-password": {
             "post": {
                 "tags": [
@@ -4070,6 +4155,38 @@
                         "required": [
                             "totalUploads"
                         ]
+                    },
+                    "apiCalls": {
+                        "type": "object",
+                        "properties": {
+                            "total": {
+                                "type": "integer",
+                                "minimum": 0
+                            },
+                            "byApi": {
+                                "type": "array",
+                                "items": {
+                                    "type": "object",
+                                    "properties": {
+                                        "endpoint": {
+                                            "type": "string"
+                                        },
+                                        "count": {
+                                            "type": "integer",
+                                            "minimum": 0
+                                        }
+                                    },
+                                    "required": [
+                                        "endpoint",
+                                        "count"
+                                    ]
+                                }
+                            }
+                        },
+                        "required": [
+                            "total",
+                            "byApi"
+                        ]
                     }
                 }
             },
@@ -4171,6 +4288,60 @@
                 "required": [
                     "dataMetrics",
                     "datasetMetrics"
+                ]
+            },
+            "ServiceMetrics": {
+                "type": "object",
+                "properties": {
+                    "project_group": {
+                        "type": "object",
+                        "properties": {
+                            "id": {
+                                "type": "string",
+                                "format": "uuid"
+                            },
+                            "name": {
+                                "type": "string"
+                            }
+                        },
+                        "required": [
+                            "id",
+                            "name"
+                        ]
+                    },
+                    "services": {
+                        "type": "array",
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "service_id": {
+                                    "type": "string",
+                                    "format": "uuid"
+                                },
+                                "service_name": {
+                                    "type": "string"
+                                },
+                                "dataset_count": {
+                                    "type": "integer",
+                                    "minimum": 0
+                                },
+                                "total_unzipped_size_mb": {
+                                    "type": "number",
+                                    "minimum": 0
+                                }
+                            },
+                            "required": [
+                                "service_id",
+                                "service_name",
+                                "dataset_count",
+                                "total_unzipped_size_mb"
+                            ]
+                        }
+                    }
+                },
+                "required": [
+                    "project_group",
+                    "services"
                 ]
             }
         },
