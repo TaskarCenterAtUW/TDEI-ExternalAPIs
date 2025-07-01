@@ -143,13 +143,13 @@
                     "Common APIs"
                 ],
                 "summary": "Lists the TDEI datasets in the system.",
-                "description": "This API lists all TDEI datasets, allowing users to efficiently search with sorting and filtering features. Each dataset entry is uniquely identified by `tdei_dataset_id` and also provide detailed information including metadata, associated project group, service details, download URL, and status. Users can sort datasets by 'valid_to', 'valid_from', 'uploaded date', 'project group name', and 'status'. Filtering options are provided for enhanced discoverability of the datasets.By default all released datasets are visible to all user. Pre-release datasets are only visible to user affiliated with the project groups.",
+                "description": "This API returns filtered and sorted lists of TDEI datasets.  All text parameters x return datasets with attribute containing x, as opposed to exact match. By default results will include all datasets in released status AND all dataset in pre-release status within the requesting user's project group. This behavior can be controlled by the status parameter.  In no situation can a user see pre-release datasets from a project group the user is not part of.  Primary use cases include: name search: Given a search string X, return all datasets with a name that contains the search string X) dataset id lookup: Given a tdei_dataset_id, return the dataset with the matching id bounding box: Given xmin, xmax, ymin, ymax, return datasets with dataset_area overlapping the bounding box Sorting:  Users can sort datasets by 'valid_to', 'valid_from', 'uploaded date', 'project group name', and 'status'.",
                 "operationId": "listDatasetFiles",
                 "parameters": [
                     {
                         "name": "data_type",
                         "in": "query",
-                        "description": "Type of the dataset.",
+                        "description": "<strong>Type of the dataset</strong>. Filters datasets by matching the exact value from the supported enumeration.",
                         "required": false,
                         "schema": {
                             "type": "string",
@@ -163,7 +163,7 @@
                     {
                         "name": "status",
                         "in": "query",
-                        "description": "This filter allows users to request datasets based on their status. When set to 'All', the filter displays all available datasets by default. If specified as 'Pre-Release' or 'Publish', it shows only the datasets that are in the Pre-Release or Publish stages, respectively, for the project groups the user is affiliated with.",
+                        "description": "<p><strong>Status of the dataset:</strong> Filters datasets by status — <code>All</code> (default) returns released datasets and pre-release datasets from the user's project groups; <code>Pre-Release</code> and <code>Publish</code> return only datasets in that status from affiliated project groups.</p>",
                         "required": false,
                         "schema": {
                             "type": "string",
@@ -178,7 +178,7 @@
                     {
                         "name": "name",
                         "in": "query",
-                        "description": "Dataset name or title",
+                        "description": "<p><strong>Dataset name or title:</strong> Filters datasets where the name or title contains the specified search text.</p>",
                         "required": false,
                         "schema": {
                             "type": "string"
@@ -187,7 +187,7 @@
                     {
                         "name": "version",
                         "in": "query",
-                        "description": "Dataset version.",
+                        "description": "<p><strong>Dataset version:</strong> Filters datasets using an exact match on the version value.</p>",
                         "required": false,
                         "schema": {
                             "type": "string"
@@ -196,7 +196,7 @@
                     {
                         "name": "data_source",
                         "in": "query",
-                        "description": "Data source of the dataset.",
+                        "description": "<p><strong>Data source:</strong> Filters datasets by matching the exact value from the supported enumeration.</p>",
                         "required": false,
                         "schema": {
                             "type": "string",
@@ -210,7 +210,7 @@
                     {
                         "name": "collection_method",
                         "in": "query",
-                        "description": "Method by which the data was collected.",
+                        "description": "<p><strong>Collection method:</strong> Filters datasets by matching the exact value from the supported enumeration.</p>",
                         "required": false,
                         "schema": {
                             "type": "string",
@@ -225,7 +225,7 @@
                     {
                         "name": "collected_by",
                         "in": "query",
-                        "description": "Collection agency or person.",
+                        "description": "<p><strong>Collected by:</strong> Filters datasets using an exact match on the collection agency or person's name.</p>",
                         "required": false,
                         "schema": {
                             "type": "string"
@@ -234,7 +234,7 @@
                     {
                         "name": "derived_from_dataset_id",
                         "in": "query",
-                        "description": "Dataset id from which this dataset was derived.",
+                        "description": "<strong>derived_from_dataset_id:</strong> Filters datasets that are derived from the specified dataset ID. Exact match.",
                         "required": false,
                         "schema": {
                             "type": "string"
@@ -243,7 +243,7 @@
                     {
                         "name": "collection_date",
                         "in": "query",
-                        "description": "Collection date time",
+                        "description": "<strong>collection_date:</strong> Filters datasets collected after the specified date and time.",
                         "required": false,
                         "schema": {
                             "type": "string"
@@ -251,7 +251,7 @@
                     },
                     {
                         "name": "confidence_level",
-                        "description": "Minimum confidence level required. Data returned will be at this confidence level or higher. Confidence level range is: 0 (very low confidence) to 100 (very high confidence).",
+                        "description": "<strong>Confidence level:</strong> Minimum confidence level required. Returns datasets with confidence level greater than the specified value. Range: 0 (very low) to 100 (very high).",
                         "schema": {
                             "type": "integer"
                         },
@@ -260,7 +260,7 @@
                     {
                         "name": "schema_version",
                         "in": "query",
-                        "description": "Version name of the data type schema version that the application requests. list of versions can be found with /api/v1/{data_type}/versions.",
+                        "description": "<strong>Schema version:</strong> Filters datasets that match the requested data type schema version. The list of supported versions can be found at <code>/api/v1/{data_type}/versions</code>.",
                         "required": false,
                         "schema": {
                             "type": "string"
@@ -269,7 +269,7 @@
                     {
                         "name": "tdei_project_group_id",
                         "in": "query",
-                        "description": "TDEI project group id of the datasets to be retrieved.",
+                        "description": "<strong>TDEI project group ID:</strong> Filters datasets that belong to the specified project group. Exact match.",
                         "required": false,
                         "schema": {
                             "type": "string"
@@ -278,7 +278,7 @@
                     {
                         "name": "tdei_service_id",
                         "in": "query",
-                        "description": "TDEI service id of the datasets to be retrieved.",
+                        "description": "<strong>TDEI service ID:</strong> Filters datasets that belong to the specified TDEI service. Exact match.",
                         "required": false,
                         "schema": {
                             "type": "string"
@@ -287,7 +287,7 @@
                     {
                         "name": "valid_from",
                         "in": "query",
-                        "description": "Valid from date time. Date-time for which datasets to be retrieved.",
+                        "description": "<strong>Valid from:</strong> Filters datasets with a valid-from date later than the specified date-time.",
                         "required": false,
                         "schema": {
                             "type": "string"
@@ -296,7 +296,7 @@
                     {
                         "name": "valid_to",
                         "in": "query",
-                        "description": "Valid to date time. Date-time for which datasets to be retrieved.",
+                        "description": "<strong>Valid to:</strong> Filters datasets with a valid-to date earlier than the specified date-time.",
                         "required": false,
                         "schema": {
                             "type": "string"
@@ -305,7 +305,7 @@
                     {
                         "name": "tdei_dataset_id",
                         "in": "query",
-                        "description": "tdei_dataset_id of the dataset to be retrieved.",
+                        "description": "<strong>TDEI dataset ID:</strong> Filters datasets by the specified TDEI dataset ID.",
                         "required": false,
                         "schema": {
                             "type": "string"
@@ -314,7 +314,7 @@
                     {
                         "name": "bbox",
                         "in": "query",
-                        "description": "A bounding box which specifies the area to be searched. A bounding box is specified by a string providing the lat/lon coordinates of the corners of the bounding box. Coordinate should be specified as west, south, east, north.",
+                        "description": "<strong>Bounding box:</strong> Specifies the geographic area to search within, using a bounding box defined by four coordinates in the order: west, south, east, north. Accepts an array of four numeric values.",
                         "required": false,
                         "schema": {
                             "maxItems": 4,
@@ -335,7 +335,7 @@
                     {
                         "name": "other_published_locations",
                         "in": "query",
-                        "description": "Other published locations",
+                        "description": "<strong>Other published locations:</strong> Lists additional places where the dataset has been published. Supports contains match.",
                         "required": false,
                         "schema": {
                             "type": "string"
@@ -344,7 +344,7 @@
                     {
                         "name": "dataset_update_frequency_months",
                         "in": "query",
-                        "description": "Dataset update frequency in months",
+                        "description": "<strong>Dataset update frequency in months:</strong> Filters datasets based on how frequently they are updated. Uses a greater than or equal to match to include datasets updated at this frequency or more often.",
                         "required": false,
                         "schema": {
                             "type": "integer"
@@ -353,7 +353,7 @@
                     {
                         "name": "schema_validation_run_description",
                         "in": "query",
-                        "description": "Schema validation run description",
+                        "description": "<strong>Schema validation run description:</strong> Filters datasets based on the description of the schema validation run. Accepts a string value and uses contains match.",
                         "required": false,
                         "schema": {
                             "type": "string"
@@ -362,7 +362,7 @@
                     {
                         "name": "full_dataset_name",
                         "in": "query",
-                        "description": "Full dataset name",
+                        "description": "<strong>Full dataset name:</strong> Filters datasets based on their full name. Supports contains match.",
                         "required": false,
                         "schema": {
                             "type": "string"
@@ -371,7 +371,7 @@
                     {
                         "name": "collection_name",
                         "in": "query",
-                        "description": "Name of the collection",
+                        "description": "<strong>Collection name:</strong> Filters datasets based on their collection name. Supports contains match.",
                         "required": false,
                         "schema": {
                             "type": "string"
@@ -380,7 +380,7 @@
                     {
                         "name": "department_name",
                         "in": "query",
-                        "description": "Name of the department",
+                        "description": "<strong>Department name:</strong> Filters datasets based on their department name. Supports contains match.",
                         "required": false,
                         "schema": {
                             "type": "string"
@@ -389,7 +389,7 @@
                     {
                         "name": "city",
                         "in": "query",
-                        "description": "Name of the city",
+                        "description": "<strong>Name of City:</strong> Filters datasets based on the city name. Supports contains match.",
                         "required": false,
                         "schema": {
                             "type": "string"
@@ -398,7 +398,7 @@
                     {
                         "name": "region",
                         "in": "query",
-                        "description": "Name of the region",
+                        "description": "<strong>Region:</strong> Filters datasets based on the region name. Supports contains match.",
                         "required": false,
                         "schema": {
                             "type": "string"
@@ -407,7 +407,7 @@
                     {
                         "name": "county",
                         "in": "query",
-                        "description": "Name of the county",
+                        "description": "<strong>County:</strong> Filters datasets based on the county name. Supports contains match.",
                         "required": false,
                         "schema": {
                             "type": "string"
@@ -416,7 +416,7 @@
                     {
                         "name": "key_limitations",
                         "in": "query",
-                        "description": "Key limitations of the dataset",
+                        "description": "<strong>Key limitations:</strong> Filters datasets based on their key limitations. Supports contains match.",
                         "required": false,
                         "schema": {
                             "type": "string"
@@ -425,7 +425,7 @@
                     {
                         "name": "release_notes",
                         "in": "query",
-                        "description": "Release notes",
+                        "description": "<strong>Release notes:</strong> Filters datasets based on their release notes. Supports contains match.",
                         "required": false,
                         "schema": {
                             "type": "string"
@@ -434,7 +434,7 @@
                     {
                         "name": "challenges",
                         "in": "query",
-                        "description": "Challenges faced in collecting the data",
+                        "description": "<strong>Challenges:</strong> Filters datasets based on the challenges faced in collecting the data. Supports contains match.",
                         "required": false,
                         "schema": {
                             "type": "string"
@@ -443,7 +443,7 @@
                     {
                         "name": "official_maintainer",
                         "in": "query",
-                        "description": "Official maintainer of the dataset",
+                        "description": "<strong>Official maintainer:</strong> Filters datasets based on the official maintainer. Supports contains match.",
                         "required": false,
                         "schema": {
                             "type": "array",
@@ -455,7 +455,7 @@
                     {
                         "name": "last_updated",
                         "in": "query",
-                        "description": "Date when the dataset was last updated",
+                        "description": "<strong>Last updated:</strong> Filters datasets based on the last updated date. Accepts a date-time string match.",
                         "required": false,
                         "schema": {
                             "type": "string"
@@ -464,7 +464,7 @@
                     {
                         "name": "update_frequency",
                         "in": "query",
-                        "description": "Frequency of updates",
+                        "description": "<strong>Update frequency:</strong> Filters datasets based on their update frequency. Supports contains match.",
                         "required": false,
                         "schema": {
                             "type": "string"
@@ -473,7 +473,7 @@
                     {
                         "name": "authorization_chain",
                         "in": "query",
-                        "description": "Authorization chain",
+                        "description": "<strong>Authorization chain:</strong> Filters datasets based on their authorization chain. Supports contains match.",
                         "required": false,
                         "schema": {
                             "type": "string"
@@ -482,7 +482,7 @@
                     {
                         "name": "maintenance_funded",
                         "in": "query",
-                        "description": "Is maintenance funded",
+                        "description": "<strong>Maintenance funded:</strong> Filters datasets based on whether they are funded for maintenance. Uses a boolean value.",
                         "required": false,
                         "schema": {
                             "type": "boolean"
@@ -491,7 +491,7 @@
                     {
                         "name": "funding_details",
                         "in": "query",
-                        "description": "Funding details",
+                        "description": "<strong>Funding details:</strong> Filters datasets based on their funding details. Supports contains match.",
                         "required": false,
                         "schema": {
                             "type": "string"
@@ -500,7 +500,7 @@
                     {
                         "name": "point_data_collection_device",
                         "in": "query",
-                        "description": "Point data collection device",
+                        "description": "<strong>Point data collection device:</strong> Filters datasets based on the device used for point data collection. Supports contains match.",
                         "required": false,
                         "schema": {
                             "type": "string"
@@ -509,7 +509,7 @@
                     {
                         "name": "node_locations_and_attributes_editing_software",
                         "in": "query",
-                        "description": "Node locations and attributes editing software",
+                        "description": "<strong>Node locations and attributes editing software:</strong> Filters datasets based on the software used for editing node locations and attributes. Supports contains match.",
                         "required": false,
                         "schema": {
                             "type": "string"
@@ -518,7 +518,7 @@
                     {
                         "name": "data_collected_by_people",
                         "in": "query",
-                        "description": "Is data collected by people",
+                        "description": "<strong>Data collected by people:</strong> Filters datasets based on whether the data was collected by people. Uses a boolean value.",
                         "required": false,
                         "schema": {
                             "type": "boolean"
@@ -527,7 +527,7 @@
                     {
                         "name": "data_collectors",
                         "in": "query",
-                        "description": "Data collectors",
+                        "description": "<strong>Data collectors:</strong> Filters datasets based on the individuals or organizations that collected the data. Supports contains match.",
                         "required": false,
                         "schema": {
                             "type": "string"
@@ -536,7 +536,7 @@
                     {
                         "name": "data_captured_automatically",
                         "in": "query",
-                        "description": "Is data captured automatically",
+                        "description": "<strong>Data captured automatically:</strong> Filters datasets based on whether the data was captured automatically. Uses a boolean value.",
                         "required": false,
                         "schema": {
                             "type": "boolean"
@@ -545,7 +545,7 @@
                     {
                         "name": "automated_collection",
                         "in": "query",
-                        "description": "Automated collection",
+                        "description": "<strong>Automated collection:</strong> Filters datasets based on whether the data was collected automatically. Supports contains match.",
                         "required": false,
                         "schema": {
                             "type": "string"
@@ -554,7 +554,7 @@
                     {
                         "name": "data_collectors_organization",
                         "in": "query",
-                        "description": "Data collectors organization",
+                        "description": "<strong>Data collectors organization:</strong> Filters datasets based on the organization of the data collectors. Supports contains match.",
                         "required": false,
                         "schema": {
                             "type": "string"
@@ -563,7 +563,7 @@
                     {
                         "name": "data_collector_compensation",
                         "in": "query",
-                        "description": "Data collector compensation",
+                        "description": "<strong>Data collector compensation:</strong> Filters datasets based on whether the data collectors were compensated. Supports contains match.",
                         "required": false,
                         "schema": {
                             "type": "string"
@@ -572,7 +572,7 @@
                     {
                         "name": "preprocessing_location",
                         "in": "query",
-                        "description": "Preprocessing location",
+                        "description": "<strong>Preprocessing location:</strong> Filters datasets based on their preprocessing location. Supports contains match.",
                         "required": false,
                         "schema": {
                             "type": "string"
@@ -581,7 +581,7 @@
                     {
                         "name": "preprocessing_by",
                         "in": "query",
-                        "description": "Preprocessing by",
+                        "description": "<strong>Preprocessing by:</strong> Filters datasets based on who performed the preprocessing. Supports contains match.",
                         "required": false,
                         "schema": {
                             "type": "string"
@@ -590,7 +590,7 @@
                     {
                         "name": "preprocessing_steps",
                         "in": "query",
-                        "description": "Preprocessing steps",
+                        "description": "<strong>Preprocessing steps:</strong> Filters datasets based on their preprocessing steps. Supports contains match.",
                         "required": false,
                         "schema": {
                             "type": "string"
@@ -599,7 +599,7 @@
                     {
                         "name": "data_collection_preprocessing_documentation",
                         "in": "query",
-                        "description": "Is data collection preprocessing documentation available",
+                        "description": "<strong>Data collection preprocessing documentation:</strong> Filters datasets based on the availability of data collection preprocessing documentation. Uses a boolean value.",
                         "required": false,
                         "schema": {
                             "type": "boolean"
@@ -608,7 +608,7 @@
                     {
                         "name": "documentation_uri",
                         "in": "query",
-                        "description": "Documentation URI",
+                        "description": "<strong>Documentation URI:</strong> Filters datasets based on their documentation URI. Supports contains match.",
                         "required": false,
                         "schema": {
                             "type": "string"
@@ -617,7 +617,7 @@
                     {
                         "name": "validation_process_exists",
                         "in": "query",
-                        "description": "Is validation process exists",
+                        "description": "<strong>Validation process exists:</strong> Filters datasets based on whether a validation process exists. Uses a boolean value.",
                         "required": false,
                         "schema": {
                             "type": "boolean"
@@ -626,7 +626,7 @@
                     {
                         "name": "validation_process_description",
                         "in": "query",
-                        "description": "Validation process description",
+                        "description": "<strong>Validation process description:</strong> Filters datasets based on the description of the validation process. Supports contains match.",
                         "required": false,
                         "schema": {
                             "type": "string"
@@ -635,7 +635,7 @@
                     {
                         "name": "validation_conducted_by",
                         "in": "query",
-                        "description": "Validation conducted by",
+                        "description": "<strong>Validation conducted by:</strong> Filters datasets based on who conducted the validation. Supports contains match.",
                         "required": false,
                         "schema": {
                             "type": "string"
@@ -644,7 +644,7 @@
                     {
                         "name": "excluded_data",
                         "in": "query",
-                        "description": "Excluded data",
+                        "description": "<strong>Excluded data:</strong> Filters datasets based on whether they contain excluded data. Supports contains match.",
                         "required": false,
                         "schema": {
                             "type": "string"
@@ -653,7 +653,7 @@
                     {
                         "name": "excluded_data_reason",
                         "in": "query",
-                        "description": "Excluded data reason",
+                        "description": "<strong>Excluded data reason:</strong> Filters datasets based on the reason for excluding data. Supports contains match.",
                         "required": false,
                         "schema": {
                             "type": "string"
@@ -662,7 +662,7 @@
                     {
                         "name": "page_no",
                         "in": "query",
-                        "description": "Integer, defaults to 1. Retrieves the results in pages.",
+                        "description": "<strong>page_no:</strong> Integer, defaults to 1. Filters datasets by retrieving results in pages.",
                         "required": false,
                         "schema": {
                             "type": "integer",
@@ -673,7 +673,7 @@
                     {
                         "name": "page_size",
                         "in": "query",
-                        "description": "Page size. integer, between 1 to 50, defaults to 10.Specifies total records per page.",
+                        "description": "<strong>Page size:</strong> Integer, between 1 to 50, defaults to 10.Specifies total records per page.",
                         "required": false,
                         "schema": {
                             "type": "integer",
@@ -684,7 +684,7 @@
                     {
                         "name": "sort_field",
                         "in": "query",
-                        "description": "Sort field. By default, it is by uploaded timestamp.",
+                        "description": "<strong>Sort field:</strong> The field by which to sort the results. By default, it is by uploaded timestamp. Matches the exact value from the supported enumeration.",
                         "required": false,
                         "schema": {
                             "type": "string",
@@ -701,7 +701,7 @@
                     {
                         "name": "sort_order",
                         "in": "query",
-                        "description": "Sort order. By default, it is in descending order.",
+                        "description": "<strong>Sort order:</strong> By default, it is in descending order.",
                         "required": false,
                         "schema": {
                             "type": "string",
