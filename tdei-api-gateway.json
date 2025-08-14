@@ -2227,6 +2227,305 @@
                 ]
             }
         },
+        "/api/v1/osw/dataset-viewer/{tdei_dataset_id}": {
+            "post": {
+                "tags": [
+                    "OSW"
+                ],
+                "summary": "Updates the visibility preferences for the dataset viewer.",
+                "description": "Updates the visibility preferences for a specified dataset identified by the tdei_dataset_id. It takes the dataset ID as a parameter and modifies the dataset's visibility settings.",
+                "operationId": "oswDatasetViewer",
+                "parameters": [
+                    {
+                        "name": "tdei_dataset_id",
+                        "in": "path",
+                        "description": "Dataset ID for updating the dataset viewer preferences.",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "allow_viewer_access": {
+                                        "type": "boolean",
+                                        "default": true,
+                                        "description": "Indicates whether the dataset viewer access is allowed. If set to true, the dataset viewer is accessible to all users."
+                                    }
+                                },
+                                "required": [
+                                    "allow_viewer_access"
+                                ]
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "Visibility preferences updated successfully.",
+                        "content": {
+                            "application/text": {
+                                "schema": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated request. Check your access token."
+                    },
+                    "404": {
+                        "description": "tdei_dataset_id doesn't exist in the system."
+                    },
+                    "500": {
+                        "description": "An server error occurred."
+                    }
+                },
+                "security": [
+                    {
+                        "AuthorizationToken": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/osw/dataset-viewer/feedbacks/{project_id}/{tdei_dataset_id}": {
+            "post": {
+                "tags": [
+                    "OSW"
+                ],
+                "summary": "Accepts the feedback from the dataset viewer.",
+                "description": "Accepts the feedback from the dataset viewer. The feedback is stored in the system for further analysis and improvement of the dataset viewer experience.",
+                "operationId": "oswDatasetViewerFeedback",
+                "parameters": [
+                    {
+                        "name": "project_id",
+                        "in": "path",
+                        "required": true,
+                        "description": "ID of the project group.",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "tdei_dataset_id",
+                        "in": "path",
+                        "required": true,
+                        "description": "ID of the dataset.",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "dataset_element_id": {
+                                        "type": "string",
+                                        "description": "Dataset ID for which the feedback is provided.",
+                                        "example": "14325"
+                                    },
+                                    "feedback_text": {
+                                        "type": "string",
+                                        "description": "Feedback provided by the user regarding the dataset viewer.",
+                                        "example": "The dataset viewer is very informative and easy to use."
+                                    },
+                                    "customer_email": {
+                                        "type": "string",
+                                        "format": "email",
+                                        "description": "Email address of the user providing feedback. This is optional and can be used for follow-up if needed.",
+                                        "example": "user@example.com"
+                                    },
+                                    "location": {
+                                        "type": "object",
+                                        "properties": {
+                                            "latitude": {
+                                                "type": "number",
+                                                "format": "double",
+                                                "description": "Latitude of the location where the feedback was provided."
+                                            },
+                                            "longitude": {
+                                                "type": "number",
+                                                "format": "double",
+                                                "description": "Longitude of the location where the feedback was provided."
+                                            }
+                                        },
+                                        "required": [
+                                            "latitude",
+                                            "longitude"
+                                        ]
+                                    }
+                                },
+                                "required": [
+                                    "feedback_text",
+                                    "location",
+                                    "customer_email"
+                                ]
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "Feedback accepted successfully.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Feedback accepted successfully."
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid input parameters."
+                    },
+                    "403": {
+                        "description": "CORS error. The request is not allowed from the current origin."
+                    },
+                    "404": {
+                        "description": "Project group or dataset not found."
+                    },
+                    "500": {
+                        "description": "An server error occurred."
+                    }
+                },
+                "security": []
+            }
+        },
+        "/api/v1/osw/dataset-viewer/feedbacks": {
+            "get": {
+                "tags": [
+                    "OSW"
+                ],
+                "summary": "Retrieves the feedbacks from the dataset viewer.",
+                "description": "Retrieves the feedbacks from the dataset viewer. Response includes a list of feedbacks provided by users regarding the dataset viewer. Each feedback contains details such as the dataset element ID, feedback text, customer email, and location information.",
+                "operationId": "oswDatasetViewerFeedbacks",
+                "parameters": [
+                    {
+                        "name": "project_id",
+                        "in": "query",
+                        "required": true,
+                        "description": "ID of the project group.",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "tdei_dataset_id",
+                        "in": "query",
+                        "required": true,
+                        "description": "ID of the dataset.",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "from_date",
+                        "in": "query",
+                        "description": "<strong>from_date:</strong> Date in ISO 8601 format, filters feedbacks created after this date.",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "format": "date-time"
+                        }
+                    },
+                    {
+                        "name": "to_date",
+                        "in": "query",
+                        "description": "<strong>to_date:</strong> Date in ISO 8601 format, filters feedbacks created before this date.",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "format": "date-time"
+                        }
+                    },
+                    {
+                        "name": "sort_by",
+                        "in": "query",
+                        "description": "<strong>sort_by:</strong> String, defaults to 'created_at'. Sorts feedbacks by the specified field.",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "default": "created_at",
+                            "enum": [
+                                "created_at",
+                                "due_date"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "sort_order",
+                        "in": "query",
+                        "description": "<strong>sort_order:</strong> String, defaults to 'desc'. Sorts feedbacks in ascending or descending order.",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "default": "desc",
+                            "enum": [
+                                "asc",
+                                "desc"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "page_no",
+                        "in": "query",
+                        "description": "<strong>page_no:</strong> Integer, defaults to 1. Filters feedbacks by retrieving results in pages.",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int32",
+                            "default": 1
+                        }
+                    },
+                    {
+                        "name": "page_size",
+                        "in": "query",
+                        "description": "<strong>Page size:</strong> Integer, between 1 to 50, defaults to 10.Specifies total records per page.",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int32",
+                            "default": 10
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Feedbacks retrieved successfully.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Feedback"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "An server error occurred."
+                    }
+                },
+                "security": []
+            }
+        },
         "/api/v1/gtfs-flex/upload/{tdei_project_group_id}/{tdei_service_id}": {
             "post": {
                 "tags": [
@@ -4342,6 +4641,100 @@
                 "required": [
                     "project_group",
                     "services"
+                ]
+            },
+            "Feedback": {
+                "type": "object",
+                "properties": {
+                    "project_group": {
+                        "type": "object",
+                        "properties": {
+                            "tdei_project_group_id": {
+                                "type": "string",
+                                "description": "ID of the project group.",
+                                "example": "4e991e7a-5c16-4ebf-ad31-3a3625bcca10"
+                            },
+                            "name": {
+                                "type": "string",
+                                "description": "Name of the project group."
+                            }
+                        },
+                        "required": [
+                            "tdei_project_group_id",
+                            "name"
+                        ]
+                    },
+                    "dataset": {
+                        "type": "object",
+                        "properties": {
+                            "tdei_dataset_id": {
+                                "type": "string",
+                                "description": "ID of the dataset.",
+                                "example": "4e991e7a-5c16-4ebf-ad31-3a3625bcca10"
+                            },
+                            "name": {
+                                "type": "string",
+                                "description": "Name of the dataset."
+                            }
+                        },
+                        "required": [
+                            "tdei_dataset_id",
+                            "name"
+                        ]
+                    },
+                    "feedback_text": {
+                        "type": "string",
+                        "description": "Feedback text provided by the user."
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "description": "Timestamp when the feedback was created."
+                    },
+                    "due_date": {
+                        "type": "string",
+                        "format": "date-time",
+                        "description": "Due date for the feedback response."
+                    },
+                    "dataset_element_id": {
+                        "type": "string",
+                        "description": "ID of the specific dataset element related to the feedback.",
+                        "example": "10432"
+                    },
+                    "status": {
+                        "type": "string",
+                        "description": "Status of the feedback.",
+                        "enum": [
+                            "open",
+                            "resolved"
+                        ]
+                    },
+                    "metadata": {
+                        "type": "object",
+                        "description": "Additional metadata related to the feedback.",
+                        "properties": {
+                            "count": {
+                                "type": "string",
+                                "description": "Count of feedback entries.",
+                                "example": "5"
+                            },
+                            "overdue": {
+                                "type": "number",
+                                "description": "Indicates number of overdue feedbacks.",
+                                "example": 0
+                            },
+                            "open": {
+                                "type": "number",
+                                "description": "Indicates number of open feedbacks.",
+                                "example": 3
+                            }
+                        }
+                    }
+                },
+                "required": [
+                    "project_id",
+                    "tdei_dataset_id",
+                    "feedback_text"
                 ]
             }
         },
