@@ -2227,6 +2227,296 @@
                 ]
             }
         },
+        "/api/v1/osw/dataset-viewer/{tdei_dataset_id}": {
+            "post": {
+                "tags": [
+                    "OSW"
+                ],
+                "summary": "Updates the visibility preferences for the dataset viewer.",
+                "description": "Updates the visibility preferences for a specified dataset identified by the tdei_dataset_id. It takes the dataset ID as a parameter and modifies the dataset's visibility settings.",
+                "operationId": "oswDatasetViewer",
+                "parameters": [
+                    {
+                        "name": "tdei_dataset_id",
+                        "in": "path",
+                        "description": "Dataset ID for updating the dataset viewer preferences.",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "allow_viewer_access": {
+                                        "type": "boolean",
+                                        "default": true,
+                                        "description": "Indicates whether the dataset viewer access is allowed. If set to true, the dataset viewer is accessible to all users."
+                                    }
+                                },
+                                "required": [
+                                    "allow_viewer_access"
+                                ]
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "Visibility preferences updated successfully.",
+                        "content": {
+                            "application/text": {
+                                "schema": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated request. Check your access token."
+                    },
+                    "404": {
+                        "description": "tdei_dataset_id doesn't exist in the system."
+                    },
+                    "500": {
+                        "description": "An server error occurred."
+                    }
+                },
+                "security": [
+                    {
+                        "AuthorizationToken": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/osw/dataset-viewer/feedbacks/{project_id}/{tdei_dataset_id}": {
+            "post": {
+                "tags": [
+                    "OSW"
+                ],
+                "summary": "Accepts the feedback from the dataset viewer.",
+                "description": "Accepts the feedback from the dataset viewer. The feedback is stored in the system for further analysis and improvement of the dataset viewer experience.",
+                "operationId": "oswDatasetViewerFeedback",
+                "parameters": [
+                    {
+                        "name": "project_id",
+                        "in": "path",
+                        "required": true,
+                        "description": "ID of the project group.",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "tdei_dataset_id",
+                        "in": "path",
+                        "required": true,
+                        "description": "ID of the dataset.",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "dataset_element_id": {
+                                        "type": "string",
+                                        "description": "Dataset ID for which the feedback is provided.",
+                                        "example": "14325"
+                                    },
+                                    "feedback_text": {
+                                        "type": "string",
+                                        "description": "Feedback provided by the user regarding the dataset viewer.",
+                                        "example": "The dataset viewer is very informative and easy to use."
+                                    },
+                                    "customer_email": {
+                                        "type": "string",
+                                        "format": "email",
+                                        "description": "Email address of the user providing feedback. This is optional and can be used for follow-up if needed.",
+                                        "example": "user@example.com"
+                                    },
+                                    "location_latitude": {
+                                        "type": "number",
+                                        "format": "double",
+                                        "description": "Latitude of the location where the feedback was provided."
+                                    },
+                                    "location_longitude": {
+                                        "type": "number",
+                                        "format": "double",
+                                        "description": "Longitude of the location where the feedback was provided."
+                                    }
+                                },
+                                "required": [
+                                    "feedback_text",
+                                    "location",
+                                    "customer_email"
+                                ]
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "Feedback accepted successfully.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Feedback accepted successfully."
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid input parameters."
+                    },
+                    "403": {
+                        "description": "CORS error. The request is not allowed from the current origin."
+                    },
+                    "404": {
+                        "description": "Project group or dataset not found."
+                    },
+                    "500": {
+                        "description": "An server error occurred."
+                    }
+                },
+                "security": []
+            }
+        },
+        "/api/v1/osw/dataset-viewer/feedbacks": {
+            "get": {
+                "tags": [
+                    "OSW"
+                ],
+                "summary": "Retrieves the feedbacks from the dataset viewer.",
+                "description": "Retrieves the feedbacks from the dataset viewer. Response includes a list of feedbacks provided by users regarding the dataset viewer. Each feedback contains details such as the dataset element ID, feedback text, customer email, and location information.",
+                "operationId": "oswDatasetViewerFeedbacks",
+                "parameters": [
+                    {
+                        "name": "tdei_project_group_id",
+                        "in": "query",
+                        "required": true,
+                        "description": "ID of the project group.",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "tdei_dataset_id",
+                        "in": "query",
+                        "required": true,
+                        "description": "ID of the dataset.",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "from_date",
+                        "in": "query",
+                        "description": "<strong>from_date:</strong> Date in ISO 8601 format, filters feedbacks created after this date.",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "format": "date-time"
+                        }
+                    },
+                    {
+                        "name": "to_date",
+                        "in": "query",
+                        "description": "<strong>to_date:</strong> Date in ISO 8601 format, filters feedbacks created before this date.",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "format": "date-time"
+                        }
+                    },
+                    {
+                        "name": "sort_by",
+                        "in": "query",
+                        "description": "<strong>sort_by:</strong> String, defaults to 'created_at'. Sorts feedbacks by the specified field.",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "default": "created_at",
+                            "enum": [
+                                "created_at",
+                                "due_date"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "sort_order",
+                        "in": "query",
+                        "description": "<strong>sort_order:</strong> String, defaults to 'desc'. Sorts feedbacks in ascending or descending order.",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "default": "desc",
+                            "enum": [
+                                "asc",
+                                "desc"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "page_no",
+                        "in": "query",
+                        "description": "<strong>page_no:</strong> Integer, defaults to 1. Filters feedbacks by retrieving results in pages.",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int32",
+                            "default": 1
+                        }
+                    },
+                    {
+                        "name": "page_size",
+                        "in": "query",
+                        "description": "<strong>Page size:</strong> Integer, between 1 to 50, defaults to 10.Specifies total records per page.",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int32",
+                            "default": 10
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Feedbacks retrieved successfully.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Feedback"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "An server error occurred."
+                    }
+                },
+                "security": []
+            }
+        },
         "/api/v1/gtfs-flex/upload/{tdei_project_group_id}/{tdei_service_id}": {
             "post": {
                 "tags": [
@@ -3803,16 +4093,171 @@
                 ],
                 "type": "object",
                 "properties": {
-                    "polygon": {
-                        "$ref": "#/components/schemas/GeoJsonObject"
-                    },
                     "tdei_project_group_id": {
                         "type": "string",
-                        "description": "Unique id that represents the project group."
+                        "description": "ProjectGroupId uniquely represented in the TDEI system. System generated.",
+                        "default": "0"
                     },
-                    "project_group_name": {
+                    "name": {
                         "type": "string",
                         "description": "Name of the project group."
+                    },
+                    "phone": {
+                        "type": "string",
+                        "description": "Phone of the project group for communication."
+                    },
+                    "url": {
+                        "type": "string",
+                        "description": "Url of the transit project group."
+                    },
+                    "address": {
+                        "type": "string",
+                        "description": "Address of the transit project group."
+                    },
+                    "polygon": {
+                        "$ref": "#/components/schemas/Polygon"
+                    },
+                    "poc": {
+                        "type": "array",
+                        "description": "Project group POC details",
+                        "items": {
+                            "$ref": "#/components/schemas/POC",
+                            "description": "POC details"
+                        }
+                    },
+                    "data_viewer": {
+                        "type": "object",
+                        "properties": {
+                            "dataset_viewer_allowed": {
+                                "type": "boolean",
+                                "default": false,
+                                "description": "Flag to indicate to allow all datasets within the project group to be viewed on the dataset viewer."
+                            },
+                            "feedback_turnaround_time": {
+                                "type": "object",
+                                "description": "Feedback turnaround time for the project group.",
+                                "properties": {
+                                    "number": {
+                                        "type": "integer",
+                                        "description": "Number of days for feedback turnaround time."
+                                    },
+                                    "unit": {
+                                        "type": "string",
+                                        "enum": [
+                                            "days",
+                                            "months",
+                                            "years"
+                                        ],
+                                        "description": "Unit of time for feedback turnaround time."
+                                    }
+                                }
+                            }
+                        },
+                        "description": "Describes an Project group."
+                    }
+                }
+            },
+            "POC": {
+                "type": "object",
+                "properties": {
+                    "first_name": {
+                        "type": "string"
+                    },
+                    "last_name": {
+                        "type": "string"
+                    },
+                    "username": {
+                        "type": "string"
+                    },
+                    "email": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "first_name",
+                    "last_name",
+                    "username",
+                    "email"
+                ]
+            },
+            "Polygon": {
+                "title": "GeoJSON FeatureCollection",
+                "type": "object",
+                "required": [
+                    "type",
+                    "features"
+                ],
+                "properties": {
+                    "type": {
+                        "type": "string",
+                        "enum": [
+                            "FeatureCollection"
+                        ]
+                    },
+                    "features": {
+                        "type": "array",
+                        "items": {
+                            "title": "GeoJSON Feature",
+                            "type": "object",
+                            "required": [
+                                "type",
+                                "properties",
+                                "geometry"
+                            ],
+                            "properties": {
+                                "type": {
+                                    "type": "string",
+                                    "enum": [
+                                        "Feature"
+                                    ]
+                                },
+                                "id": {
+                                    "oneOf": [
+                                        {
+                                            "type": "number"
+                                        },
+                                        {
+                                            "type": "string"
+                                        }
+                                    ]
+                                },
+                                "properties": {
+                                    "type": "object"
+                                },
+                                "geometry": {
+                                    "title": "GeoJSON Polygon",
+                                    "type": "object",
+                                    "required": [
+                                        "type",
+                                        "coordinates"
+                                    ],
+                                    "properties": {
+                                        "type": {
+                                            "type": "string",
+                                            "enum": [
+                                                "Polygon"
+                                            ]
+                                        },
+                                        "coordinates": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "array",
+                                                "minItems": 4,
+                                                "items": {
+                                                    "type": "array",
+                                                    "minItems": 2,
+                                                    "maxItems": 2,
+                                                    "items": {
+                                                        "type": "number",
+                                                        "format": "double"
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
                     }
                 }
             },
@@ -4201,6 +4646,115 @@
                     "dataMetrics",
                     "datasetMetrics"
                 ]
+            },
+            "Feedback": {
+                "type": "object",
+                "properties": {
+                    "project_group": {
+                        "type": "object",
+                        "properties": {
+                            "tdei_project_group_id": {
+                                "type": "string",
+                                "description": "ID of the project group.",
+                                "example": "4e991e7a-5c16-4ebf-ad31-3a3625bcca10"
+                            },
+                            "name": {
+                                "type": "string",
+                                "description": "Name of the project group."
+                            }
+                        },
+                        "required": [
+                            "tdei_project_group_id",
+                            "name"
+                        ]
+                    },
+                    "dataset": {
+                        "type": "object",
+                        "properties": {
+                            "tdei_dataset_id": {
+                                "type": "string",
+                                "description": "ID of the dataset.",
+                                "example": "4e991e7a-5c16-4ebf-ad31-3a3625bcca10"
+                            },
+                            "name": {
+                                "type": "string",
+                                "description": "Name of the dataset."
+                            }
+                        },
+                        "required": [
+                            "tdei_dataset_id",
+                            "name"
+                        ]
+                    },
+                    "feedback_text": {
+                        "type": "string",
+                        "description": "Feedback text provided by the user."
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "description": "Timestamp when the feedback was created."
+                    },
+                    "due_date": {
+                        "type": "string",
+                        "format": "date-time",
+                        "description": "Due date for the feedback response."
+                    },
+                    "dataset_element_id": {
+                        "type": "string",
+                        "description": "ID of the specific dataset element related to the feedback.",
+                        "example": "10432"
+                    },
+                    "status": {
+                        "type": "string",
+                        "description": "Status of the feedback.",
+                        "enum": [
+                            "open",
+                            "resolved"
+                        ]
+                    },
+                    "location_latitude": {
+                        "type": "number",
+                        "description": "Latitude of the location related to the feedback.",
+                        "example": 37.7749
+                    },
+                    "location_longitude": {
+                        "type": "number",
+                        "description": "Longitude of the location related to the feedback.",
+                        "example": -122.4194
+                    },
+                    "id": {
+                        "type": "string",
+                        "description": "Unique identifier for the feedback.",
+                        "example": "10432"
+                    },
+                    "updated_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "description": "Timestamp when the feedback was last updated."
+                    }
+                }
+            },
+            "FeedbackMetadata": {
+                "type": "object",
+                "description": "Additional metadata related to the feedback.",
+                "properties": {
+                    "total_count": {
+                        "type": "string",
+                        "description": "Count of feedback entries.",
+                        "example": "5"
+                    },
+                    "total_overdues": {
+                        "type": "number",
+                        "description": "Indicates number of overdue feedbacks.",
+                        "example": 0
+                    },
+                    "total_open": {
+                        "type": "number",
+                        "description": "Indicates number of open feedbacks.",
+                        "example": 3
+                    }
+                }
             }
         },
         "securitySchemes": {
