@@ -4738,13 +4738,28 @@
                             "open",
                             "resolved"
                         ]
+                    },
+                    "location_latitude": {
+                        "type": "number",
+                        "description": "Latitude of the location related to the feedback.",
+                        "example": 37.7749
+                    },
+                    "location_longitude": {
+                        "type": "number",
+                        "description": "Longitude of the location related to the feedback.",
+                        "example": -122.4194
+                    },
+                    "id": {
+                        "type": "string",
+                        "description": "Unique identifier for the feedback.",
+                        "example": "10432"
+                    },
+                    "updated_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "description": "Timestamp when the feedback was last updated."
                     }
-                },
-                "required": [
-                    "project_id",
-                    "tdei_dataset_id",
-                    "feedback_text"
-                ]
+                }
             },
             "FeedbackMetadata": {
                 "type": "object",
