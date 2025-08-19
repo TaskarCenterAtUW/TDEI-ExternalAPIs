@@ -2410,7 +2410,7 @@
                     {
                         "name": "tdei_project_group_id",
                         "in": "query",
-                        "required": true,
+                        "required": false,
                         "description": "ID of the project group.",
                         "schema": {
                             "type": "string"
@@ -2419,7 +2419,7 @@
                     {
                         "name": "tdei_dataset_id",
                         "in": "query",
-                        "required": true,
+                        "required": false,
                         "description": "ID of the dataset.",
                         "schema": {
                             "type": "string"
