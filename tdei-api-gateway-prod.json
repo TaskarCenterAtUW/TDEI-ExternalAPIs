@@ -2255,7 +2255,7 @@
                                     "allow_viewer_access": {
                                         "type": "boolean",
                                         "default": true,
-                                        "description": "Indicates whether the dataset viewer access is allowed. If set to true, the dataset viewer is accessible to all users."
+                                        "description": "Indicates whether the dataset viewer access is allowed."
                                     }
                                 },
                                 "required": [
@@ -2268,7 +2268,7 @@
                 },
                 "responses": {
                     "200": {
-                        "description": "Visibility preferences updated successfully.",
+                        "description": "Visibility preferences for the dataset viewer updated successfully.",
                         "content": {
                             "application/text": {
                                 "schema": {
@@ -2300,7 +2300,7 @@
                     "OSW"
                 ],
                 "summary": "Accepts the feedback from the dataset viewer.",
-                "description": "Accepts the feedback from the dataset viewer. The feedback is stored in the system for further analysis and improvement of the dataset viewer experience.",
+                "description": "Accepts the feedback from the dataset viewer. The feedback is stored in the system for further analysis and improvement of the dataset.",
                 "operationId": "oswDatasetViewerFeedback",
                 "parameters": [
                     {
@@ -2367,7 +2367,7 @@
                 },
                 "responses": {
                     "200": {
-                        "description": "Feedback accepted successfully.",
+                        "description": "Feedback submitted successfully.",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -2375,7 +2375,7 @@
                                     "properties": {
                                         "message": {
                                             "type": "string",
-                                            "example": "Feedback accepted successfully."
+                                            "example": "Feedback submitted successfully."
                                         }
                                     }
                                 }
@@ -2407,8 +2407,8 @@
                 "tags": [
                     "OSW"
                 ],
-                "summary": "Retrieves the feedbacks from the dataset viewer.",
-                "description": "Retrieves the feedbacks from the dataset viewer. Response includes a list of feedbacks provided by users regarding the dataset viewer. Each feedback contains details such as the dataset element ID, feedback text, customer email, and location information.",
+                "summary": "Retrieves the dataset viewer feedbacks.",
+                "description": "Retrieves the dataset viewer feedbacks. Response includes a list of feedbacks provided by users regarding the dataset. Each feedback contains details such as the dataset element ID, feedback text, customer email, and location information.",
                 "operationId": "oswDatasetViewerFeedbacks",
                 "parameters": [
                     {
@@ -2480,7 +2480,7 @@
                     {
                         "name": "page_no",
                         "in": "query",
-                        "description": "<strong>page_no:</strong> Integer, defaults to 1. Filters feedbacks by retrieving results in pages.",
+                        "description": "<strong>page_no:</strong> Integer, defaults to 1. Specifies the page number to retrieve.",
                         "required": false,
                         "schema": {
                             "type": "integer",
@@ -2491,7 +2491,7 @@
                     {
                         "name": "page_size",
                         "in": "query",
-                        "description": "<strong>Page size:</strong> Integer, between 1 to 50, defaults to 10.Specifies total records per page.",
+                        "description": "<strong>Page size:</strong> Integer, between 1 to 50, defaults to 10. Specifies total records per page.",
                         "required": false,
                         "schema": {
                             "type": "integer",
@@ -2530,13 +2530,13 @@
                 "tags": [
                     "OSW"
                 ],
-                "summary": "Retrieves the feedbacks metadata.",
-                "description": "Retrieves the feedbacks metadata. Response includes a summary of feedbacks such as total count, total overdue, and other relevant statistics.",
+                "summary": "Retrieves the feedbacks summary.",
+                "description": "Retrieves the feedbacks summary. Response includes a summary of feedbacks such as total count, total overdue, and other relevant statistics.",
                 "operationId": "oswDatasetViewerFeedbacksMetadata",
                 "parameters": [],
                 "responses": {
                     "200": {
-                        "description": "Feedbacks retrieved successfully.",
+                        "description": "Feedbacks summary retrieved successfully.",
                         "content": {
                             "application/json": {
                                 "schema": {
