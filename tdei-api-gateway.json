@@ -2344,24 +2344,15 @@
                                         "description": "Email address of the user providing feedback. This is optional and can be used for follow-up if needed.",
                                         "example": "user@example.com"
                                     },
-                                    "location": {
-                                        "type": "object",
-                                        "properties": {
-                                            "latitude": {
-                                                "type": "number",
-                                                "format": "double",
-                                                "description": "Latitude of the location where the feedback was provided."
-                                            },
-                                            "longitude": {
-                                                "type": "number",
-                                                "format": "double",
-                                                "description": "Longitude of the location where the feedback was provided."
-                                            }
-                                        },
-                                        "required": [
-                                            "latitude",
-                                            "longitude"
-                                        ]
+                                    "location_latitude": {
+                                        "type": "number",
+                                        "format": "double",
+                                        "description": "Latitude of the location where the feedback was provided."
+                                    },
+                                    "location_longitude": {
+                                        "type": "number",
+                                        "format": "double",
+                                        "description": "Longitude of the location where the feedback was provided."
                                     }
                                 },
                                 "required": [
