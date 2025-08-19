@@ -4650,6 +4650,11 @@
             "Feedback": {
                 "type": "object",
                 "properties": {
+                    "id": {
+                        "type": "string",
+                        "description": "Unique identifier for the feedback.",
+                        "example": "10432"
+                    },
                     "project_group": {
                         "type": "object",
                         "properties": {
@@ -4690,16 +4695,6 @@
                         "type": "string",
                         "description": "Feedback text provided by the user."
                     },
-                    "created_at": {
-                        "type": "string",
-                        "format": "date-time",
-                        "description": "Timestamp when the feedback was created."
-                    },
-                    "due_date": {
-                        "type": "string",
-                        "format": "date-time",
-                        "description": "Due date for the feedback response."
-                    },
                     "dataset_element_id": {
                         "type": "string",
                         "description": "ID of the specific dataset element related to the feedback.",
@@ -4723,10 +4718,15 @@
                         "description": "Longitude of the location related to the feedback.",
                         "example": -122.4194
                     },
-                    "id": {
+                    "due_date": {
                         "type": "string",
-                        "description": "Unique identifier for the feedback.",
-                        "example": "10432"
+                        "format": "date-time",
+                        "description": "Due date for the feedback response."
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "description": "Timestamp when the feedback was created."
                     },
                     "updated_at": {
                         "type": "string",
