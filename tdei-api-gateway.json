@@ -2417,7 +2417,7 @@
                 "operationId": "oswDatasetViewerFeedbacks",
                 "parameters": [
                     {
-                        "name": "project_id",
+                        "name": "tdei_project_group_id",
                         "in": "query",
                         "required": true,
                         "description": "ID of the project group.",
