@@ -2526,6 +2526,36 @@
                 "security": []
             }
         },
+        "/api/v1/osw/dataset-viewer/feedbacks/metadata": {
+            "get": {
+                "tags": [
+                    "OSW"
+                ],
+                "summary": "Retrieves the feedbacks metadata.",
+                "description": "Retrieves the feedbacks metadata. Response includes a summary of feedbacks such as total count, total overdue, and other relevant statistics.",
+                "operationId": "oswDatasetViewerFeedbacksMetadata",
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "description": "Feedbacks retrieved successfully.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/FeedbackMetadata"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "An server error occurred."
+                    }
+                },
+                "security": []
+            }
+        },
         "/api/v1/gtfs-flex/upload/{tdei_project_group_id}/{tdei_service_id}": {
             "post": {
                 "tags": [
@@ -4708,27 +4738,6 @@
                             "open",
                             "resolved"
                         ]
-                    },
-                    "metadata": {
-                        "type": "object",
-                        "description": "Additional metadata related to the feedback.",
-                        "properties": {
-                            "count": {
-                                "type": "string",
-                                "description": "Count of feedback entries.",
-                                "example": "5"
-                            },
-                            "overdue": {
-                                "type": "number",
-                                "description": "Indicates number of overdue feedbacks.",
-                                "example": 0
-                            },
-                            "open": {
-                                "type": "number",
-                                "description": "Indicates number of open feedbacks.",
-                                "example": 3
-                            }
-                        }
                     }
                 },
                 "required": [
@@ -4736,6 +4745,27 @@
                     "tdei_dataset_id",
                     "feedback_text"
                 ]
+            },
+            "FeedbackMetadata": {
+                "type": "object",
+                "description": "Additional metadata related to the feedback.",
+                "properties": {
+                    "total_count": {
+                        "type": "string",
+                        "description": "Count of feedback entries.",
+                        "example": "5"
+                    },
+                    "total_overdues": {
+                        "type": "number",
+                        "description": "Indicates number of overdue feedbacks.",
+                        "example": 0
+                    },
+                    "total_open": {
+                        "type": "number",
+                        "description": "Indicates number of open feedbacks.",
+                        "example": 3
+                    }
+                }
             }
         },
         "securitySchemes": {
