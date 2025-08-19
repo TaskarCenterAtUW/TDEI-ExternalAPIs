@@ -2395,7 +2395,11 @@
                         "description": "An server error occurred."
                     }
                 },
-                "security": []
+                "security": [
+                    {
+                        "AuthorizationToken": []
+                    }
+                ]
             }
         },
         "/api/v1/osw/dataset-viewer/feedbacks": {
@@ -2410,7 +2414,7 @@
                     {
                         "name": "tdei_project_group_id",
                         "in": "query",
-                        "required": true,
+                        "required": false,
                         "description": "ID of the project group.",
                         "schema": {
                             "type": "string"
@@ -2419,7 +2423,7 @@
                     {
                         "name": "tdei_dataset_id",
                         "in": "query",
-                        "required": true,
+                        "required": false,
                         "description": "ID of the dataset.",
                         "schema": {
                             "type": "string"
@@ -2514,7 +2518,11 @@
                         "description": "An server error occurred."
                     }
                 },
-                "security": []
+                "security": [
+                    {
+                        "AuthorizationToken": []
+                    }
+                ]
             }
         },
         "/api/v1/osw/dataset-viewer/feedbacks/metadata": {
@@ -2544,7 +2552,11 @@
                         "description": "An server error occurred."
                     }
                 },
-                "security": []
+                "security": [
+                    {
+                        "AuthorizationToken": []
+                    }
+                ]
             }
         },
         "/api/v1/gtfs-flex/upload/{tdei_project_group_id}/{tdei_service_id}": {
@@ -4822,6 +4834,11 @@
             "Feedback": {
                 "type": "object",
                 "properties": {
+                    "id": {
+                        "type": "string",
+                        "description": "Unique identifier for the feedback.",
+                        "example": "10432"
+                    },
                     "project_group": {
                         "type": "object",
                         "properties": {
@@ -4862,16 +4879,6 @@
                         "type": "string",
                         "description": "Feedback text provided by the user."
                     },
-                    "created_at": {
-                        "type": "string",
-                        "format": "date-time",
-                        "description": "Timestamp when the feedback was created."
-                    },
-                    "due_date": {
-                        "type": "string",
-                        "format": "date-time",
-                        "description": "Due date for the feedback response."
-                    },
                     "dataset_element_id": {
                         "type": "string",
                         "description": "ID of the specific dataset element related to the feedback.",
@@ -4895,10 +4902,15 @@
                         "description": "Longitude of the location related to the feedback.",
                         "example": -122.4194
                     },
-                    "id": {
+                    "due_date": {
                         "type": "string",
-                        "description": "Unique identifier for the feedback.",
-                        "example": "10432"
+                        "format": "date-time",
+                        "description": "Due date for the feedback response."
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "description": "Timestamp when the feedback was created."
                     },
                     "updated_at": {
                         "type": "string",
