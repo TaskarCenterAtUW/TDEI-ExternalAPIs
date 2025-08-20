@@ -2280,6 +2280,59 @@
                     "401": {
                         "description": "Unauthenticated request. Check your access token."
                     },
+                    "403": {
+                        "description": "Forbidden request. Dataset viewer access is not allowed at project group level."
+                    },
+                    "404": {
+                        "description": "tdei_dataset_id doesn't exist in the system."
+                    },
+                    "500": {
+                        "description": "An server error occurred."
+                    }
+                },
+                "security": [
+                    {
+                        "AuthorizationToken": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/osw/dataset-viewer/pm-tiles/{tdei_dataset_id}": {
+            "get": {
+                "tags": [
+                    "OSW"
+                ],
+                "summary": "Retrives the PM tiles SAS url for the dataset.",
+                "description": "Retrieves the PM tiles SAS url for a specified dataset identified by the tdei_dataset_id.",
+                "operationId": "oswDatasetViewerPMTiles",
+                "parameters": [
+                    {
+                        "name": "tdei_dataset_id",
+                        "in": "path",
+                        "description": "Dataset ID for retrieving the PM tiles SAS url.",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "PM tiles SAS url retrieved successfully.",
+                        "content": {
+                            "application/text": {
+                                "schema": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated request. Check your access token."
+                    },
+                    "403": {
+                        "description": "Forbidden request. Dataset viewer access is not allowed at dataset or project group level."
+                    },
                     "404": {
                         "description": "tdei_dataset_id doesn't exist in the system."
                     },
