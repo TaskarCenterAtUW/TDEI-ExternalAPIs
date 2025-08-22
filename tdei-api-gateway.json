@@ -2512,6 +2512,19 @@
                         }
                     },
                     {
+                        "name": "status",
+                        "in": "query",
+                        "required": false,
+                        "description": "<strong>status:</strong> Filters feedbacks by their status.",
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "open",
+                                "resolved"
+                            ]
+                        }
+                    },
+                    {
                         "name": "sort_by",
                         "in": "query",
                         "description": "<strong>sort_by:</strong> String, defaults to 'created_at'. Sorts feedbacks by the specified field.",
