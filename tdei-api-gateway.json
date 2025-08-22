@@ -2595,17 +2595,24 @@
                 "summary": "Retrieves the feedbacks summary.",
                 "description": "Retrieves the feedbacks summary. Response includes a summary of feedbacks such as total count, total overdue, and other relevant statistics.",
                 "operationId": "oswDatasetViewerFeedbacksMetadata",
-                "parameters": [],
+                "parameters": [
+                    {
+                        "name": "tdei_project_group_id",
+                        "in": "query",
+                        "required": false,
+                        "description": "ID of the project group.",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "Feedbacks summary retrieved successfully.",
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "type": "array",
-                                    "items": {
-                                        "$ref": "#/components/schemas/FeedbackMetadata"
-                                    }
+                                    "$ref": "#/components/schemas/FeedbackMetadata"
                                 }
                             }
                         }
@@ -4992,8 +4999,8 @@
                     },
                     "total_overdues": {
                         "type": "number",
-                        "description": "Indicates number of overdue feedbacks.",
-                        "example": 0
+                        "description": "Count of feedback entries.",
+                        "example": 5
                     },
                     "total_open": {
                         "type": "number",
