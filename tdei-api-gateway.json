@@ -4148,6 +4148,11 @@
                             "tdei_project_group_id": {
                                 "type": "string",
                                 "example": "4e991e7a-5c16-4ebf-ad31-3a3625bcca10"
+                            },
+                            "dataset_viewer_allowed": {
+                                "type": "boolean",
+                                "default": false,
+                                "description": "Flag to indicate to allow dataset to be viewed on the dataset viewer."
                             }
                         },
                         "required": [
