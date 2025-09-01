@@ -2610,6 +2610,15 @@
                 "operationId":"oswDatasetViewerFeedbacksDownload",
                 "parameters":[
                     {
+                        "name": "tdei_project_group_id",
+                        "in": "path",
+                        "description": "Valid TDEI project group id.",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
                         "name":"tdei_dataset_id",
                         "in":"query",
                         "required":false,
