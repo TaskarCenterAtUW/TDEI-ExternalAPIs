@@ -2600,7 +2600,7 @@
                 ]
             }
         },
-        "/api/v1/osw/dataset-viewer/feedbacks/download":{
+        "/api/v1/osw/dataset-viewer/feedbacks/download/{tdei_project_group_id}":{
             "get":{
                 "tags":[
                     "OSW"
@@ -2609,15 +2609,6 @@
                 "description":"Streams all feedback for the specified project group in CSV format. Requires poc or osw_data_generator role.",
                 "operationId":"oswDatasetViewerFeedbacksDownload",
                 "parameters":[
-                    {
-                        "name":"tdei_project_group_id",
-                        "in":"query",
-                        "required":true,
-                        "description":"ID of the project group.",
-                        "schema":{
-                            "type":"string"
-                        }
-                    },
                     {
                         "name":"tdei_dataset_id",
                         "in":"query",
@@ -2749,9 +2740,6 @@
                     },
                     "400":{
                         "description":"Invalid request parameters."
-                    },
-                    "422":{
-                        "description":"tdei_project_group_id is required."
                     },
                     "500":{
                         "description":"A server error occurred."
