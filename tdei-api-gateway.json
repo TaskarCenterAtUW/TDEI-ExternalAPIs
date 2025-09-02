@@ -2725,24 +2725,35 @@
                         "name":"format",
                         "in":"query",
                         "required":false,
-                        "description":"<strong>format:</strong> Output format. Only 'csv' is supported.",
+                        "description":"<strong>format:</strong> Output format.",
                         "schema":{
                             "type":"string",
                             "default":"csv",
                             "enum":[
-                                "csv"
+                                "csv",
+                                "geojson"
                             ]
                         }
                     }
                 ],
                 "responses":{
-                    "200":{
-                        "description":"CSV file streamed successfully.",
-                        "content":{
-                            "text/csv":{
-                                "schema":{
-                                    "type":"string",
-                                    "format":"binary"
+                    "200": {
+                        "description": "Feedback file streamed successfully.",
+                        "content": {
+                            "text/csv": {
+                                "schema": { "type": "string", "format": "binary" }
+                            },
+                            "application/geo+json": {
+                                "schema": {
+                                    "type": "object",
+                                    "required": ["type", "features"],
+                                    "properties": {
+                                        "type": { "enum": ["FeatureCollection"] },
+                                        "features": {
+                                            "type": "array",
+                                            "items": { "$ref": "#/components/schemas/Feature" }
+                                        }
+                                    }
                                 }
                             }
                         }
