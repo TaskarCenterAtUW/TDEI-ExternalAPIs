@@ -2511,7 +2511,7 @@
                                                 "resolved"
                                             ]
                                         },
-                                        "resolved": {
+                                        "resolution_status": {
                                             "type": "string",
                                             "enum": [
                                                 "fixed",
@@ -5157,7 +5157,7 @@
                         "description": "User who resolved the feedback.",
                         "example": "john.doe@example.com"
                     },
-                    "resolution": {
+                    "resolution_status": {
                         "type": "string",
                         "description": "Resolution status for the feedback.",
                         "enum": [
