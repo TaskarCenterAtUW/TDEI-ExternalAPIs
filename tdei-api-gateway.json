@@ -2501,7 +2501,7 @@
                                         "id": {
                                             "type": "number",
                                             "description": "Feedback ID to be updated.",
-                                            "example": "14325"
+                                            "example": 14325
                                         },
                                         "status": {
                                             "type": "string",
