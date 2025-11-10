@@ -2462,6 +2462,133 @@
                         "AuthorizationToken": []
                     }
                 ]
+            },
+            "put": {
+                "tags": [
+                    "OSW"
+                ],
+                "summary": "API to update the feedbacks status details",
+                "description": "API accepts array of feedbacks with status details to be updated. Returns response for each feedback update.",
+                "operationId": "oswDatasetViewerFeedbackStatusUpdate",
+                "parameters": [
+                    {
+                        "name": "project_id",
+                        "in": "path",
+                        "required": true,
+                        "description": "ID of the project group.",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "tdei_dataset_id",
+                        "in": "path",
+                        "required": true,
+                        "description": "ID of the dataset.",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "array",
+                                "items": {
+                                    "type": "object",
+                                    "properties": {
+                                        "id": {
+                                            "type": "number",
+                                            "description": "Feedback ID to be updated.",
+                                            "example": 14325
+                                        },
+                                        "status": {
+                                            "type": "string",
+                                            "description": "Feedback status to be updated.",
+                                            "enum": [
+                                                "open",
+                                                "resolved"
+                                            ]
+                                        },
+                                        "resolution_status": {
+                                            "type": "string",
+                                            "enum": [
+                                                "fixed",
+                                                "wont_fix",
+                                                "not_an_issue"
+                                            ],
+                                            "description": "Resolution status of the feedback."
+                                        },
+                                        "resolution_description": {
+                                            "type": "string",
+                                            "description": "Description of the feedback resolution."
+                                        }
+                                    },
+                                    "required": [
+                                        "id",
+                                        "status"
+                                    ]
+                                },
+                                "minimum": 1
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "Feedback submitted successfully.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "object",
+                                        "properties": {
+                                            "id": {
+                                                "type": "number",
+                                                "description": "Feedback ID that was updated.",
+                                                "example": "14325"
+                                            },
+                                            "message": {
+                                                "type": "string",
+                                                "example": "Feedback updated successfully."
+                                            },
+                                            "status": {
+                                                "type": "string",
+                                                "enum": [
+                                                    "Success",
+                                                    "Failed"
+                                                ]
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid input parameters."
+                    },
+                    "401": {
+                        "description": "Unauthorized request. The user is not authenticated."
+                    },
+                    "403": {
+                        "description": "Forbidden request. The user does not have permission to update feedback."
+                    },
+                    "404": {
+                        "description": "Project group or dataset not found."
+                    },
+                    "500": {
+                        "description": "An server error occurred."
+                    }
+                },
+                "security": [
+                    {
+                        "AuthorizationToken": []
+                    }
+                ]
             }
         },
         "/api/v1/osw/dataset-viewer/feedbacks": {
@@ -2600,15 +2727,15 @@
                 ]
             }
         },
-        "/api/v1/osw/dataset-viewer/feedbacks/download/{tdei_project_group_id}":{
-            "get":{
-                "tags":[
+        "/api/v1/osw/dataset-viewer/feedbacks/download/{tdei_project_group_id}": {
+            "get": {
+                "tags": [
                     "OSW"
                 ],
-                "summary":"Downloads dataset viewer feedbacks as a CSV.",
-                "description":"Streams all feedback for the specified project group in CSV format. Requires poc or osw_data_generator role.",
-                "operationId":"oswDatasetViewerFeedbacksDownload",
-                "parameters":[
+                "summary": "Downloads dataset viewer feedbacks as a CSV.",
+                "description": "Streams all feedback for the specified project group in CSV format. Requires poc or osw_data_generator role.",
+                "operationId": "oswDatasetViewerFeedbacksDownload",
+                "parameters": [
                     {
                         "name": "tdei_project_group_id",
                         "in": "path",
@@ -2619,157 +2746,167 @@
                         }
                     },
                     {
-                        "name":"tdei_dataset_id",
-                        "in":"query",
-                        "required":false,
-                        "description":"ID of the dataset.",
-                        "schema":{
-                            "type":"string"
+                        "name": "tdei_dataset_id",
+                        "in": "query",
+                        "required": false,
+                        "description": "ID of the dataset.",
+                        "schema": {
+                            "type": "string"
                         }
                     },
                     {
-                        "name":"from_date",
-                        "in":"query",
-                        "description":"<strong>from_date:</strong> Date in ISO 8601 format, filters feedback created after this date.",
-                        "required":false,
-                        "schema":{
-                            "type":"string",
-                            "format":"date-time"
+                        "name": "from_date",
+                        "in": "query",
+                        "description": "<strong>from_date:</strong> Date in ISO 8601 format, filters feedback created after this date.",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "format": "date-time"
                         }
                     },
                     {
-                        "name":"to_date",
-                        "in":"query",
-                        "description":"<strong>to_date:</strong> Date in ISO 8601 format, filters feedback created before this date.",
-                        "required":false,
-                        "schema":{
-                            "type":"string",
-                            "format":"date-time"
+                        "name": "to_date",
+                        "in": "query",
+                        "description": "<strong>to_date:</strong> Date in ISO 8601 format, filters feedback created before this date.",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "format": "date-time"
                         }
                     },
                     {
-                        "name":"status",
-                        "in":"query",
-                        "required":false,
-                        "description":"<strong>status:</strong> Filters feedbacks by their status.",
-                        "schema":{
-                            "type":"string",
-                            "enum":[
+                        "name": "status",
+                        "in": "query",
+                        "required": false,
+                        "description": "<strong>status:</strong> Filters feedbacks by their status.",
+                        "schema": {
+                            "type": "string",
+                            "enum": [
                                 "open",
                                 "resolved"
                             ]
                         }
                     },
                     {
-                        "name":"sort_by",
-                        "in":"query",
-                        "description":"<strong>sort_by:</strong> String, defaults to 'created_at'. Sorts feedbacks by the specified field.",
-                        "required":false,
-                        "schema":{
-                            "type":"string",
-                            "default":"created_at",
-                            "enum":[
+                        "name": "sort_by",
+                        "in": "query",
+                        "description": "<strong>sort_by:</strong> String, defaults to 'created_at'. Sorts feedbacks by the specified field.",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "default": "created_at",
+                            "enum": [
                                 "created_at",
                                 "due_date"
                             ]
                         }
                     },
                     {
-                        "name":"due_date",
-                        "in":"query",
-                        "description":"<strong>due_date:</strong> Legacy alias for <code>sort_by</code>. Use 'created_at' or 'due_date'.",
-                        "required":false,
-                        "schema":{
-                            "type":"string",
-                            "enum":[
+                        "name": "due_date",
+                        "in": "query",
+                        "description": "<strong>due_date:</strong> Legacy alias for <code>sort_by</code>. Use 'created_at' or 'due_date'.",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
                                 "created_at",
                                 "due_date"
                             ]
                         }
                     },
                     {
-                        "name":"sort_order",
-                        "in":"query",
-                        "description":"<strong>sort_order:</strong> String, defaults to 'desc'. Sorts feedbacks in ascending or descending order.",
-                        "required":false,
-                        "schema":{
-                            "type":"string",
-                            "default":"desc",
-                            "enum":[
+                        "name": "sort_order",
+                        "in": "query",
+                        "description": "<strong>sort_order:</strong> String, defaults to 'desc'. Sorts feedbacks in ascending or descending order.",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "default": "desc",
+                            "enum": [
                                 "asc",
                                 "desc"
                             ]
                         }
                     },
                     {
-                        "name":"page_no",
-                        "in":"query",
-                        "description":"<strong>page_no:</strong> Integer, specifies the page number to retrieve. If omitted with page_size, the response is unpaginated.",
-                        "required":false,
-                        "schema":{
-                            "type":"integer",
-                            "format":"int32"
+                        "name": "page_no",
+                        "in": "query",
+                        "description": "<strong>page_no:</strong> Integer, specifies the page number to retrieve. If omitted with page_size, the response is unpaginated.",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int32"
                         }
                     },
                     {
-                        "name":"page_size",
-                        "in":"query",
-                        "description":"<strong>Page size:</strong> Integer, between 1 to 50. If omitted with page_no, the response is unpaginated.",
-                        "required":false,
-                        "schema":{
-                            "type":"integer",
-                            "format":"int32"
+                        "name": "page_size",
+                        "in": "query",
+                        "description": "<strong>Page size:</strong> Integer, between 1 to 50. If omitted with page_no, the response is unpaginated.",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int32"
                         }
                     },
                     {
-                        "name":"format",
-                        "in":"query",
-                        "required":false,
-                        "description":"<strong>format:</strong> Output format.",
-                        "schema":{
-                            "type":"string",
-                            "default":"csv",
-                            "enum":[
+                        "name": "format",
+                        "in": "query",
+                        "required": false,
+                        "description": "<strong>format:</strong> Output format.",
+                        "schema": {
+                            "type": "string",
+                            "default": "csv",
+                            "enum": [
                                 "csv",
                                 "geojson"
                             ]
                         }
                     }
                 ],
-                "responses":{
+                "responses": {
                     "200": {
                         "description": "Feedback file streamed successfully.",
                         "content": {
                             "text/csv": {
-                                "schema": { "type": "string", "format": "binary" }
+                                "schema": {
+                                    "type": "string",
+                                    "format": "binary"
+                                }
                             },
                             "application/geo+json": {
                                 "schema": {
                                     "type": "object",
-                                    "required": ["type", "features"],
+                                    "required": [
+                                        "type",
+                                        "features"
+                                    ],
                                     "properties": {
-                                        "type": { "enum": ["FeatureCollection"] },
+                                        "type": {
+                                            "enum": [
+                                                "FeatureCollection"
+                                            ]
+                                        },
                                         "features": {
                                             "type": "array",
-                                            "items": { "$ref": "#/components/schemas/Feature" }
+                                            "items": {
+                                                "$ref": "#/components/schemas/Feature"
+                                            }
                                         }
                                     }
                                 }
                             }
                         }
                     },
-                    "400":{
-                        "description":"Invalid request parameters."
+                    "400": {
+                        "description": "Invalid request parameters."
                     },
-                    "500":{
-                        "description":"A server error occurred."
+                    "500": {
+                        "description": "A server error occurred."
                     }
                 },
-                "security":[
+                "security": [
                     {
-                        "AuthorizationToken":[
-
-                        ]
+                        "AuthorizationToken": []
                     }
                 ]
             }
@@ -5009,6 +5146,24 @@
                         "enum": [
                             "open",
                             "resolved"
+                        ]
+                    },
+                    "resolution_description": {
+                        "type": "string",
+                        "description": "Description of the feedback resolution."
+                    },
+                    "resolved_by": {
+                        "type": "string",
+                        "description": "User who resolved the feedback.",
+                        "example": "john.doe@example.com"
+                    },
+                    "resolution_status": {
+                        "type": "string",
+                        "description": "Resolution status for the feedback.",
+                        "enum": [
+                            "fixed",
+                            "wont_fix",
+                            "not_an_issue"
                         ]
                     },
                     "location_latitude": {
