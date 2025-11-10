@@ -2520,9 +2520,9 @@
                                             ],
                                             "description": "Resolution status of the feedback."
                                         },
-                                        "status_description": {
+                                        "resolution_description": {
                                             "type": "string",
-                                            "description": "Description of the feedback status."
+                                            "description": "Description of the feedback resolution."
                                         }
                                     },
                                     "required": [
@@ -5288,6 +5288,24 @@
                         "enum": [
                             "open",
                             "resolved"
+                        ]
+                    },
+                    "resolution_description": {
+                        "type": "string",
+                        "description": "Description of the feedback resolution."
+                    },
+                    "resolved_by": {
+                        "type": "string",
+                        "description": "User who resolved the feedback.",
+                        "example": "john.doe@example.com"
+                    },
+                    "resolution": {
+                        "type": "string",
+                        "description": "Resolution status for the feedback.",
+                        "enum": [
+                            "fixed",
+                            "wont_fix",
+                            "not_an_issue"
                         ]
                     },
                     "location_latitude": {
