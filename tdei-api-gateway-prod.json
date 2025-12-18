@@ -2362,7 +2362,7 @@
                     "OSW"
                 ],
                 "summary": "Accepts the feedback from the dataset viewer.",
-                "description": "Accepts the feedback from the dataset viewer. The feedback is stored in the system for further analysis and improvement of the dataset.",
+                "description": "Accepts the feedback from the dataset viewer. The feedback is stored in the system for further analysis and improvement of the dataset. Returns feedback ID upon successful submission.",
                 "operationId": "oswDatasetViewerFeedback",
                 "parameters": [
                     {
@@ -2433,13 +2433,8 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "type": "object",
-                                    "properties": {
-                                        "message": {
-                                            "type": "string",
-                                            "example": "Feedback submitted successfully."
-                                        }
-                                    }
+                                    "type": "integer",
+                                    "example": 14325
                                 }
                             }
                         }
