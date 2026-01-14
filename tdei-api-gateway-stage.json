@@ -2041,6 +2041,15 @@
                                             "count(attribute_name)",
                                             "sum(attribute_name)"
                                         ]
+                                    },
+                                     "assignment_method": {
+                                        "type": "string",
+                                        "description": "Method to assign the aggregated attribute value to target entity when multiple source entities match the join condition. 'default' assigns all the matched values, 'exclusive' assigns only when a single source entity based on competitive closest assignment algorithm.",
+                                        "enum": [
+                                            "default",
+                                            "exclusive"
+                                        ],
+                                        "default": "default"
                                     }
                                 },
                                 "required": [
