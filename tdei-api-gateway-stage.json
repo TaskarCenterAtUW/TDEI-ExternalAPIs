@@ -3892,6 +3892,34 @@
                 ]
             }
         },
+        "/api/v1/system/capabilities": {
+            "get": {
+                "tags": [
+                    "System"
+                ],
+                "summary": "Gets system capabilities",
+                "description": "Returns current system capabilities and configurable limits, including dataset upload size limits (in bytes and human-readable form) for OSW, Pathways, and Flex. No authentication required so clients can read limits before uploading. Response is extensible for future limits (e.g. feature flags, concurrency).",
+                "operationId": "system-capabilities",
+                "responses": {
+                    "200": {
+                        "description": "Successful response - Returns system capabilities.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "title": "SystemCapabilitiesResponse",
+                                    "type": "object",
+                                    "$ref": "#/components/schemas/SystemCapabilities",
+                                    "description": "Holds the response data"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error."
+                    }
+                }
+            }
+        },
         "/api/v1/data-metrics": {
             "get": {
                 "tags": [
@@ -4507,6 +4535,71 @@
                     }
                 },
                 "description": "List of API versions."
+            },
+            "SystemCapabilities": {
+                "type": "object",
+                "description": "System capabilities and configurable limits.",
+                "properties": {
+                    "dataset_upload_limits": {
+                        "type": "object",
+                        "description": "Maximum upload size in bytes and display string per dataset type (binary units: 1024 KB = 1 MB).",
+                        "properties": {
+                            "osw": {
+                                "$ref": "#/components/schemas/DatasetUploadLimitEntry"
+                            },
+                            "pathways": {
+                                "$ref": "#/components/schemas/DatasetUploadLimitEntry"
+                            },
+                            "flex": {
+                                "$ref": "#/components/schemas/DatasetUploadLimitEntry"
+                            }
+                        },
+                        "required": [
+                            "osw",
+                            "pathways",
+                            "flex"
+                        ]
+                    }
+                },
+                "required": [
+                    "dataset_upload_limits"
+                ],
+                "example": {
+                    "dataset_upload_limits": {
+                        "osw": {
+                            "limit_bytes": 1073741824,
+                            "limit_display": "1 GB"
+                        },
+                        "pathways": {
+                            "limit_bytes": 1073741824,
+                            "limit_display": "1 GB"
+                        },
+                        "flex": {
+                            "limit_bytes": 1073741824,
+                            "limit_display": "1 GB"
+                        }
+                    }
+                }
+            },
+            "DatasetUploadLimitEntry": {
+                "type": "object",
+                "description": "Upload limit for one dataset type.",
+                "properties": {
+                    "limit_bytes": {
+                        "type": "integer",
+                        "description": "Maximum upload size in bytes.",
+                        "example": 1073741824
+                    },
+                    "limit_display": {
+                        "type": "string",
+                        "description": "Human-readable limit (e.g. \"1 GB\", \"512 MB\").",
+                        "example": "1 GB"
+                    }
+                },
+                "required": [
+                    "limit_bytes",
+                    "limit_display"
+                ]
             },
             "APIVersionSpec": {
                 "type": "object",
