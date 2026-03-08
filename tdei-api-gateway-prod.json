@@ -972,7 +972,8 @@
                                 "Dataset-Upload",
                                 "Dataset-Validate",
                                 "Edit-Metadata",
-                                "Quality-Metric"
+                                "Quality-Metric",
+                                "Quality-Report"
                             ]
                         }
                     },
@@ -1609,6 +1610,65 @@
                         "description": "An Internal server error occured"
                     }
                 }
+            }
+        },
+        "/api/v1/osw/quality-report/{tdei_dataset_id}": {
+            "post": {
+                "tags": [
+                    "OSW",
+                    "Quality-Report"
+                ],
+                "summary": "Initiate Quality report generation for a dataset",
+                "description": "Initiates the Quality report generation for requested `tdei_dataset_id`. The response includes a `job_id` for tracking the request.To check the request status, refer to the location header in the response, which provides the URL for the status API endpoint.",
+                "operationId": "oswQualityReportGenerate",
+                "parameters": [
+                    {
+                        "name": "tdei_dataset_id",
+                        "in": "path",
+                        "description": "Dataset id of the dataset for which Quality report is to be generated.",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "202": {
+                        "description": "The request has been accepted for processing. It returns a `job_id`, a unique identifier for the request, which can be used to track the status of the request. The endpoint to check the status is provided in the location header of the response.",
+                        "content": {
+                            "application/text": {
+                                "schema": {
+                                    "type": "string"
+                                }
+                            }
+                        },
+                        "headers": {
+                            "Location": {
+                                "schema": {
+                                    "type": "string"
+                                },
+                                "description": "Location api to find the status of request processing"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Missing tdei_dataset_id or dataset type is not OSW or Invalid intersection file."
+                    },
+                    "401": {
+                        "description": "Unauthenticated request. Check your access token."
+                    },
+                    "404": {
+                        "description": "tdei_dataset_id doesn't exist in the system."
+                    },
+                    "500": {
+                        "description": "An Internal server error occured"
+                    }
+                },
+                "security": [
+                    {
+                        "AuthorizationToken": []
+                    }
+                ]
             }
         },
         "/api/v1/osw/quality-metric/tag/{tdei_dataset_id}": {
