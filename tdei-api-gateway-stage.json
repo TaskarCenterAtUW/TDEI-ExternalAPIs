@@ -1660,6 +1660,9 @@
                     "404": {
                         "description": "tdei_dataset_id doesn't exist in the system."
                     },
+                    "409": {
+                        "description": "Only one quality report job can be in progress at a time for the user."
+                    },
                     "500": {
                         "description": "An Internal server error occured"
                     }
