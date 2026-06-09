@@ -669,6 +669,15 @@
                         }
                     },
                     {
+                        "name": "include_my_groups",
+                        "in": "query",
+                        "description": "<strong>Include my Group:</strong> When true, the API returns datasets only from project groups the authenticated user belongs to.",
+                        "required": false,
+                        "schema": {
+                            "type": "boolean"
+                        }
+                    },
+                    {
                         "name": "page_no",
                         "in": "query",
                         "description": "<strong>page_no:</strong> Integer, defaults to 1. Filters datasets by retrieving results in pages.",
