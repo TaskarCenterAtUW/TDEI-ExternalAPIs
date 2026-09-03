@@ -31,7 +31,7 @@
                     "Authentication"
                 ],
                 "summary": "Authenticates the user with the TDEI system.",
-                "description": "Authenticates the user with the TDEI system. Returns an access token, if successfully authenticated.",
+                "description": "Authenticates the user with the TDEI system using username and password. Returns an access token and refresh token if successfully authenticated. An optional `client_id` may be provided to select a specific Keycloak client; when omitted, the system default client is used.",
                 "operationId": "authenticate",
                 "requestBody": {
                     "content": {
@@ -75,14 +75,13 @@
                     "Authentication"
                 ],
                 "summary": "Re-issue an access token",
-                "description": "Re-issues an access token, if a valid refresh token is sent to the server",
+                "description": "Re-issues an access token when a valid refresh token is sent to the server. An optional `client_id` may be provided to select a specific Keycloak client; when omitted, the system default client is used. The `client_id` should match the client used when the original tokens were issued.",
                 "operationId": "refreshToken",
                 "requestBody": {
                     "content": {
                         "application/json": {
                             "schema": {
-                                "type": "string",
-                                "description": "The refresh token that was sent through authentication or refresh token API"
+                                "$ref": "#/components/schemas/RefreshTokenRequest"
                             }
                         }
                     },
@@ -135,6 +134,96 @@
                         "AuthorizationToken": []
                     }
                 ]
+            }
+        },
+        "/api/v1/sso-redirect": {
+            "get": {
+                "tags": [
+                    "Authentication"
+                ],
+                "summary": "Initiate SSO login",
+                "description": "Starts the Single Sign-On (SSO) login flow by redirecting the browser to the Keycloak authorization endpoint. The caller must supply a `redirect_uri` that is already registered as a valid redirect URL for the Keycloak client. After the user authenticates with Keycloak, Keycloak redirects the browser back to that `redirect_uri` with an authorization `code` and `state` query parameters. The frontend should then call `POST /api/v1/sso-login` with those values to complete login and obtain TDEI access and refresh tokens. An optional `client_id` may be provided to select a specific Keycloak client; when omitted, the system default client is used.",
+                "operationId": "ssoRedirect",
+                "parameters": [
+                    {
+                        "name": "redirect_uri",
+                        "in": "query",
+                        "description": "Frontend callback URL where Keycloak will redirect after successful authentication. Must be registered in Keycloak for the selected client.",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uri",
+                            "example": "https://app.tdei.us/auth/callback"
+                        }
+                    },
+                    {
+                        "name": "client_id",
+                        "in": "query",
+                        "description": "Keycloak client id used for the SSO flow. Optional; defaults to the configured default client id when not provided.",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "example": "tdei-web-client"
+                        }
+                    }
+                ],
+                "responses": {
+                    "302": {
+                        "description": "Redirect to the Keycloak authorization endpoint. Follow the Location header to continue the SSO login flow.",
+                        "headers": {
+                            "Location": {
+                                "schema": {
+                                    "type": "string"
+                                },
+                                "description": "Keycloak authorization endpoint URL including client, redirect_uri, state, and other OIDC parameters."
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid redirect_uri. The provided redirect_uri is missing, malformed, or not registered in Keycloak for the selected client."
+                    },
+                    "500": {
+                        "description": "An Internal server error occured"
+                    }
+                }
+            }
+        },
+        "/api/v1/sso-login": {
+            "post": {
+                "tags": [
+                    "Authentication"
+                ],
+                "summary": "Complete SSO login",
+                "description": "Completes the Single Sign-On (SSO) login flow by exchanging the authorization `code` and `state` returned from Keycloak for TDEI access and refresh tokens. Call this endpoint after the browser is redirected back to the frontend `redirect_uri` from `GET /api/v1/sso-redirect`. The server validates the `state`, exchanges the authorization code with Keycloak, and returns a `TokenResponse` that can be used with subsequent authenticated TDEI API requests. The returned tokens follow the same format as the username/password authenticate and refresh-token APIs.",
+                "operationId": "ssoLogin",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/SsoLoginRequest"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful response - Returns access and refresh tokens.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/TokenResponse"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Invalid code or state. The authorization code could not be exchanged, the state is invalid or expired, or SSO authentication failed."
+                    },
+                    "500": {
+                        "description": "An Internal server error occured"
+                    }
+                }
             }
         },
         "/api/v1/datasets": {
@@ -4402,7 +4491,60 @@
                     },
                     "password": {
                         "type": "string"
+                    },
+                    "client_id": {
+                        "type": "string",
+                        "description": "Keycloak client id used for authentication. Optional; defaults to the configured default client id when not provided.",
+                        "example": "tdei-web-client"
                     }
+                }
+            },
+            "RefreshTokenRequest": {
+                "type": "object",
+                "required": [
+                    "refresh_token"
+                ],
+                "properties": {
+                    "refresh_token": {
+                        "type": "string",
+                        "description": "The refresh token returned from authenticate, sso-login, or a previous refresh-token call."
+                    },
+                    "client_id": {
+                        "type": "string",
+                        "description": "Keycloak client id used for the token refresh. Optional; defaults to the configured default client id when not provided. Should match the client used when the original tokens were issued.",
+                        "example": "tdei-web-client"
+                    }
+                },
+                "example": {
+                    "refresh_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c",
+                    "client_id": "tdei-web-client"
+                }
+            },
+            "SsoLoginRequest": {
+                "type": "object",
+                "required": [
+                    "code",
+                    "state"
+                ],
+                "properties": {
+                    "code": {
+                        "type": "string",
+                        "description": "Authorization code returned by Keycloak to the frontend redirect_uri after successful SSO authentication."
+                    },
+                    "state": {
+                        "type": "string",
+                        "description": "Opaque state value returned by Keycloak. Used to validate the SSO callback and protect against CSRF."
+                    },
+                    "client_id": {
+                        "type": "string",
+                        "description": "Keycloak client id used for the SSO flow. Optional; defaults to the configured default client id when not provided.",
+                        "example": "tdei-web-client"
+                    }
+                },
+                "example": {
+                    "code": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+                    "state": "8f7e6d5c-4b3a-2109-8765-4321fedcba09",
+                    "client_id": "tdei-web-client"
                 }
             },
             "MetadataModel": {
