@@ -2451,7 +2451,7 @@
                     "OSW"
                 ],
                 "summary": "Performs a union of the two input OSW datasets.",
-                "description": "This function merges spatial data from two datasets by unifying overlapping nodes, edges, and polygons into consolidated geometries. It identifies equivalent nodes based on proximity, aligns and merges overlapping edges, and combines adjacent polygons. The function outputs a single cohesive dataset.The response includes a `job_id` for tracking the request.To check the request status, refer to the location header in the response, which provides the URL for the status API endpoint.",
+                "description": "This function merges spatial data from two datasets by unifying overlapping nodes, edges, and polygons into consolidated geometries. It identifies equivalent nodes based on proximity, aligns and merges overlapping edges, and combines adjacent polygons. The optional `entity_filters` object can limit which features are eligible to merge and tune duplicate detection per OSW file type (`edge`, `node`, `point`, `zone`, `line`, `polygon`). When `entity_filters` is omitted, every feature is eligible to merge. The function outputs a single cohesive dataset.The response includes a `job_id` for tracking the request.To check the request status, refer to the location header in the response, which provides the URL for the status API endpoint.",
                 "operationId": "osw-union",
                 "requestBody": {
                     "content": {
@@ -2473,6 +2473,9 @@
                                         "type": "number",
                                         "example": "0.5",
                                         "description": "Proximity value to identify equivalent nodes in meters. Default value is 0.5 meters."
+                                    },
+                                    "entity_filters": {
+                                        "$ref": "#/components/schemas/UnionEntityFilters"
                                     }
                                 },
                                 "required": [
@@ -2504,7 +2507,7 @@
                         }
                     },
                     "400": {
-                        "description": "The request body is empty."
+                        "description": "The request body is empty, proximity is invalid, or entity_filters contains unsupported keys or values."
                     },
                     "401": {
                         "description": "Unauthenticated request. Check your access token."
@@ -4597,6 +4600,81 @@
                     "code": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
                     "state": "8f7e6d5c-4b3a-2109-8765-4321fedcba09",
                     "client_id": "tdei-web-client"
+                }
+            },
+            "UnionEntityFilterBlock": {
+                "type": "object",
+                "description": "Optional settings for a single OSW file type during union. Every property is optional.",
+                "properties": {
+                    "filters": {
+                        "type": "array",
+                        "description": "Attribute filter groups for this file type. Each group is an object of OpenSidewalks attribute/value pairs (or `ext:*` extensions). Features must match at least one group to be eligible. An empty group is not allowed.",
+                        "items": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            },
+                            "minProperties": 1,
+                            "example": {
+                                "highway": "footway",
+                                "footway": "sidewalk"
+                            }
+                        }
+                    },
+                    "duplicate_buffer_width": {
+                        "type": "number",
+                        "description": "Corridor width in metres used when detecting duplicate linear features. Supported for `edge` and `line` only. Must be greater than 0.",
+                        "example": 3
+                    },
+                    "duplicate_overlap_percentage": {
+                        "type": "number",
+                        "description": "Minimum overlap percentage (greater than 0 and at most 100) used when detecting duplicate features. Supported for `edge`, `line`, `polygon`, and `zone`. Not supported for `node` or `point`, which are merged by proximity.",
+                        "example": 70
+                    }
+                }
+            },
+            "UnionEntityFilters": {
+                "type": "object",
+                "description": "Optional per-file-type filters and duplicate-detection settings for the union operation. Keys must be OSW file types: `edge`, `node`, `point`, `zone`, `line`, or `polygon`. When omitted, every feature is eligible to merge.",
+                "additionalProperties": false,
+                "properties": {
+                    "edge": {
+                        "$ref": "#/components/schemas/UnionEntityFilterBlock"
+                    },
+                    "node": {
+                        "$ref": "#/components/schemas/UnionEntityFilterBlock"
+                    },
+                    "point": {
+                        "$ref": "#/components/schemas/UnionEntityFilterBlock"
+                    },
+                    "zone": {
+                        "$ref": "#/components/schemas/UnionEntityFilterBlock"
+                    },
+                    "line": {
+                        "$ref": "#/components/schemas/UnionEntityFilterBlock"
+                    },
+                    "polygon": {
+                        "$ref": "#/components/schemas/UnionEntityFilterBlock"
+                    }
+                },
+                "example": {
+                    "edge": {
+                        "filters": [
+                            {
+                                "highway": "footway",
+                                "footway": "sidewalk"
+                            },
+                            {
+                                "highway": "footway",
+                                "footway": "crossing"
+                            }
+                        ],
+                        "duplicate_buffer_width": 3,
+                        "duplicate_overlap_percentage": 70
+                    },
+                    "polygon": {
+                        "duplicate_overlap_percentage": 80
+                    }
                 }
             },
             "MetadataModel": {
