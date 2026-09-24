@@ -4557,10 +4557,10 @@
             "RefreshTokenRequest": {
                 "type": "object",
                 "required": [
-                    "refresh_token"
+                    "refreshToken"
                 ],
                 "properties": {
-                    "refresh_token": {
+                    "refreshToken": {
                         "type": "string",
                         "description": "The refresh token returned from authenticate, sso-login, or a previous refresh-token call."
                     },
@@ -4571,7 +4571,7 @@
                     }
                 },
                 "example": {
-                    "refresh_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c",
+                    "refreshToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c",
                     "client_id": "tdei-web-client"
                 }
             },
