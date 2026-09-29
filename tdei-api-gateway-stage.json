@@ -2450,8 +2450,8 @@
                 "tags": [
                     "OSW"
                 ],
-                "summary": "Performs a union of the two input OSW datasets.",
-                "description": "This function merges spatial data from two datasets by unifying overlapping nodes, edges, and polygons into consolidated geometries. It identifies equivalent nodes based on proximity, aligns and merges overlapping edges, and combines adjacent polygons. The optional `entity_filters` object can limit which features are eligible to merge and tune duplicate detection per OSW file type (`edge`, `node`, `point`, `zone`, `line`, `polygon`). When `entity_filters` is omitted, every feature is eligible to merge. The function outputs a single cohesive dataset.The response includes a `job_id` for tracking the request.To check the request status, refer to the location header in the response, which provides the URL for the status API endpoint.",
+                "summary": "Unions two OSW datasets into one connected dataset.",
+                "description": "Combines two OpenSidewalks (OSW) datasets into **one new dataset**. Features that describe the same real-world thing are merged into one, everything else from both datasets is kept, and the two pedestrian networks are **connected wherever they meet** so the result stays routable.\n\nThe request returns a `job_id` straight away; the union runs in the background (see *Tracking the job* below).\n\n---\n\n## 1. Dataset order matters\n\n| Parameter | Role |\n|---|---|\n| `tdei_dataset_id_one` (**DS1**) | The **base, authoritative** dataset. Its positions, geometry, IDs and attribute values win whenever the two datasets disagree. |\n| `tdei_dataset_id_two` (**DS2**) | The dataset **merged into** the base. It fills gaps: new features are added, and attribute keys DS1 does not have are copied across. |\n\nSwapping the two IDs gives a different result.\n\n---\n\n## 2. Two kinds of behaviour\n\n| | What it does | Controlled by `entity_filters`? |\n|---|---|---|\n| **Connecting** | Joins nodes, splits edges and creates shared nodes so that DS1 and DS2 form one connected network. | **No — always runs.** |\n| **Merging** | Removes duplicate features and merges attributes onto the surviving feature. | **Yes.** With no filters, every feature is eligible. |\n\n**Guiding rule: filters decide what is merged, never what is connected.** Routability always comes first. In OSW two edges are connected only when they share a node, so a filter that blocked a node from joining would cut the network at that point.\n\n---\n\n## 3. `proximity`\n\n- Distance in **metres**. **Optional — defaults to `0.5` m when omitted.** Must be greater than 0.\n- Measured as true ground distance, the same in every direction and at any latitude.\n- Decides:\n  - which DS2 node joins which DS1 node;\n  - which DS1 node splits a DS2 edge running past it;\n  - where a DS2 edge ending beside a DS1 edge is joined to it (T-junctions);\n  - which DS1 and DS2 **points** are treated as the same point.\n- It is also the default corridor for **edge and line duplicate detection**, unless `duplicate_buffer_width` is set (see section 6).\n\nChoosing a value: too small and genuine gaps between the datasets stay disconnected; too large and nearby but separate features (for example two parallel sidewalks) may be joined. Values of about 0.5–1 m suit data authored to the same base map; 2–3 m suits data collected independently.\n\n---\n\n## 4. Default behaviour — no `entity_filters`\n\nEvery feature is eligible to merge. Each file type is compared only with the same file type in the other dataset.\n\n| File type | DS1 and DS2 features are treated as the same when… | Result when they are the same | Result otherwise |\n|---|---|---|---|\n| **Node** | the DS2 node is within `proximity` of a DS1 node on the same kind of way (a sidewalk node never joins a road node — see section 5) | One node, with the DS1 ID and position. DS2 attribute keys that DS1 lacks are added. **Every** DS2 value (including overridden ones) is recorded in `ext:union_audit_<key>`. Confidence tags are added. | DS2 node added as a new node. |\n| **Edge** | the DS2 edge joins the same two nodes as a DS1 edge, **or** at least **80%** of its length lies inside the duplicate corridor of DS1 edges of the **same kind** (sidewalk with sidewalk, crossing with crossing, road with road), and it runs **alongside** them (within 30°) | DS2 edge dropped; the DS1 edge is kept. DS2 edge attributes are **not** copied onto the DS1 edge. | DS2 edge added, its ends connected to the network. |\n| **Zone** | the two zones share more than **70%** of the DS1 zone's area | DS1 zone kept; DS2 zone dropped. DS2 zone attributes are **not** merged. | Both zones kept. |\n| **Point** | the DS2 point is within `proximity` of a DS1 point of the **same type** (same identifying tag, e.g. `amenity=bench`) | One point, with the DS1 position. DS2-only keys are added; every DS2 value is recorded in `ext:union_audit_<key>`. | DS2 point added. |\n| **Line** | at least **70%** of the DS2 line's length lies inside the duplicate corridor of a DS1 line | DS1 line kept; DS2-only keys are added. | DS2 line added. |\n| **Polygon** | the polygons intersect | Shared area **more than 70%** of the DS1 polygon: DS1 polygon kept, DS2-only keys added. Shared area **70% or less**: the two shapes are **combined into one polygon** (DS1 ID, DS1 values plus DS2-only keys). | No intersection: both kept. |\n\nAttribute rule used everywhere a merge happens: **DS1 values are never overwritten; DS2 only adds keys DS1 does not have.**\n\nThe thresholds above are defaults and can be changed per file type (section 6).\n\n---\n\n## 5. What always happens, whatever the filters\n\nThese steps turn DS1 and DS2 into **one routable network**. They run on every request, with or without `entity_filters`. A filter cannot switch them off or narrow them.\n\n| # | Step | What happens | What you see in the output |\n|---|---|---|---|\n| 1 | **Node joining** | Each DS2 node joins the nearest DS1 node within `proximity`, provided both lie on the same kind of way. A sidewalk node never joins a road node, and a living-street node joins only another living-street node. **Two nodes at exactly the same coordinate always join**, whatever they lie on. **Two kerb nodes (`barrier=kerb`) never join each other** unless they are at exactly the same coordinate — two kerbs close together are usually opposite sides of a crossing. | One node with the DS1 ID and DS1 position. Every DS2 edge that used the DS2 node now ends on the DS1 node. |\n| 2 | **Splitting DS2 edges at DS1 nodes** | A DS1 node lying within `proximity` of the middle of a DS2 edge of the same kind splits that DS2 edge, so the DS1 node can be reached from it. | The DS2 edge appears as two or more pieces that meet at the DS1 node. |\n| 3 | **Road × crossing nodes** | Wherever a road and a crossing cross — within one dataset or across the two — both are split at one shared node. If a node already sits exactly at that point, it is reused; otherwise a new node is created. | The road and the crossing each appear in pieces. A new node has an ID beginning `ixn-` and carries the crossing's tags as `ext:osw_*` and the road's tags as `ext:road_*`. **DS1 roads and crossings can be split by this step.** |\n| 4 | **T-junctions** | Where a DS2 edge ends within `proximity` of the middle of a DS1 edge, meeting it at 30° or more, the DS1 edge is split at that point and the DS2 edge end is moved onto it. Edges running alongside a DS1 edge are duplicates, not junctions, and are not split. Roads are never split by this step. | The DS1 edge appears in two pieces joined to the DS2 edge. The DS2 edge end may have moved by up to `proximity`. **DS1 edges other than roads can be split by this step.** |\n| 5 | **Endpoint alignment** | Every DS2 edge end is moved to the exact position of the node it connects to. The rest of the edge's shape is unchanged. | Each edge's first and last coordinates equal its `_u_id` and `_v_id` nodes exactly. |\n| 6 | **Protecting connections during duplicate removal** | A DS2 edge that qualifies as a duplicate is still **kept** when both its ends are nodes on the DS1 network (it is then the link between them), or when removing it would cut off another edge attached to it. The second check repeats along a chain of edges until nothing more would be cut off. | Some DS2 edges that look like duplicates of DS1 edges remain in the output. This is intended: removing them would disconnect the network. |\n| 7 | **Removing unused nodes** | Nodes not used by any edge or zone are removed. | No stray nodes. A DS2 node whose only edge was removed as a duplicate does not appear. |\n\n### How these steps interact with filters\n\n- **A filter can stop a feature being removed or having its attributes merged. It cannot stop the feature being joined, split or moved.**\n- A DS2 edge that fails the edge filter is always kept, but steps 1–5 still apply to it: its ends can move onto DS1 nodes and it can be split. It comes out **modified, not untouched**.\n- Node **joining** ignores filters; node **attribute merging** follows them. Under a sidewalk-only edge filter, a DS2 crossing node still joins its DS1 node, but its attributes are recorded only in `ext:union_audit_*`.\n\n### What can change in DS1\n\n- **DS1 nodes never move.** DS1 attribute values are never overwritten; merges only add keys DS1 lacks.\n- **DS1 edges are changed only by steps 3 and 4**, and only by being split. Their shape is kept: the split point lies on the original line.\n\n---\n\n## 6. `entity_filters` — optional\n\n**Omitted:** every feature of every file type is eligible to merge, exactly as in section 4.\n\n**Supplied:** each file type named in `entity_filters` is restricted to the features its filter matches. **File types not named keep the default behaviour.**\n\n### Matching\n\n- `filters` is a list of **groups**. Each group is a set of `attribute: value` pairs.\n- A feature matches a group when it has **all** of the group's pairs with **exactly** those values (AND within a group; exact, case-sensitive match).\n- A feature is **eligible** when it matches **at least one** group (OR across groups).\n- Any OSW attribute, including `ext:*` attributes, can be used in a filter.\n\n### What eligibility controls, per file type\n\n| File type | Only eligible features… | Ineligible features… |\n|---|---|---|\n| `edge` | can be removed as duplicates, and only when the DS1 edge they duplicate is **also** eligible. | are **always kept**, even when they duplicate a DS1 edge — so both copies appear in the output. They still connect (section 5). |\n| `node` | have their attributes merged, and only when **both** nodes are eligible. | still join by proximity; DS2 values are recorded in `ext:union_audit_*` only. |\n| `point`, `line`, `polygon`, `zone` | can be merged, and only with a feature that is **also** eligible. | are kept as they are (DS1) or added as new (DS2). |\n\n**An edge filter also narrows node attribute merging.** A node's attributes merge only when both nodes lie on an eligible edge (and match the `node` filter, if one is given). Node **joining** is never affected.\n\n**A filter that matches nothing does not raise an error.** Nothing of that file type is merged, and the job still completes. If the output looks unmerged, check the attribute names and values in the filter.\n\n### Worked example — edge filter on sidewalks only\n\n```json\n{\"edge\": {\"filters\": [{\"highway\": \"footway\", \"footway\": \"sidewalk\"}]}}\n```\n\n- DS2 **sidewalks** that duplicate DS1 sidewalks are removed.\n- All **other DS2 edges** (crossings, plain footways, steps, roads…) are **added**, even when they duplicate a DS1 edge.\n- **All nodes still join** as described in section 5. Node attributes merge only where both nodes lie on sidewalks; everywhere else DS2 values are audited only.\n- Road × crossing nodes, T-junction splits and every other step in section 5 **still run**.\n- Zones, points, lines and polygons **behave as default**.\n\nAdding a second group — `{\"highway\": \"footway\", \"footway\": \"crossing\"}` — makes sidewalks **or** crossings eligible.\n\n### Duplicate-detection settings\n\nThese go in the same per-file-type block and can be used with or without `filters`.\n\n| Setting | File types | Default | Meaning |\n|---|---|---|---|\n| `duplicate_buffer_width` | `edge`, `line` | `proximity` | Width in metres of the corridor around each DS1 edge or line. A DS2 edge or line inside it counts as covered. It is independent of `proximity`: widening it never makes more nodes join. |\n| `duplicate_overlap_percentage` | `edge` | 80 | Minimum share of the DS2 edge's length inside the corridor for it to count as a duplicate. |\n| | `line` | 70 | Minimum share of the DS2 line's length inside the corridor. |\n| | `polygon` | 70 | Share of the DS1 polygon's area the two polygons must share to be treated as the same polygon. At or below it, intersecting polygons are combined. |\n| | `zone` | 70 | Share of the DS1 zone's area the two zones must share to be treated as the same zone. |\n\nNodes and points are merged by `proximity` only, so neither setting applies to them.\n\n---\n\n## 7. Output\n\nThe job produces one OSW dataset with node, edge, zone, point, line and polygon files.\n\n- **IDs:** DS1 features keep their IDs. DS2 features that were added keep their DS2 IDs. Road × crossing nodes get new `ixn-` IDs. **Edges are renumbered** with a new sequential `_id`; `_u_id` and `_v_id` refer to the output node IDs, and zone `_w_id` lists refer to output node IDs.\n- **Added tags:**\n\n| Tag | On | Meaning |\n|---|---|---|\n| `ext:union_audit_<key>` | merged nodes and points | Every DS2 value for `<key>`, as `<ds2_id>-<value>`, comma-separated when several DS2 features merged. Kept even when DS1's value won or a filter withheld the merge. |\n| `ext:union_confidence` | merged nodes | Score from 0 to 1: 0.7 × proximity score + 0.3 × type-match score. |\n| `ext:union_confidence_proximity` | merged nodes | 1 − (join distance ÷ `proximity`). |\n| `ext:union_confidence_type_match` | merged nodes | 1.0 when both nodes lie on the same kind of way; 0.5 when either node's way type is unknown. |\n| `ext:union_confidence_source` | merged nodes | The union that produced the score, `<dataset_one>+<dataset_two>`. |\n| `ext:union_confidence_status` | nodes | `merged` when scored by this union; `carried` when the score came from an earlier union and the node did not merge this time. |\n| `ext:osw_*`, `ext:road_*` | `ixn-` nodes | Tags of the crossing and the road that created the node. |\n\n- Any `ext:*` attribute that holds different JSON types on different features (for example a number on some, text on others) is output as text on all of them.\n\n---\n\n## 8. Validation errors (HTTP 400)\n\n- The request body is empty, or a dataset ID is missing.\n- `proximity` is not a positive number.\n- `entity_filters` is not an object, or names a file type other than `edge`, `node`, `point`, `zone`, `line`, `polygon`.\n- A block contains a key other than `filters`, `duplicate_buffer_width`, `duplicate_overlap_percentage`.\n- `filters` is not a list.\n- `duplicate_buffer_width` is not a number greater than 0, or is given for `node`, `point`, `zone` or `polygon`.\n- `duplicate_overlap_percentage` is not a number greater than 0 and at most 100, or is given for `node` or `point`.\n\nUnrecognised keys are always **rejected**, never ignored, so a typing mistake cannot produce a run that silently applies none of the request.\n\n---\n\n## 9. Tracking the job\n\nThe response is a `job_id`, and the `Location` header gives the status URL. Track the job with `GET /api/v1/jobs` (job type `Dataset-Union`). Once its status is `COMPLETED`, download the result with `GET /api/v1/job/download/{job_id}`.",
                 "operationId": "osw-union",
                 "requestBody": {
                     "content": {
@@ -2462,26 +2462,150 @@
                                     "tdei_dataset_id_one": {
                                         "type": "string",
                                         "example": "fa8e12ea-6b0c-4d3e-8b38-5b87b268e76b",
-                                        "description": "Dataset id defined to be unioned"
+                                        "description": "**DS1 — the base, authoritative dataset.** Its positions, geometry, IDs and attribute values win whenever the two datasets disagree. Road × crossing splits and T-junction splits are the only changes made to its edges."
                                     },
                                     "tdei_dataset_id_two": {
                                         "type": "string",
                                         "example": "0d661b69495d47fb838862edf699fe09",
-                                        "description": "Dataset id defined to be unioned"
+                                        "description": "**DS2 — the dataset merged into DS1.** Its features are joined onto DS1 where they match, removed where they duplicate DS1, and added where DS1 has nothing. Only attribute keys DS1 lacks are copied across."
                                     },
                                     "proximity": {
                                         "type": "number",
-                                        "example": "0.5",
-                                        "description": "Proximity value to identify equivalent nodes in meters. Default value is 0.5 meters."
+                                        "format": "double",
+                                        "default": 0.5,
+                                        "minimum": 0,
+                                        "exclusiveMinimum": true,
+                                        "example": 0.5,
+                                        "description": "Distance in **metres** within which a DS2 node joins a DS1 node, a DS1 node splits a DS2 edge, a DS2 edge end is joined to a DS1 edge (T-junction), and two points of the same type are merged. Measured as true ground distance in every direction. **Optional — `0.5` when omitted.** Also the default duplicate corridor width for edges and lines unless `duplicate_buffer_width` is set."
                                     },
                                     "entity_filters": {
-                                        "$ref": "#/components/schemas/UnionEntityFilters"
+                                        "allOf": [
+                                            {
+                                                "$ref": "#/components/schemas/UnionEntityFilters"
+                                            }
+                                        ],
+                                        "description": "**Optional.** Restricts which features are **eligible to merge** (duplicate removal and attribute merging), per file type, and tunes duplicate detection. **Omitted:** every feature is eligible. **Supplied:** only the file types named are restricted; the rest behave as default. Filters never affect **connectivity** — node joining, edge splitting, road × crossing nodes, T-junctions and every other step in section 5 always run."
                                     }
                                 },
                                 "required": [
                                     "tdei_dataset_id_one",
                                     "tdei_dataset_id_two"
                                 ]
+                            },
+                            "examples": {
+                                "defaults": {
+                                    "summary": "Defaults — 0.5 m proximity, everything eligible",
+                                    "description": "Proximity is omitted, so 0.5 m is used. No filters, so every feature of every file type is eligible to merge with default thresholds.",
+                                    "value": {
+                                        "tdei_dataset_id_one": "fa8e12ea-6b0c-4d3e-8b38-5b87b268e76b",
+                                        "tdei_dataset_id_two": "0d661b69495d47fb838862edf699fe09"
+                                    }
+                                },
+                                "wider_proximity": {
+                                    "summary": "Independently collected datasets — 2 m proximity",
+                                    "description": "Nodes, points and T-junctions join within 2 m. Edge and line duplicate corridors also default to 2 m.",
+                                    "value": {
+                                        "tdei_dataset_id_one": "fa8e12ea-6b0c-4d3e-8b38-5b87b268e76b",
+                                        "tdei_dataset_id_two": "0d661b69495d47fb838862edf699fe09",
+                                        "proximity": 2
+                                    }
+                                },
+                                "sidewalks_only": {
+                                    "summary": "Merge only sidewalk edges",
+                                    "description": "Only DS2 sidewalks can be removed as duplicates of DS1 sidewalks. Every other DS2 edge is added, even if it duplicates a DS1 edge. All nodes still join; node attributes merge only where both nodes lie on sidewalks. Zones, points, lines and polygons behave as default. Connectivity steps always run.",
+                                    "value": {
+                                        "tdei_dataset_id_one": "fa8e12ea-6b0c-4d3e-8b38-5b87b268e76b",
+                                        "tdei_dataset_id_two": "0d661b69495d47fb838862edf699fe09",
+                                        "proximity": 1,
+                                        "entity_filters": {
+                                            "edge": {
+                                                "filters": [
+                                                    {
+                                                        "highway": "footway",
+                                                        "footway": "sidewalk"
+                                                    }
+                                                ]
+                                            }
+                                        }
+                                    }
+                                },
+                                "sidewalks_or_crossings": {
+                                    "summary": "Merge sidewalk or crossing edges (two groups = OR)",
+                                    "description": "Edges matching either group are eligible. Keys inside a group are AND-ed; groups are OR-ed.",
+                                    "value": {
+                                        "tdei_dataset_id_one": "fa8e12ea-6b0c-4d3e-8b38-5b87b268e76b",
+                                        "tdei_dataset_id_two": "0d661b69495d47fb838862edf699fe09",
+                                        "entity_filters": {
+                                            "edge": {
+                                                "filters": [
+                                                    {
+                                                        "highway": "footway",
+                                                        "footway": "sidewalk"
+                                                    },
+                                                    {
+                                                        "highway": "footway",
+                                                        "footway": "crossing"
+                                                    }
+                                                ]
+                                            }
+                                        }
+                                    }
+                                },
+                                "kerb_nodes_only": {
+                                    "summary": "Merge attributes only onto kerb nodes",
+                                    "description": "Nodes still join by proximity everywhere, but DS2 attributes are merged only when both nodes are kerbs. Other DS2 node values are recorded in ext:union_audit_* only.",
+                                    "value": {
+                                        "tdei_dataset_id_one": "fa8e12ea-6b0c-4d3e-8b38-5b87b268e76b",
+                                        "tdei_dataset_id_two": "0d661b69495d47fb838862edf699fe09",
+                                        "entity_filters": {
+                                            "node": {
+                                                "filters": [
+                                                    {
+                                                        "barrier": "kerb"
+                                                    }
+                                                ]
+                                            }
+                                        }
+                                    }
+                                },
+                                "duplicate_settings": {
+                                    "summary": "Tune duplicate detection without filtering",
+                                    "description": "Every feature stays eligible. A DS2 edge counts as a duplicate when 70% of its length lies within 3 m of DS1 edges of the same kind. Polygons are treated as the same when they share more than 80% of the DS1 polygon's area.",
+                                    "value": {
+                                        "tdei_dataset_id_one": "fa8e12ea-6b0c-4d3e-8b38-5b87b268e76b",
+                                        "tdei_dataset_id_two": "0d661b69495d47fb838862edf699fe09",
+                                        "proximity": 1,
+                                        "entity_filters": {
+                                            "edge": {
+                                                "duplicate_buffer_width": 3,
+                                                "duplicate_overlap_percentage": 70
+                                            },
+                                            "polygon": {
+                                                "duplicate_overlap_percentage": 80
+                                            }
+                                        }
+                                    }
+                                },
+                                "points_by_type": {
+                                    "summary": "Merge only benches and power poles",
+                                    "description": "Only points matching a group can merge, and only with a DS1 point that also matches. Other points are kept or added unchanged. Every other file type behaves as default.",
+                                    "value": {
+                                        "tdei_dataset_id_one": "fa8e12ea-6b0c-4d3e-8b38-5b87b268e76b",
+                                        "tdei_dataset_id_two": "0d661b69495d47fb838862edf699fe09",
+                                        "entity_filters": {
+                                            "point": {
+                                                "filters": [
+                                                    {
+                                                        "amenity": "bench"
+                                                    },
+                                                    {
+                                                        "power": "pole"
+                                                    }
+                                                ]
+                                            }
+                                        }
+                                    }
+                                }
                             }
                         }
                     },
@@ -2489,7 +2613,7 @@
                 },
                 "responses": {
                     "202": {
-                        "description": "The request has been accepted for processing. It returns a `job_id`, a unique identifier for the request, which can be used to track the status of the request. The endpoint to check the status is provided in the location header of the response.",
+                        "description": "The union request has been accepted. The response body is the `job_id`. The `Location` header gives the status URL. Track the job with `GET /api/v1/jobs` (job type `Dataset-Union`); once it is `COMPLETED`, download the result with `GET /api/v1/job/download/{job_id}`.",
                         "content": {
                             "application/text": {
                                 "schema": {
@@ -2507,7 +2631,7 @@
                         }
                     },
                     "400": {
-                        "description": "The request body is empty, proximity is invalid, or entity_filters contains unsupported keys or values."
+                        "description": "Invalid request. Possible causes: the body is empty or a dataset ID is missing; `proximity` is not a positive number; `entity_filters` is not an object or names an unknown file type; a block contains an unknown key; `filters` is not a list; `duplicate_buffer_width` is not greater than 0 or is given for node, point, zone or polygon; `duplicate_overlap_percentage` is outside (0, 100] or is given for node or point. Unknown keys are rejected, never ignored."
                     },
                     "401": {
                         "description": "Unauthenticated request. Check your access token."
@@ -4501,10 +4625,10 @@
             "RefreshTokenRequest": {
                 "type": "object",
                 "required": [
-                    "refresh_token"
+                    "refreshToken"
                 ],
                 "properties": {
-                    "refresh_token": {
+                    "refreshToken": {
                         "type": "string",
                         "description": "The refresh token returned from authenticate, sso-login, or a previous refresh-token call."
                     },
@@ -4515,7 +4639,7 @@
                     }
                 },
                 "example": {
-                    "refresh_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c",
+                    "refreshToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c",
                     "client_id": "tdei-web-client"
                 }
             },
@@ -4548,17 +4672,19 @@
             },
             "UnionEntityFilterBlock": {
                 "type": "object",
-                "description": "Optional settings for a single OSW file type during union. Every property is optional.",
+                "additionalProperties": false,
+                "description": "Settings for one OSW file type. Every property is optional. `filters` controls which features are eligible to merge; the `duplicate_*` settings tune when two features count as the same. None of them affect connectivity.",
                 "properties": {
                     "filters": {
                         "type": "array",
-                        "description": "Attribute filter groups for this file type. Each group is an object of OpenSidewalks attribute/value pairs (or `ext:*` extensions). Features must match at least one group to be eligible. An empty group is not allowed.",
+                        "minItems": 1,
+                        "description": "List of filter groups. A feature is **eligible to merge** when it matches **at least one** group (OR). It matches a group when it has **every** attribute/value pair in it with exactly that value (AND; exact, case-sensitive). Any OSW attribute, including `ext:*`, can be used.\n\nOnly eligible features can be removed as duplicates or have attributes merged, and only with a counterpart that is also eligible. Ineligible features are never removed: DS1 features pass through and DS2 features are added. They still connect to the network.\n\nAn empty list is the same as no filter. A filter that matches no feature is not an error; nothing of that file type is merged.",
                         "items": {
                             "type": "object",
+                            "minProperties": 1,
                             "additionalProperties": {
                                 "type": "string"
                             },
-                            "minProperties": 1,
                             "example": {
                                 "highway": "footway",
                                 "footway": "sidewalk"
@@ -4567,38 +4693,75 @@
                     },
                     "duplicate_buffer_width": {
                         "type": "number",
-                        "description": "Corridor width in metres used when detecting duplicate linear features. Supported for `edge` and `line` only. Must be greater than 0.",
+                        "format": "double",
+                        "minimum": 0,
+                        "exclusiveMinimum": true,
+                        "description": "**`edge` and `line` only.** Width in metres of the corridor around each DS1 edge or line; a DS2 edge or line lying inside it counts as covered. **Default: the request's `proximity`.** Independent of `proximity`: widening the corridor never makes more nodes join. Rejected for `node`, `point`, `zone` and `polygon`.",
                         "example": 3
                     },
                     "duplicate_overlap_percentage": {
                         "type": "number",
-                        "description": "Minimum overlap percentage (greater than 0 and at most 100) used when detecting duplicate features. Supported for `edge`, `line`, `polygon`, and `zone`. Not supported for `node` or `point`, which are merged by proximity.",
+                        "format": "double",
+                        "minimum": 0,
+                        "exclusiveMinimum": true,
+                        "maximum": 100,
+                        "description": "Minimum overlap, in percent, for two features to count as the same.\n\n- `edge` — share of the DS2 edge's length inside the corridor. **Default 80.** The edge must also run alongside the DS1 edge (within 30°).\n- `line` — share of the DS2 line's length inside the corridor. **Default 70.**\n- `polygon` — share of the DS1 polygon's area the two polygons share. **Default 70.** At or below it, intersecting polygons are combined into one shape.\n- `zone` — share of the DS1 zone's area the two zones share. **Default 70.**\n\nRejected for `node` and `point`, which merge by `proximity` only.",
                         "example": 70
                     }
                 }
             },
             "UnionEntityFilters": {
                 "type": "object",
-                "description": "Optional per-file-type filters and duplicate-detection settings for the union operation. Keys must be OSW file types: `edge`, `node`, `point`, `zone`, `line`, or `polygon`. When omitted, every feature is eligible to merge.",
                 "additionalProperties": false,
+                "description": "Optional per-file-type merge filters and duplicate-detection settings. Keys must be OSW file types: `edge`, `node`, `point`, `zone`, `line`, `polygon`; any other key is rejected.\n\n- **Omitted entirely:** every feature of every file type is eligible to merge.\n- **A file type named:** only its features matching the filter are eligible.\n- **A file type not named:** default behaviour.\n\nFilters decide **what is merged, never what is connected**.",
                 "properties": {
                     "edge": {
-                        "$ref": "#/components/schemas/UnionEntityFilterBlock"
+                        "allOf": [
+                            {
+                                "$ref": "#/components/schemas/UnionEntityFilterBlock"
+                            }
+                        ],
+                        "description": "Edge merging. Only eligible DS2 edges can be removed as duplicates, and only of eligible DS1 edges. Ineligible DS2 edges are always added, even when they duplicate a DS1 edge, and still connect to the network. The edge filter also narrows node attribute merging: attributes merge only when both nodes lie on eligible edges. Supports `filters`, `duplicate_buffer_width` and `duplicate_overlap_percentage` (default 80)."
                     },
                     "node": {
-                        "$ref": "#/components/schemas/UnionEntityFilterBlock"
+                        "allOf": [
+                            {
+                                "$ref": "#/components/schemas/UnionEntityFilterBlock"
+                            }
+                        ],
+                        "description": "Node **attribute** merging. Nodes always join by `proximity` (section 5 of the union description); this filter only decides whether DS2 attributes are merged onto the joined DS1 node. Both nodes must match (and lie on an eligible edge, if an edge filter is given). Withheld DS2 values are still recorded in `ext:union_audit_*`. Supports `filters` only."
                     },
                     "point": {
-                        "$ref": "#/components/schemas/UnionEntityFilterBlock"
+                        "allOf": [
+                            {
+                                "$ref": "#/components/schemas/UnionEntityFilterBlock"
+                            }
+                        ],
+                        "description": "Point merging. Two points of the same type within `proximity` merge only when both match. Others are kept or added unchanged. Supports `filters` only."
                     },
                     "zone": {
-                        "$ref": "#/components/schemas/UnionEntityFilterBlock"
+                        "allOf": [
+                            {
+                                "$ref": "#/components/schemas/UnionEntityFilterBlock"
+                            }
+                        ],
+                        "description": "Zone merging. Two overlapping zones are treated as the same only when both match. Supports `filters` and `duplicate_overlap_percentage` (default 70)."
                     },
                     "line": {
-                        "$ref": "#/components/schemas/UnionEntityFilterBlock"
+                        "allOf": [
+                            {
+                                "$ref": "#/components/schemas/UnionEntityFilterBlock"
+                            }
+                        ],
+                        "description": "Line merging. A DS2 line inside a DS1 line's corridor merges only when both match. Supports `filters`, `duplicate_buffer_width` and `duplicate_overlap_percentage` (default 70)."
                     },
                     "polygon": {
-                        "$ref": "#/components/schemas/UnionEntityFilterBlock"
+                        "allOf": [
+                            {
+                                "$ref": "#/components/schemas/UnionEntityFilterBlock"
+                            }
+                        ],
+                        "description": "Polygon merging. Intersecting polygons are merged or combined only when both match; otherwise both are kept unchanged. Supports `filters` and `duplicate_overlap_percentage` (default 70)."
                     }
                 },
                 "example": {
