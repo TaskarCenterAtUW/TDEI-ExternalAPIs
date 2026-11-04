@@ -66,7 +66,8 @@
                     "500": {
                         "description": "An Internal server error occured"
                     }
-                }
+                },
+                "security": []
             }
         },
         "/api/v1/refresh-token": {
@@ -185,7 +186,8 @@
                     "500": {
                         "description": "An Internal server error occured"
                     }
-                }
+                },
+                "security": []
             }
         },
         "/api/v1/sso-login": {
@@ -223,7 +225,8 @@
                     "500": {
                         "description": "An Internal server error occured"
                     }
-                }
+                },
+                "security": []
             }
         },
         "/api/v1/sso-logout": {
@@ -275,7 +278,8 @@
                     "500": {
                         "description": "An Internal server error occured"
                     }
-                }
+                },
+                "security": []
             }
         },
         "/api/v1/datasets": {
@@ -1623,7 +1627,8 @@
                     {
                         "AuthorizationToken": []
                     }
-                ]
+                ],
+                "deprecated": true
             }
         },
         "/api/v1/osw/convert": {
@@ -3267,6 +3272,9 @@
                             }
                         }
                     },
+                    "401": {
+                        "description": "Unauthenticated request. Check your access token."
+                    },
                     "500": {
                         "description": "An server error occurred."
                     }
@@ -4568,7 +4576,8 @@
                     "500": {
                         "description": "Internal server error."
                     }
-                }
+                },
+                "security": []
             }
         },
         "/api/v1/data-metrics": {
@@ -4644,7 +4653,8 @@
                     "500": {
                         "description": "An Internal server error occured"
                     }
-                }
+                },
+                "security": []
             }
         },
         "/api/v1/verify-email": {
@@ -4681,7 +4691,8 @@
                     "500": {
                         "description": "An Internal server error occured."
                     }
-                }
+                },
+                "security": []
             }
         }
     },
