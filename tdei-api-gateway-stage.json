@@ -2,7 +2,7 @@
     "openapi": "3.0.1",
     "info": {
         "title": "TDEI Gateway Stage API",
-        "description": "This is an API for interacting with the Transportation Data Equity Initiative (TDEI) data system. It is intended for applications producing data to and consuming data from the TDEI system. It currently supports GTFS-Pathways, GTFS-Flex v2 and OpenSidewalks v0.2 data schemas.",
+        "description": "This is an API for interacting with the Transportation Data Equity Initiative (TDEI) system. It is intended for applications submitting data to and consuming data from the TDEI system. We currently support GTFS-Pathways, GTFS-Flex and OpenSidewalks (OSW) data schemas.",
         "contact": {
             "name": "TDEI",
             "url": "http://www.tdei.us/",
