@@ -2,7 +2,7 @@
     "openapi": "3.0.1",
     "info": {
         "title": "TDEI Gateway Stage API",
-        "description": "This is an API for interacting with the Transportation Data Equity Initiative (TDEI) data system. It is intended for applications producing data to and consuming data from the TDEI system. It currently supports GTFS-Pathways, GTFS-Flex v2 and OpenSidewalks v0.2 data schemas.",
+        "description": "This is an API for interacting with the Transportation Data Equity Initiative (TDEI) system. It is intended for applications submitting data to and consuming data from the TDEI system. We currently support GTFS-Pathways, GTFS-Flex and OpenSidewalks (OSW) data schemas.",
         "contact": {
             "name": "TDEI",
             "url": "http://www.tdei.us/",
@@ -66,7 +66,8 @@
                     "500": {
                         "description": "An Internal server error occured"
                     }
-                }
+                },
+                "security": []
             }
         },
         "/api/v1/refresh-token": {
@@ -185,7 +186,8 @@
                     "500": {
                         "description": "An Internal server error occured"
                     }
-                }
+                },
+                "security": []
             }
         },
         "/api/v1/sso-login": {
@@ -223,7 +225,8 @@
                     "500": {
                         "description": "An Internal server error occured"
                     }
-                }
+                },
+                "security": []
             }
         },
         "/api/v1/sso-logout": {
@@ -275,7 +278,8 @@
                     "500": {
                         "description": "An Internal server error occured"
                     }
-                }
+                },
+                "security": []
             }
         },
         "/api/v1/datasets": {
@@ -284,7 +288,7 @@
                     "Common APIs"
                 ],
                 "summary": "Lists the TDEI datasets in the system.",
-                "description": "This API returns filtered and sorted lists of TDEI datasets.  All text parameters x return datasets with attribute containing x, as opposed to exact match. By default results will include all datasets in released status AND all dataset in pre-release status within the requesting user's project group. This behavior can be controlled by the status parameter.  In no situation can a user see pre-release datasets from a project group the user is not part of.  Primary use cases include: name search: Given a search string X, return all datasets with a name that contains the search string X) dataset id lookup: Given a tdei_dataset_id, return the dataset with the matching id bounding box: Given xmin, xmax, ymin, ymax, return datasets with dataset_area overlapping the bounding box Sorting:  Users can sort datasets by 'valid_to', 'valid_from', 'uploaded date', 'project group name', and 'status'.",
+                "description": "This API returns filtered and sorted lists of TDEI datasets.  All text parameters x return datasets with attribute containing x, as opposed to exact match. By default results will include all datasets in released status AND all dataset in pre-release status within the requesting user's project group. This behavior can be controlled by the status parameter.  In no situation can a user see pre-release datasets from a project group the user is not part of.  Primary use cases include: name search: Given a search string X, return all datasets with a name that contains the search string X) dataset id lookup: Given a tdei_dataset_id, return the dataset with the matching id bounding box: Given xmin, xmax, ymin, ymax, return datasets with dataset_area overlapping the bounding box Sorting:  Users can sort datasets by 'valid_to', 'valid_from', 'uploaded date', 'project group name', and 'status'. Results are always one page. page_no defaults to 1 and page_size defaults to 10 (values above 50 are capped at 50). X-Total-Count, X-Page-No, and X-Page-Size are always set. A Link header with rel=\"next\" is set only when another page exists, and it keeps the other query filters.",
                 "operationId": "listDatasetFiles",
                 "parameters": [
                     {
@@ -821,7 +825,7 @@
                     {
                         "name": "page_no",
                         "in": "query",
-                        "description": "<strong>page_no:</strong> Integer, defaults to 1. Filters datasets by retrieving results in pages.",
+                        "description": "<strong>page_no:</strong> Integer. Page of matching datasets to return. Defaults to 1 when omitted, not a number, or less than 1. The resolved page is returned in the X-Page-No response header.",
                         "required": false,
                         "schema": {
                             "type": "integer",
@@ -832,7 +836,7 @@
                     {
                         "name": "page_size",
                         "in": "query",
-                        "description": "<strong>Page size:</strong> Integer, between 1 to 50, defaults to 10.Specifies total records per page.",
+                        "description": "<strong>Page size:</strong> Integer. Number of datasets in the page. Defaults to 10 when omitted or invalid, and values above 50 are capped at 50. The resolved size is returned in the X-Page-Size response header.",
                         "required": false,
                         "schema": {
                             "type": "integer",
@@ -874,7 +878,7 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "Successful response - returns an array of dataset entities.",
+                        "description": "Successful response. The body is one page of dataset entities. X-Total-Count, X-Page-No, and X-Page-Size describe the full match set. A Link header with rel=\"next\" is included only when another page exists.",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -883,6 +887,36 @@
                                         "$ref": "#/components/schemas/DatasetItem"
                                     }
                                 }
+                            }
+                        },
+                        "headers": {
+                            "X-Total-Count": {
+                                "description": "Total number of records that match the request filters, including records on other pages. Always present.",
+                                "schema": {
+                                    "type": "integer",
+                                    "format": "int32"
+                                }
+                            },
+                            "X-Page-No": {
+                                "description": "Page number returned in the body. Defaults to 1 when page_no is omitted, not a number, or less than 1. Always present.",
+                                "schema": {
+                                    "type": "integer",
+                                    "format": "int32"
+                                }
+                            },
+                            "X-Page-Size": {
+                                "description": "Resolved page size for this response. Defaults to 10 when page_size is omitted or invalid, and is capped at 50. Always present. The body may contain fewer records on the last page.",
+                                "schema": {
+                                    "type": "integer",
+                                    "format": "int32"
+                                }
+                            },
+                            "Link": {
+                                "description": "Present only when another page exists. A single link with rel=\"next\" that keeps the other query filters and sets page_no to the following page and page_size to the resolved page size.",
+                                "schema": {
+                                    "type": "string"
+                                },
+                                "example": "</api/v1/datasets?page_no=2&page_size=10>; rel=\"next\""
                             }
                         }
                     },
@@ -1071,7 +1105,7 @@
                     "Common APIs"
                 ],
                 "summary": "Shows the details of the jobs that the user has access to.",
-                "description": "Returns a list of jobs including request and reponse details. By default only shows the jobs that are submitted by the user.",
+                "description": "Returns a list of jobs including request and reponse details. By default only shows the jobs that are submitted by the user. Results are always one page. page_no defaults to 1 and page_size defaults to 10 (values above 50 are capped at 50). X-Total-Count, X-Page-No, and X-Page-Size are always set. A Link header with rel=\"next\" is set only when another page exists, and it keeps the other query filters.",
                 "operationId": "listJobs",
                 "parameters": [
                     {
@@ -1145,7 +1179,7 @@
                     {
                         "name": "page_no",
                         "in": "query",
-                        "description": "Pagination: page number to start the list from. Defaults to 1.",
+                        "description": "Page of matching jobs to return. Defaults to 1 when omitted, not a number, or less than 1. The resolved page is returned in the X-Page-No response header.",
                         "required": false,
                         "schema": {
                             "type": "integer",
@@ -1156,7 +1190,7 @@
                     {
                         "name": "page_size",
                         "in": "query",
-                        "description": "Total records to retrieve.Page size ranges between 1 to 50, defaults to 10.",
+                        "description": "Number of jobs in the page. Defaults to 10 when omitted or invalid, and values above 50 are capped at 50. The resolved size is returned in the X-Page-Size response header.",
                         "required": false,
                         "schema": {
                             "type": "integer",
@@ -1167,7 +1201,7 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "Successful response - returns an array of [JobDetails](#/components/schemas/JobDetails) entities.",
+                        "description": "Successful response. The body is one page of JobDetails entities. X-Total-Count, X-Page-No, and X-Page-Size describe the full match set. A Link header with rel=\"next\" is included only when another page exists.",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -1176,6 +1210,36 @@
                                         "$ref": "#/components/schemas/JobDetails"
                                     }
                                 }
+                            }
+                        },
+                        "headers": {
+                            "X-Total-Count": {
+                                "description": "Total number of records that match the request filters, including records on other pages. Always present.",
+                                "schema": {
+                                    "type": "integer",
+                                    "format": "int32"
+                                }
+                            },
+                            "X-Page-No": {
+                                "description": "Page number returned in the body. Defaults to 1 when page_no is omitted, not a number, or less than 1. Always present.",
+                                "schema": {
+                                    "type": "integer",
+                                    "format": "int32"
+                                }
+                            },
+                            "X-Page-Size": {
+                                "description": "Resolved page size for this response. Defaults to 10 when page_size is omitted or invalid, and is capped at 50. Always present. The body may contain fewer records on the last page.",
+                                "schema": {
+                                    "type": "integer",
+                                    "format": "int32"
+                                }
+                            },
+                            "Link": {
+                                "description": "Present only when another page exists. A single link with rel=\"next\" that keeps the other query filters and sets page_no to the following page and page_size to the resolved page size.",
+                                "schema": {
+                                    "type": "string"
+                                },
+                                "example": "</api/v1/jobs?page_no=2&page_size=10>; rel=\"next\""
                             }
                         }
                     },
@@ -1623,7 +1687,8 @@
                     {
                         "AuthorizationToken": []
                     }
-                ]
+                ],
+                "deprecated": true
             }
         },
         "/api/v1/osw/convert": {
@@ -1863,6 +1928,56 @@
                         }
                     }
                 ],
+                "requestBody": {
+                    "description": "Optional. Which points of interest (POIs) the report uses. As JSON, choose which POI types to fetch; leave out the body, or `poi_types`, to include every POI type. Overture places are fetched only in the US state(s) the dataset's area overlaps; for an area outside every state, they are fetched without a state filter. As multipart/form-data, upload your own `pois_file` instead.",
+                    "required": false,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "poi_types": {
+                                        "type": "array",
+                                        "minItems": 1,
+                                        "items": {
+                                            "type": "string",
+                                            "enum": [
+                                                "transit",
+                                                "healthcare",
+                                                "senior_care",
+                                                "education",
+                                                "childcare",
+                                                "food",
+                                                "shopping",
+                                                "social_services",
+                                                "community",
+                                                "civic",
+                                                "leisure"
+                                            ]
+                                        },
+                                        "description": "The kinds of points of interest to include. Leave out to include all of them. `transit`: bus stops, train and metro stations; `healthcare`: hospitals, clinics, doctors and other healthcare; `senior_care`: senior centers, nursing homes, assisted living; `education`: schools and colleges; `childcare`: child care and preschools; `food`: supermarkets, grocery stores, food banks, farmers markets; `shopping`: shopping malls; `social_services`: social services, shelters, disability services; `community`: community centers, places of worship, libraries; `civic`: polling stations and other government services; `leisure`: parks, nature reserves, recreation grounds, gyms.",
+                                        "example": [
+                                            "civic",
+                                            "leisure"
+                                        ]
+                                    }
+                                }
+                            }
+                        },
+                        "multipart/form-data": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "pois_file": {
+                                        "type": "string",
+                                        "format": "binary",
+                                        "description": "Your own points of interest, used instead of fetching them from OpenStreetMap and Overture Maps, for this job only. A CSV in the form the report writes its own `pois.csv`: it needs `lat`, `lon`, `category`, `source` and `snapped` columns, with `snapped` set to `true` on every row, because the file is used as-is and its points are not snapped to the network. Send it on its own: `poi_types` chooses which points of interest to fetch, so a request with both is rejected."
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
                 "responses": {
                     "202": {
                         "description": "The request has been accepted for processing. It returns a `job_id`, a unique identifier for the request, which can be used to track the status of the request. The endpoint to check the status is provided in the location header of the response.",
@@ -1883,7 +1998,7 @@
                         }
                     },
                     "400": {
-                        "description": "Missing tdei_dataset_id or dataset type is not OSW or Invalid intersection file."
+                        "description": "Missing tdei_dataset_id or dataset type is not OSW or Invalid intersection file, or `poi_types` is not valid, or `pois_file` is not a CSV with the required columns or is sent with `poi_types`."
                     },
                     "401": {
                         "description": "Unauthenticated request. Check your access token."
@@ -3267,6 +3382,9 @@
                             }
                         }
                     },
+                    "401": {
+                        "description": "Unauthenticated request. Check your access token."
+                    },
                     "500": {
                         "description": "An server error occurred."
                     }
@@ -4568,7 +4686,8 @@
                     "500": {
                         "description": "Internal server error."
                     }
-                }
+                },
+                "security": []
             }
         },
         "/api/v1/data-metrics": {
@@ -4644,7 +4763,8 @@
                     "500": {
                         "description": "An Internal server error occured"
                     }
-                }
+                },
+                "security": []
             }
         },
         "/api/v1/verify-email": {
@@ -4681,7 +4801,8 @@
                     "500": {
                         "description": "An Internal server error occured."
                     }
-                }
+                },
+                "security": []
             }
         }
     },
