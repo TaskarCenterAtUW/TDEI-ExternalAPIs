@@ -66,7 +66,8 @@
                     "500": {
                         "description": "An Internal server error occured"
                     }
-                }
+                },
+                "security": []
             }
         },
         "/api/v1/refresh-token": {
@@ -185,7 +186,8 @@
                     "500": {
                         "description": "An Internal server error occured"
                     }
-                }
+                },
+                "security": []
             }
         },
         "/api/v1/sso-login": {
@@ -223,7 +225,8 @@
                     "500": {
                         "description": "An Internal server error occured"
                     }
-                }
+                },
+                "security": []
             }
         },
         "/api/v1/sso-logout": {
@@ -275,7 +278,8 @@
                     "500": {
                         "description": "An Internal server error occured"
                     }
-                }
+                },
+                "security": []
             }
         },
         "/api/v1/datasets": {
@@ -284,7 +288,7 @@
                     "Common APIs"
                 ],
                 "summary": "Lists the TDEI datasets in the system.",
-                "description": "<p>This API returns filtered and sorted lists of TDEI datasets. The matching behavior of filter parameters may vary depending on the attribute type.</p> <p>By default results will include all datasets in released status AND all dataset in pre-release status within the requesting user's project group. This behavior can be controlled by the status parameter.  In no situation can a user see pre-release datasets from a project group the user is not part of.</p> \n\n <b>Primary use cases include</b>: <ul> <li><b>name search</b>: Given a search string X, return all datasets with a name that contains the search string X </li> <li><b>dataset id lookup</b>: Given a tdei_dataset_id, return the dataset with the matching id </li> <li> <b>bounding box</b>: Given xmin, xmax, ymin, ymax, return datasets with dataset_area overlapping the bounding box </li> </ul> \n\n <b>Sorting</b>:<br> <p>Users can sort datasets by 'valid_to', 'valid_from', 'uploaded date', 'project group name', and 'status'.</p>",
+                "description": "<p>This API returns filtered and sorted lists of TDEI datasets. The matching behavior of filter parameters may vary depending on the attribute type.</p> <p>By default results will include all datasets in released status AND all dataset in pre-release status within the requesting user's project group. This behavior can be controlled by the status parameter.  In no situation can a user see pre-release datasets from a project group the user is not part of.</p> \n\n <b>Primary use cases include</b>: <ul> <li><b>name search</b>: Given a search string X, return all datasets with a name that contains the search string X </li> <li><b>dataset id lookup</b>: Given a tdei_dataset_id, return the dataset with the matching id </li> <li> <b>bounding box</b>: Given xmin, xmax, ymin, ymax, return datasets with dataset_area overlapping the bounding box </li> </ul> \n\n <b>Sorting</b>:<br> <p>Users can sort datasets by 'valid_to', 'valid_from', 'uploaded date', 'project group name', and 'status'.</p> <p><b>Pagination</b>: The body is one page of matches. page_no defaults to 1 and page_size defaults to 10 (values above 50 are capped at 50). X-Total-Count, X-Page-No, and X-Page-Size are always set. A Link header with rel=\"next\" is set only when another page exists, and it keeps the other query filters.</p>",
                 "operationId": "listDatasetFiles",
                 "parameters": [
                     {
@@ -821,7 +825,7 @@
                     {
                         "name": "page_no",
                         "in": "query",
-                        "description": "<strong>page_no:</strong> Integer, defaults to 1. Filters datasets by retrieving results in pages.",
+                        "description": "<strong>page_no:</strong> Integer. Page of matching datasets to return. Defaults to 1 when omitted, not a number, or less than 1. The resolved page is returned in the X-Page-No response header.",
                         "required": false,
                         "schema": {
                             "type": "integer",
@@ -832,7 +836,7 @@
                     {
                         "name": "page_size",
                         "in": "query",
-                        "description": "<strong>Page size:</strong> Integer, between 1 to 50, defaults to 10.Specifies total records per page.",
+                        "description": "<strong>Page size:</strong> Integer. Number of datasets in the page. Defaults to 10 when omitted or invalid, and values above 50 are capped at 50. The resolved size is returned in the X-Page-Size response header.",
                         "required": false,
                         "schema": {
                             "type": "integer",
@@ -874,7 +878,7 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "Successful response - returns an array of dataset entities.",
+                        "description": "Successful response. The body is one page of dataset entities. X-Total-Count, X-Page-No, and X-Page-Size describe the full match set. A Link header with rel=\"next\" is included only when another page exists.",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -883,6 +887,36 @@
                                         "$ref": "#/components/schemas/DatasetItem"
                                     }
                                 }
+                            }
+                        },
+                        "headers": {
+                            "X-Total-Count": {
+                                "description": "Total number of records that match the request filters, including records on other pages. Always present.",
+                                "schema": {
+                                    "type": "integer",
+                                    "format": "int32"
+                                }
+                            },
+                            "X-Page-No": {
+                                "description": "Page number returned in the body. Defaults to 1 when page_no is omitted, not a number, or less than 1. Always present.",
+                                "schema": {
+                                    "type": "integer",
+                                    "format": "int32"
+                                }
+                            },
+                            "X-Page-Size": {
+                                "description": "Resolved page size for this response. Defaults to 10 when page_size is omitted or invalid, and is capped at 50. Always present. The body may contain fewer records on the last page.",
+                                "schema": {
+                                    "type": "integer",
+                                    "format": "int32"
+                                }
+                            },
+                            "Link": {
+                                "description": "Present only when another page exists. A single link with rel=\"next\" that keeps the other query filters and sets page_no to the following page and page_size to the resolved page size.",
+                                "schema": {
+                                    "type": "string"
+                                },
+                                "example": "</api/v1/datasets?page_no=2&page_size=10>; rel=\"next\""
                             }
                         }
                     },
@@ -1071,7 +1105,7 @@
                     "Common APIs"
                 ],
                 "summary": "Shows the details of the jobs that the user has access to.",
-                "description": "Returns a list of jobs including request and reponse details. By default only shows the jobs that are submitted by the user.",
+                "description": "Returns a list of jobs including request and reponse details. By default only shows the jobs that are submitted by the user. Results are always one page. page_no defaults to 1 and page_size defaults to 10 (values above 50 are capped at 50). X-Total-Count, X-Page-No, and X-Page-Size are always set. A Link header with rel=\"next\" is set only when another page exists, and it keeps the other query filters.",
                 "operationId": "listJobs",
                 "parameters": [
                     {
@@ -1145,7 +1179,7 @@
                     {
                         "name": "page_no",
                         "in": "query",
-                        "description": "Pagination: page number to start the list from. Defaults to 1.",
+                        "description": "Page of matching jobs to return. Defaults to 1 when omitted, not a number, or less than 1. The resolved page is returned in the X-Page-No response header.",
                         "required": false,
                         "schema": {
                             "type": "integer",
@@ -1156,7 +1190,7 @@
                     {
                         "name": "page_size",
                         "in": "query",
-                        "description": "Total records to retrieve.Page size ranges between 1 to 50, defaults to 10.",
+                        "description": "Number of jobs in the page. Defaults to 10 when omitted or invalid, and values above 50 are capped at 50. The resolved size is returned in the X-Page-Size response header.",
                         "required": false,
                         "schema": {
                             "type": "integer",
@@ -1167,7 +1201,7 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "Successful response - returns an array of [JobDetails](#/components/schemas/JobDetails) entities.",
+                        "description": "Successful response. The body is one page of JobDetails entities. X-Total-Count, X-Page-No, and X-Page-Size describe the full match set. A Link header with rel=\"next\" is included only when another page exists.",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -1176,6 +1210,36 @@
                                         "$ref": "#/components/schemas/JobDetails"
                                     }
                                 }
+                            }
+                        },
+                        "headers": {
+                            "X-Total-Count": {
+                                "description": "Total number of records that match the request filters, including records on other pages. Always present.",
+                                "schema": {
+                                    "type": "integer",
+                                    "format": "int32"
+                                }
+                            },
+                            "X-Page-No": {
+                                "description": "Page number returned in the body. Defaults to 1 when page_no is omitted, not a number, or less than 1. Always present.",
+                                "schema": {
+                                    "type": "integer",
+                                    "format": "int32"
+                                }
+                            },
+                            "X-Page-Size": {
+                                "description": "Resolved page size for this response. Defaults to 10 when page_size is omitted or invalid, and is capped at 50. Always present. The body may contain fewer records on the last page.",
+                                "schema": {
+                                    "type": "integer",
+                                    "format": "int32"
+                                }
+                            },
+                            "Link": {
+                                "description": "Present only when another page exists. A single link with rel=\"next\" that keeps the other query filters and sets page_no to the following page and page_size to the resolved page size.",
+                                "schema": {
+                                    "type": "string"
+                                },
+                                "example": "</api/v1/jobs?page_no=2&page_size=10>; rel=\"next\""
                             }
                         }
                     },
@@ -1623,7 +1687,8 @@
                     {
                         "AuthorizationToken": []
                     }
-                ]
+                ],
+                "deprecated": true
             }
         },
         "/api/v1/osw/convert": {
@@ -3317,6 +3382,9 @@
                             }
                         }
                     },
+                    "401": {
+                        "description": "Unauthenticated request. Check your access token."
+                    },
                     "500": {
                         "description": "An server error occurred."
                     }
@@ -4618,7 +4686,8 @@
                     "500": {
                         "description": "Internal server error."
                     }
-                }
+                },
+                "security": []
             }
         },
         "/api/v1/data-metrics": {
@@ -4750,7 +4819,8 @@
                     "500": {
                         "description": "An Internal server error occured"
                     }
-                }
+                },
+                "security": []
             }
         },
         "/api/v1/verify-email": {
@@ -4787,7 +4857,8 @@
                     "500": {
                         "description": "An Internal server error occured."
                     }
-                }
+                },
+                "security": []
             }
         }
     },
